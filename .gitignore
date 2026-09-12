@@ -1,0 +1,45 @@
+# Environment variables
+.env
+.env.*
+.env.local
+!.env.example
+
+# Python bytecode & cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+
+# Local Vector Database data
+qdrant_data/
+**/qdrant_data/
+qdrant_data_test/
+**/qdrant_data_test/
+
+# Local runtime logs & lead records (may contain test contact PII)
+leads.json
+**/leads.json
+handoffs.json
+**/handoffs.json
+*.log
+
+# Node dependencies & caches
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# OS metadata & IDE artifacts
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
