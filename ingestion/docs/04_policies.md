@@ -27,13 +27,11 @@ Video sessions are conducted through a secure, HIPAA-compliant platform. Clients
 
 ## Crisis & Emergency Support
 
-**[EDITABLE — clinically approved wording to be inserted by practice leadership before launch]**
-
 MindBridge Wellness is an outpatient counseling practice and is not equipped to provide emergency or crisis intervention services. If you are experiencing a mental health emergency or having thoughts of harming yourself or others:
 
 - Call or text 988 (Suicide & Crisis Lifeline), available 24/7
 - Call 911 or go to your nearest emergency room
-- Contact your local crisis line: [PRACTICE TO INSERT LOCAL RESOURCE]
+- Text HOME to 741741 to connect with the Crisis Text Line
 
 This assistant is not able to provide crisis counseling or emergency support, and will always direct you to these resources if a safety concern is shared.
 

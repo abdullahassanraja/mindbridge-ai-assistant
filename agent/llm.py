@@ -275,10 +275,19 @@ def _mock_llm_response(
 
         # Dynamic grounding: extract text from retrieved context if available
         if context_text:
-            lines = [l.strip() for l in context_text.splitlines() if l.strip() and not l.startswith("[") and not l.startswith("#") and not l.startswith("Source:")]
+            lines = [
+                l.strip() for l in context_text.splitlines()
+                if l.strip()
+                and not l.startswith("[")
+                and not l.startswith("**[")
+                and not l.startswith("#")
+                and not l.startswith("Source:")
+                and "editable" not in l.lower()
+                and "practice to" not in l.lower()
+            ]
             substantive = " ".join(lines[:2])
             if substantive:
-                clean_substantive = re.sub(r"^\s*(?:Our Therapists|Frequently Asked Questions|Our Services)\s*—\s*", "", substantive)
+                clean_substantive = re.sub(r"^\s*(?:Our Therapists|Frequently Asked Questions|Our Services|Policies)\s*—\s*", "", substantive)
                 clean_substantive = re.sub(r"\*\*([^*]+)\*\*", r"<b>\1</b>", clean_substantive)
                 return f"{clean_substantive}<br><br>Let me know if you'd like more details on this!"
 
