@@ -295,14 +295,24 @@ def _mock_llm_response(
     # 5. Scheduling Flow stub
     if "scheduling philosophy" in system_prompt.lower() or "current scheduling state" in system_prompt.lower():
         has_contact = bool(re.search(r'[\w\.-]+@[\w\.-]+|\b\d{3}[-.]?\d{3}[-.]?\d{4}\b', user_prompt))
-        timing = "your preferred time"
-        for t in ["wednesday afternoon around 2:30pm", "wednesday afternoon", "friday at 11am", "tuesday afternoon", "thursday", "monday"]:
-            if t in user_lower or (messages and any(t in m.get("content", "").lower() for m in messages)):
-                timing = t
-                break
-
-        if has_contact or "contact info: " in system_prompt.lower() and "not collected yet" not in system_prompt.lower():
+        
+        # Check the stage directive from the system prompt to determine what to do
+        is_ask_stage = "ASK PREFERRED DATE AND TIME" in system_prompt
+        is_contact_stage = "COLLECT CONTACT INFO FOR CONFIRMATION" in system_prompt
+        is_noted_stage = "SCHEDULING REQUEST NOTED" in system_prompt
+        
+        # Extract timing from system prompt if available
+        timing_match = re.search(r"Preferred Timing:\s*(.+?)(?:\n|$)", system_prompt)
+        timing = timing_match.group(1).strip() if timing_match and "Not collected yet" not in timing_match.group(1) else None
+        
+        if is_noted_stage and timing:
             return f"Got it, I've noted {timing} as your preference. Our team will confirm the exact time and send you a confirmation email shortly."
+        elif is_contact_stage and timing:
+            return f"I've noted {timing} as your preference. What's the best email or phone number for our team to confirm that with you?"
+        elif is_ask_stage:
+            return "What day and time tends to work best for you?"
+        elif has_contact:
+            return f"Got it, I've noted your preferred time. Our team will confirm the exact time and send you a confirmation email shortly."
         return "What day and time tends to work best for you?"
 
     # 6. Therapist Matching stub

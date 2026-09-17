@@ -213,19 +213,62 @@ def _extract_contact_info(text: str, expecting_name: bool = False) -> Dict[str, 
     return found
 
 
-DATETIME_DAYS_PATTERN = r'\b(monday|tuesday|wednesday|thursday|friday|saturday|sunday|mon|tue|wed|thu|fri|sat|sun|today|tomorrow|weekend|weekdays?|next week|this week)\b'
-DATETIME_TIMES_PATTERN = r'\b(morning|afternoon|evening|night|noon|midday|lunchtime|\d{1,2}(?::\d{2})?\s*(?:am|pm)|\d{1,2}\s*o\'?clock|after\s+\d{1,2}|around\s+\d{1,2}|before\s+\d{1,2})\b'
+# Day patterns: weekday names, relative days, month names, numeric dates, ordinals
+DATETIME_DAYS_PATTERN = (
+    r'\b('
+    r'monday|tuesday|wednesday|thursday|friday|saturday|sunday'
+    r'|mon|tue|wed|thu|fri|sat|sun'
+    r'|today|tomorrow|weekend|weekdays?|next week|this week'
+    r'|january|february|march|april|may|june|july|august|september|october|november|december'
+    r'|jan|feb|mar|apr|jun|jul|aug|sep|sept|oct|nov|dec'
+    r'|\d{1,2}(?:st|nd|rd|th)'
+    r'|the\s+\d{1,2}(?:st|nd|rd|th)?'
+    r')\b'
+)
+
+# Time patterns: time of day words, numeric times, casual ranges
+DATETIME_TIMES_PATTERN = (
+    r'\b('
+    r'morning|afternoon|evening|night|noon|midday|lunchtime'
+    r'|\d{1,2}(?::\d{2})?\s*(?:am|pm|a\.m\.|p\.m\.)'
+    r'|\d{1,2}\s*o\'?clock'
+    r'|(?:after|around|before|between|btw|from)\s+\d{1,2}'
+    r'|\d{1,2}\s+(?:to|and|-)\s+\d{1,2}'
+    r')\b'
+)
+
+# Catch-all: numeric date pattern like "20 september" or "september 20" or "9/20" or "20/9"
+DATETIME_DATE_NUMERIC_PATTERN = (
+    r'\b(?:'
+    r'\d{1,2}\s+(?:january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|jun|jul|aug|sep|sept|oct|nov|dec)'
+    r'|(?:january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|jun|jul|aug|sep|sept|oct|nov|dec)\s+\d{1,2}'
+    r'|\d{1,2}[/\-]\d{1,2}(?:[/\-]\d{2,4})?'
+    r')\b'
+)
 
 
 def _extract_preferred_datetime(text: str) -> Optional[str]:
-    """Extract preferred date/time phrasing as free text from visitor input."""
+    """Extract preferred date/time phrasing as free text from visitor input.
+    
+    Designed to be PERMISSIVE: any plausible scheduling answer counts.
+    Catches weekday names, month names, numeric dates, ordinals, time-of-day words,
+    numeric times (with or without am/pm), and casual ranges ('btw 2 and 10 pm').
+    """
     if not text:
         return None
     lower = text.lower().strip()
-    has_day = bool(re.search(DATETIME_DAYS_PATTERN, lower))
-    has_time = bool(re.search(DATETIME_TIMES_PATTERN, lower))
-
-    if has_day or has_time:
+    
+    has_day = bool(re.search(DATETIME_DAYS_PATTERN, lower, re.IGNORECASE))
+    has_time = bool(re.search(DATETIME_TIMES_PATTERN, lower, re.IGNORECASE))
+    has_date_numeric = bool(re.search(DATETIME_DATE_NUMERIC_PATTERN, lower, re.IGNORECASE))
+    
+    # Also catch standalone digit + pm/am patterns that might be preceded by 'btw'/'from'/'between'
+    has_casual_time_range = bool(re.search(
+        r'(?:btw|between|from)\s+\d{1,2}\s+(?:and|to|-)\s+\d{1,2}\s*(?:am|pm|a\.m\.|p\.m\.)?',
+        lower
+    ))
+    
+    if has_day or has_time or has_date_numeric or has_casual_time_range:
         cleaned = text.strip().rstrip(".!?,")
         prefix_pattern = r'^(?:how about|what about|maybe|i am free|i\'m free|i prefer|preferably|let\'s do|can we do|does|is)\s+(?:on\s+)?'
         candidate = re.sub(prefix_pattern, '', cleaned, flags=re.IGNORECASE).strip()
@@ -854,14 +897,26 @@ def scheduling_node(state: AgentState) -> AgentState:
             break
 
     therapist = state.get("suggested_therapist")
+    is_debug = os.environ.get("DEBUG", "false").lower() in ("true", "1", "yes")
 
     # 2. Extract date/time mentions if present
     detected_dt = _extract_preferred_datetime(latest_user_text)
-    if detected_dt and not state.get("preferred_date"):
+    if is_debug:
+        print(f"[scheduling] User message: '{latest_user_text}'")
+        print(f"[scheduling] _extract_preferred_datetime returned: '{detected_dt}'")
+        print(f"[scheduling] State before update: preferred_date='{state.get('preferred_date')}', preferred_time='{state.get('preferred_time')}'")
+
+    if detected_dt:
+        # Always update — the user may be correcting their earlier answer
         state["preferred_date"] = detected_dt
         state["preferred_time"] = detected_dt
+        if is_debug:
+            print(f"[scheduling] Updated state: preferred_date='{detected_dt}'")
 
     preferred_timing = state.get("preferred_date") or state.get("preferred_time")
+    if is_debug:
+        print(f"[scheduling] Resolved preferred_timing: '{preferred_timing}'")
+        print(f"[scheduling] Contact: '{contact}', Name: '{name}'")
 
     # 3. Determine stage directive for Ellen
     if not preferred_timing:
