@@ -11,7 +11,9 @@ import uuid
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
 
-API_URL = "http://127.0.0.1:8000/chat"
+import os
+
+API_URL = f"http://127.0.0.1:{os.environ.get('PORT', '8001')}/chat"
 
 def send_chat(session_id: str, message: str) -> str:
     time.sleep(1.5)  # brief pause to pace Groq API rate limits

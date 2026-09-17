@@ -45,6 +45,8 @@ class AgentState(TypedDict):
     preferred_time: Optional[str]
     scheduling_requested: bool
     scheduling_request_logged: bool
+    scheduling_clarification: Optional[str]
+    pending_candidate_date: Optional[str]
     # Scope guardrail flag
     off_topic: bool
 
@@ -71,6 +73,8 @@ def create_initial_state() -> AgentState:
         "preferred_time": None,
         "scheduling_requested": False,
         "scheduling_request_logged": False,
+        "scheduling_clarification": None,
+        "pending_candidate_date": None,
         "off_topic": False,
     }
 

@@ -38,6 +38,7 @@ from leads import send_lead_email, log_handoff
 from sheets import append_lead, append_scheduling_request
 from llm import call_llm, _safe_print
 from scope_guard import classify_scope, generate_scope_redirect
+from date_resolution import resolve_scheduling_input, get_current_datetime, format_date_display
 
 
 def _is_contact_declined(text: str) -> bool:
@@ -184,8 +185,10 @@ def _extract_contact_info(text: str, expecting_name: bool = False) -> Dict[str, 
     if phone_match:
         found["phone"] = phone_match.group(0)
 
-    # 1. Explicit name introductions: "my name is X", "call me X", "name is X", "this is X"
-    explicit_name = re.search(r"\b(?:my name is|call me|name is|this is)\s+([A-Za-z]+(?:\s+[A-Za-z]+)?)", text, re.IGNORECASE)
+    # 1. Explicit name introductions: "my name is X", "call me X", "name is X", "this is X", "X here"
+    explicit_name = re.search(r"\b(?:my name is|call me|name is|this is)\s+([^\W\d_]+(?:\s+[^\W\d_]+)?)", text, re.IGNORECASE)
+    if not explicit_name:
+        explicit_name = re.search(r"\(?([^\W\d_]+)\s+here\)?", text, re.IGNORECASE)
     if explicit_name:
         candidate = explicit_name.group(1).strip()
         words = candidate.split()
@@ -194,7 +197,7 @@ def _extract_contact_info(text: str, expecting_name: bool = False) -> Dict[str, 
 
     # 2. "I'm X" or "I am X" (only if NOT followed by verb/adjective/preposition)
     if not found.get("name"):
-        iam_match = re.search(r"\b(?:i am|i'm)\s+([A-Za-z]+(?:\s+[A-Za-z]+)?)", text, re.IGNORECASE)
+        iam_match = re.search(r"\b(?:i am|i'm|im)\s+([^\W\d_]+(?:\s+[^\W\d_]+)?)", text, re.IGNORECASE)
         if iam_match:
             candidate = iam_match.group(1).strip()
             words = candidate.split()
@@ -392,6 +395,13 @@ def intent_router_node(state: AgentState) -> AgentState:
             _safe_print(f"[intent_router] Message: '{latest_user_text}' -> Classified Intent: 'wants_human' (frustration/human pattern matched)")
         return state
 
+    # If scheduling flow is already underway (visitor giving timing, name, or contact info)
+    if state.get("scheduling_requested") and not state.get("scheduling_request_logged"):
+        state["current_intent"] = "scheduling_request"
+        if is_debug:
+            _safe_print(f"[intent_router] Message: '{latest_user_text}' -> Classified Intent: 'scheduling_request' (active scheduling flow)")
+        return state
+
     # 1. Deterministic greeting & short opener routing (BUG 1 FIX)
     if is_greeting_or_short_opener(latest_user_text, state):
         state["current_intent"] = "seeking_support"
@@ -406,13 +416,6 @@ def intent_router_node(state: AgentState) -> AgentState:
         "meet with", "reserve", "what time", "what day", "slot"
     ]
     has_sched_cue = any(c in lower_user for c in scheduling_cues)
-
-    # If scheduling flow is already underway (visitor giving timing or contact info)
-    if state.get("scheduling_requested") and not state.get("scheduling_request_logged"):
-        state["current_intent"] = "scheduling_request"
-        if is_debug:
-            _safe_print(f"[intent_router] Message: '{latest_user_text}' -> Classified Intent: 'scheduling_request' (active scheduling flow)")
-        return state
 
     # If explicit scheduling cues are present
     if has_sched_cue:
@@ -899,55 +902,137 @@ def scheduling_node(state: AgentState) -> AgentState:
     therapist = state.get("suggested_therapist")
     is_debug = os.environ.get("DEBUG", "false").lower() in ("true", "1", "yes")
 
-    # 2. Extract date/time mentions if present
-    detected_dt = _extract_preferred_datetime(latest_user_text)
+    # 2. Date and time resolution with real-time awareness
+    current_dt = get_current_datetime()
+    current_date_str = format_date_display(current_dt.date())
+
+    clarification_mode = state.get("scheduling_clarification")
+    pending_candidate_date = state.get("pending_candidate_date")
+
+    date_res = resolve_scheduling_input(
+        latest_user_text,
+        current_dt=current_dt,
+        pending_candidate_date=pending_candidate_date,
+        clarification_mode=clarification_mode,
+    )
+
     if is_debug:
         _safe_print(f"[scheduling] User message: '{latest_user_text}'")
-        _safe_print(f"[scheduling] _extract_preferred_datetime returned: '{detected_dt}'")
-        _safe_print(f"[scheduling] State before update: preferred_date='{state.get('preferred_date')}', preferred_time='{state.get('preferred_time')}'")
+        _safe_print(f"[scheduling] Date resolution: status={date_res['status']}, resolved={date_res.get('resolved_full')}, pending={pending_candidate_date}")
 
-    if detected_dt:
-        # Always update — the user may be correcting their earlier answer
-        state["preferred_date"] = detected_dt
-        state["preferred_time"] = detected_dt
-        if is_debug:
-            _safe_print(f"[scheduling] Updated state: preferred_date='{detected_dt}'")
+    # Process date resolution outcome
+    if date_res["status"] == "confirmed":
+        resolved_timing = date_res.get("resolved_full") or date_res.get("resolved_date")
+        state["preferred_date"] = resolved_timing
+        state["preferred_time"] = resolved_timing
+        state["scheduling_clarification"] = None
+        state["pending_candidate_date"] = None
+    elif date_res["status"] == "needs_clarification_ambiguous":
+        state["scheduling_clarification"] = "confirm_day"
+        state["pending_candidate_date"] = date_res.get("resolved_full") or date_res.get("resolved_date")
+    elif date_res["status"] == "rejected_past":
+        state["scheduling_clarification"] = None
+        state["pending_candidate_date"] = None
+        # Do not store past date as preferred_date
 
     preferred_timing = state.get("preferred_date") or state.get("preferred_time")
+
     if is_debug:
         _safe_print(f"[scheduling] Resolved preferred_timing: '{preferred_timing}'")
         _safe_print(f"[scheduling] Contact: '{contact}', Name: '{name}'")
 
     # 3. Determine stage directive for Ellen
-    if not preferred_timing:
-        name_greeting = f", {name}" if name else ""
+    if date_res["status"] == "rejected_past":
+        # Specific date in the past
+        if not name:
+            stage_directive = (
+                f"STAGE: REJECT PAST DATE & ASK UPCOMING DATE + NAME.\n"
+                f"Today is {current_date_str}. The visitor asked for a date that has already passed ('{latest_user_text}').\n"
+                f"Their name is NOT known yet.\n"
+                f"Kindly clarify that this date has already passed, and ask what upcoming date and time works best for them.\n"
+                f"Also ask for their name so you can get them set up properly.\n"
+                f"CRITICAL: Do NOT accept or log this past date. Keep response to 1 to 2 short sentences."
+            )
+        else:
+            stage_directive = (
+                f"STAGE: REJECT PAST DATE & ASK UPCOMING DATE.\n"
+                f"Today is {current_date_str}. The visitor ({name}) asked for a date that has already passed ('{latest_user_text}').\n"
+                f"Kindly clarify that this date has already passed, and ask {name} for an upcoming date and time that works best for them.\n"
+                f"CRITICAL: Do NOT accept or log this past date. Keep response to 1 to 2 short sentences."
+            )
+    elif date_res["status"] == "needs_clarification_ambiguous":
+        # Ambiguous relative weekday requiring ONE brief confirmation
+        suggested = date_res.get("suggested_confirmation") or "the upcoming date"
+        if not name:
+            stage_directive = (
+                f"STAGE: CLARIFY AMBIGUOUS DAY & ASK NAME.\n"
+                f"Today is {current_date_str}. The visitor mentioned a relative day without a specific date ('{latest_user_text}').\n"
+                f"Their name is NOT known yet.\n"
+                f"Ask ONE brief clarifying follow-up to confirm the exact date: 'Just to confirm, are you looking at {suggested}?'\n"
+                f"Also ask for their name.\n"
+                f"CRITICAL: Do NOT finalize or log the appointment yet. Keep response to 1 to 2 short sentences."
+            )
+        else:
+            stage_directive = (
+                f"STAGE: CLARIFY AMBIGUOUS DAY.\n"
+                f"Today is {current_date_str}. The visitor ({name}) mentioned a relative day without a specific date ('{latest_user_text}').\n"
+                f"Ask ONE brief clarifying follow-up to confirm the exact date: 'Just to confirm, are you looking at {suggested}?'\n"
+                f"CRITICAL: Do NOT finalize or log the appointment yet. Keep response to 1 short sentence."
+            )
+    elif not name and not preferred_timing:
+        # Neither name nor timing is known (ISSUE 1 FIX)
+        therapist_note = f" with {therapist}" if therapist else ""
+        stage_directive = (
+            f"STAGE: ASK VISITOR NAME AND PREFERRED DATE/TIME.\n"
+            f"The visitor is looking to book a consultation{therapist_note}, but NEITHER their name nor their preferred date/time has been shared yet.\n"
+            f"Warmly welcome their request and naturally ask for BOTH their name AND what day and time tends to work best for them:\n"
+            f"e.g., 'I\\'d love to help you set up a consultation{therapist_note}! What is your name, and what day and time tends to work best for you?'\n"
+            f"Keep it warm, natural, and conversational in 1 to 2 short sentences.\n"
+            f"CRITICAL: Do NOT assume a name or finalize any booking."
+        )
+    elif name and not preferred_timing:
+        # Name is known, timing is not
+        therapist_note = f" with {therapist}" if therapist else ""
         stage_directive = (
             f"STAGE: ASK PREFERRED DATE AND TIME.\n"
-            f"The visitor{name_greeting} is ready to schedule, but hasn't shared their preferred day/time yet.\n"
-            f"Ask casually and conversationally what date and time generally work for them:\n"
-            f"e.g., 'What day and time tends to work best for you?'\n"
-            f"Keep it casual and conversational, not a rigid form.\n"
+            f"The visitor's name is {name}. They are ready to schedule{therapist_note}, but haven't shared their preferred day/time yet.\n"
+            f"Ask casually and conversationally what date and time generally works best for {name}:\n"
+            f"e.g., 'What day and time tends to work best for you, {name}?'\n"
+            f"Keep it casual and conversational, not a rigid form in 1 to 2 short sentences."
+        )
+    elif preferred_timing and not name:
+        # Timing known, name NOT known
+        stage_directive = (
+            f"STAGE: COLLECT NAME AND CONTACT INFO.\n"
+            f"The visitor stated their preferred timing: '{preferred_timing}'.\n"
+            f"Their name and contact info (email or phone) are NOT known yet.\n"
+            f"Acknowledge that you noted '{preferred_timing}' as their preference.\n"
+            f"Ask for their name and the best email address or phone number for our care team to confirm with them:\n"
+            f"e.g., 'Got it, I\\'ve noted {preferred_timing}. Could I get your name and the best email or phone number for our team to follow up with you?'\n"
+            f"CRITICAL: Do NOT say the appointment is booked or confirmed. It is a request pending confirmation.\n"
             f"Keep response to 1 to 2 short sentences."
         )
-    elif preferred_timing and not contact:
+    elif preferred_timing and name and not contact:
+        # Timing and name known, contact NOT known
         stage_directive = (
             f"STAGE: COLLECT CONTACT INFO FOR CONFIRMATION.\n"
-            f"The visitor stated their preferred timing: '{preferred_timing}'.\n"
+            f"Visitor Name: {name}\n"
+            f"Preferred Timing: '{preferred_timing}'.\n"
             f"Their contact info (email or phone) is NOT known yet.\n"
-            f"Acknowledge that you noted '{preferred_timing}' as their preference.\n"
-            f"Ask specifically for their email address or phone number because our care team needs it to send the confirmation.\n"
-            f"Framing: 'What is the best email or phone number for our team to confirm that with you?'\n"
+            f"Acknowledge that you noted '{preferred_timing}' for {name}.\n"
+            f"Ask specifically for their email address or phone number so our care team can confirm counselor availability with them:\n"
+            f"e.g., 'What is the best email or phone number for our team to confirm that with you, {name}?'\n"
             f"CRITICAL: Do NOT say the appointment is booked or confirmed. It is a request pending confirmation.\n"
             f"Keep response to 1 to 2 short sentences."
         )
     else:
-        # Both timing and contact are present! Log request to Google Sheets & local JSON
+        # ALL THREE (name, contact, timing) ARE PRESENT! (ISSUE 1 & 2 SAFEGUARD)
         if not state.get("scheduling_request_logged", False):
             session_id = state.get("session_id") or "Not provided"
             req_data = {
                 "timestamp": datetime.now(timezone.utc).isoformat(),
-                "name": name or "Anonymous Visitor",
-                "contact": contact or "Not provided",
+                "name": name,
+                "contact": contact,
                 "preferred_date": preferred_timing,
                 "preferred_time": preferred_timing,
                 "matched_therapist": therapist or "None assigned yet",
@@ -959,12 +1044,12 @@ def scheduling_node(state: AgentState) -> AgentState:
 
         stage_directive = (
             f"STAGE: SCHEDULING REQUEST NOTED (PENDING HUMAN CONFIRMATION).\n"
-            f"Visitor Name: {name or 'Visitor'}\n"
+            f"Visitor Name: {name}\n"
             f"Preferred Timing: {preferred_timing}\n"
             f"Contact Info: {contact}\n"
             f"Matched Therapist: {therapist or 'Practice clinical team'}\n"
             f"Respond warmly and honestly in this exact spirit:\n"
-            f"'Got it, I\\'ve noted {preferred_timing} as your preference. Our team will confirm the exact time and send you a confirmation email shortly.'\n"
+            f"'Got it, I\\'ve noted {preferred_timing} as your preference for {name}. Our team will review counselor availability and reach out to you at {contact} shortly to confirm.'\n"
             f"MANDATORY CLINICAL & ETHICAL RULE:\n"
             f"NEVER say the appointment is 'booked', 'confirmed', or 'scheduled'.\n"
             f"It is strictly a REQUEST pending human confirmation.\n"
@@ -975,6 +1060,7 @@ def scheduling_node(state: AgentState) -> AgentState:
         SAFETY_SYSTEM_PROMPT + "\n\n" +
         STYLE_SYSTEM_PROMPT + "\n\n" +
         SCHEDULING_SYSTEM_PROMPT + "\n\n" +
+        f"CURRENT DATE AND TIME: {current_date_str} (Real-world current date)\n\n" +
         f"CURRENT SCHEDULING STATE:\n"
         f"- Name: {name or 'Not collected yet'}\n"
         f"- Preferred Timing: {preferred_timing or 'Not collected yet'}\n"

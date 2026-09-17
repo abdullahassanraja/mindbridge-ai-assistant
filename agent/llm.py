@@ -38,9 +38,9 @@ def get_groq_client():
     if _groq_client is None:
         try:
             from groq import Groq
-            _groq_client = Groq(api_key=api_key)
+            _groq_client = Groq(api_key=api_key, max_retries=0)
         except Exception as e:
-            print(f"[Warning] Could not initialize Groq client: {e}")
+            _safe_print(f"[Warning] Could not initialize Groq client: {e}")
             _groq_client = None
     return _groq_client
 
@@ -296,24 +296,50 @@ def _mock_llm_response(
     if "scheduling philosophy" in system_prompt.lower() or "current scheduling state" in system_prompt.lower():
         has_contact = bool(re.search(r'[\w\.-]+@[\w\.-]+|\b\d{3}[-.]?\d{3}[-.]?\d{4}\b', user_prompt))
         
-        # Check the stage directive from the system prompt to determine what to do
-        is_ask_stage = "ASK PREFERRED DATE AND TIME" in system_prompt
-        is_contact_stage = "COLLECT CONTACT INFO FOR CONFIRMATION" in system_prompt
-        is_noted_stage = "SCHEDULING REQUEST NOTED" in system_prompt
+        # Extract name and timing from system prompt if available
+        name_match = re.search(r"- Name:\s*(.+?)(?:\n|$)", system_prompt)
+        name = name_match.group(1).strip() if name_match and "Not collected yet" not in name_match.group(1) else None
         
-        # Extract timing from system prompt if available
-        timing_match = re.search(r"Preferred Timing:\s*(.+?)(?:\n|$)", system_prompt)
+        timing_match = re.search(r"- Preferred Timing:\s*(.+?)(?:\n|$)", system_prompt)
         timing = timing_match.group(1).strip() if timing_match and "Not collected yet" not in timing_match.group(1) else None
-        
-        if is_noted_stage and timing:
-            return f"Got it, I've noted {timing} as your preference. Our team will confirm the exact time and send you a confirmation email shortly."
-        elif is_contact_stage and timing:
-            return f"I've noted {timing} as your preference. What's the best email or phone number for our team to confirm that with you?"
-        elif is_ask_stage:
-            return "What day and time tends to work best for you?"
-        elif has_contact:
-            return f"Got it, I've noted your preferred time. Our team will confirm the exact time and send you a confirmation email shortly."
-        return "What day and time tends to work best for you?"
+
+        # Check stage directives
+        if "REJECT PAST DATE" in system_prompt:
+            name_phrase = f", {name}" if name else ""
+            return f"That date has already passed. Could you share an upcoming date and time that works best for you{name_phrase}?"
+            
+        if "CLARIFY AMBIGUOUS DAY" in system_prompt:
+            suggested_match = re.search(r"looking at ([^?]+)\?", system_prompt)
+            suggested = suggested_match.group(1).strip() if suggested_match else "the upcoming date"
+            if not name:
+                return f"Just to confirm, are you looking at {suggested}? And could I also get your name so we have that ready?"
+            return f"Just to confirm, are you looking at {suggested}?"
+
+        if "ASK VISITOR NAME AND PREFERRED DATE/TIME" in system_prompt:
+            return "I'd love to help you set up a consultation! What is your name, and what day and time tends to work best for you?"
+
+        if "COLLECT NAME AND CONTACT INFO" in system_prompt:
+            timing_str = f" {timing}" if timing else ""
+            return f"Got it, I've noted{timing_str} as your preference. Could I get your name and the best email or phone number for our team to follow up with you?"
+
+        if "COLLECT CONTACT INFO FOR CONFIRMATION" in system_prompt:
+            timing_str = f" {timing}" if timing else ""
+            name_str = f", {name}" if name else ""
+            return f"Got it, I've noted{timing_str} as your preference{name_str}. What's the best email or phone number for our team to confirm that with you?"
+
+        if "SCHEDULING REQUEST NOTED" in system_prompt:
+            timing_str = f" {timing}" if timing else " your requested time"
+            name_str = f" for {name}" if name else ""
+            return f"Got it, I've noted{timing_str} as your preference{name_str}. Our team will review counselor availability and follow up with you shortly to confirm."
+
+        if not name and not timing:
+            return "I'd love to help you set up a consultation! What is your name, and what day and time tends to work best for you?"
+        elif not timing:
+            return f"What day and time tends to work best for you{f', {name}' if name else ''}?"
+        elif not name:
+            return "Got it, I've noted your timing preference. Could I get your name and the best email or phone number for our team to follow up with you?"
+        else:
+            return f"Got it, I've noted that preference. What's the best email or phone number for our team to confirm with you, {name}?"
 
     # 6. Therapist Matching stub
     if "therapist matching specialist" in system_prompt.lower() or "retrieved therapist profiles" in system_prompt.lower():
@@ -428,6 +454,11 @@ def call_llm(
                     return raw_content
                 except Exception as api_err:
                     err_str = str(api_err).lower()
+                    # Daily token limit (TPD) cannot be resolved by waiting 2 seconds
+                    if "tpd" in err_str or "tokens per day" in err_str:
+                        if is_debug:
+                            _safe_print(f"[LLM Rate Limit] Daily token limit (TPD) reached. Falling back to local heuristic immediately.")
+                        break
                     if ("429" in err_str or "rate" in err_str) and attempt < 2:
                         sleep_s = 2.0 * (attempt + 1)
                         if is_debug:
@@ -455,5 +486,5 @@ def call_llm(
         json_mode=json_mode,
     )
     if is_debug:
-        print(f"   Local Fallback returned: '{resp[:90]}...'")
+        _safe_print(f"   Local Fallback returned: '{resp[:90]}...'")
     return resp
