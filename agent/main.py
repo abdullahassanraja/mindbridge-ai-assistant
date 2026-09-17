@@ -8,7 +8,7 @@ from graph import app_graph
 
 def run_cli():
     print("=" * 70)
-    print("🌿 MindBridge Wellness — AI Intake Assistant CLI")
+    print("MindBridge Wellness -- AI Intake Assistant CLI")
     print("=" * 70)
     print("Type your message and press Enter to chat.")
     print("Type 'reset' to start a new conversation.")

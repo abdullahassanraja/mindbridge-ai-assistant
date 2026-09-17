@@ -37,6 +37,7 @@ os.environ.setdefault("QDRANT_PATH", str(ingestion_dir / "qdrant_data"))
 from langgraph.checkpoint.memory import MemorySaver
 from graph import build_graph
 from state import create_initial_state
+from llm import _safe_print
 
 # NOTE ON CHECKPOINTER PERSISTENCE:
 # We use LangGraph's in-memory MemorySaver for this demo. Conversation state and history
@@ -141,16 +142,16 @@ async def chat(request: ChatRequest):
     session_status = "EXISTING (in checkpointer)" if has_existing_state else ("NEW (client provided id)" if not is_new_session else "NEW (generated id)")
 
     if is_debug:
-        print(f"\n" + "=" * 65)
-        print(f"[API /chat] Incoming Request")
-        print(f"   Raw Message:     '{user_text}'")
-        print(f"   Session ID:      {session_id}")
-        print(f"   Session Status:  {session_status}")
-        print(f"   Thread ID in Config: {config['configurable']['thread_id']}")
+        _safe_print(f"\n" + "=" * 65)
+        _safe_print(f"[API /chat] Incoming Request")
+        _safe_print(f"   Raw Message:     '{user_text}'")
+        _safe_print(f"   Session ID:      {session_id}")
+        _safe_print(f"   Session Status:  {session_status}")
+        _safe_print(f"   Thread ID in Config: {config['configurable']['thread_id']}")
 
     if not user_text:
         if is_debug:
-            print(f"   [API /chat] Empty message received.")
+            _safe_print(f"   [API /chat] Empty message received.")
         return ChatResponse(
             response="Hello! I didn't receive any text. How can MindBridge Wellness assist you today?",
             session_id=session_id,
@@ -168,7 +169,7 @@ async def chat(request: ChatRequest):
         state["session_id"] = session_id
 
         if is_debug:
-            print(f"   Messages BEFORE turn: {len(messages)}")
+            _safe_print(f"   Messages BEFORE turn: {len(messages)}")
         # 3. Append incoming user turn
         messages.append({"role": "user", "content": user_text})
         state["messages"] = messages
@@ -187,14 +188,15 @@ async def chat(request: ChatRequest):
             )
 
         if is_debug:
-            print(f"   Messages AFTER turn:  {len(final_state.get('messages', []))}")
-            print(f"   Response Summary:     {reply_text[:80]}...")
-            print("=" * 65 + "\n")
+            _safe_print(f"   Messages AFTER turn:  {len(final_state.get('messages', []))}")
+            _safe_print(f"   Response Summary:     {reply_text[:80]}...")
+            _safe_print("=" * 65 + "\n")
 
         return ChatResponse(response=reply_text, session_id=session_id)
 
     except Exception as exc:
-        # Log real exception server-side
+        import traceback
+        _safe_print(f"[API ERROR] /chat session={session_id}: {exc}\n{traceback.format_exc()}")
         logger.error(f"Error in /chat endpoint for session {session_id}: {exc}", exc_info=True)
         # Return graceful safe fallback message
         fallback_msg = (

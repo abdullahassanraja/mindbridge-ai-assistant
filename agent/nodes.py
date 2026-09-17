@@ -19,7 +19,7 @@ os.environ.setdefault("QDRANT_PATH", str(ingestion_dir / "qdrant_data"))
 try:
     from ingest import search
 except Exception as e:
-    print(f"[Warning] Could not import search from ingestion.ingest: {e}")
+    _safe_print(f"[Warning] Could not import search from ingestion.ingest: {e}")
     search = None
 
 from state import AgentState
@@ -36,7 +36,7 @@ from safety_prompts import (
 )
 from leads import send_lead_email, log_handoff
 from sheets import append_lead, append_scheduling_request
-from llm import call_llm
+from llm import call_llm, _safe_print
 from scope_guard import classify_scope, generate_scope_redirect
 
 
@@ -363,7 +363,7 @@ def scope_guard_node(state: AgentState) -> AgentState:
     if is_off_topic:
         state["off_topic"] = True
         if is_debug:
-            print(f"[scope_guard] Message: '{latest_user_text}' -> OFF-TOPIC ({category}): {reason}")
+            _safe_print(f"[scope_guard] Message: '{latest_user_text}' -> OFF-TOPIC ({category}): {reason}")
         redirect_text = generate_scope_redirect(latest_user_text, category)
         state["messages"].append({
             "role": "assistant",
@@ -372,7 +372,7 @@ def scope_guard_node(state: AgentState) -> AgentState:
     else:
         state["off_topic"] = False
         if is_debug:
-            print(f"[scope_guard] Message: '{latest_user_text}' -> IN-SCOPE ({reason})")
+            _safe_print(f"[scope_guard] Message: '{latest_user_text}' -> IN-SCOPE ({reason})")
 
     return state
 
@@ -389,14 +389,14 @@ def intent_router_node(state: AgentState) -> AgentState:
     if any(p in lower_user for p in frustration_patterns) and "are you a real person" not in lower_user:
         state["current_intent"] = "wants_human"
         if is_debug:
-            print(f"[intent_router] Message: '{latest_user_text}' -> Classified Intent: 'wants_human' (frustration/human pattern matched)")
+            _safe_print(f"[intent_router] Message: '{latest_user_text}' -> Classified Intent: 'wants_human' (frustration/human pattern matched)")
         return state
 
     # 1. Deterministic greeting & short opener routing (BUG 1 FIX)
     if is_greeting_or_short_opener(latest_user_text, state):
         state["current_intent"] = "seeking_support"
         if is_debug:
-            print(f"[intent_router] Message: '{latest_user_text}' -> Classified Intent: 'seeking_support' (greeting/opener deterministic match)")
+            _safe_print(f"[intent_router] Message: '{latest_user_text}' -> Classified Intent: 'seeking_support' (greeting/opener deterministic match)")
         return state
 
     # Check for active scheduling flow or explicit scheduling keywords
@@ -411,14 +411,14 @@ def intent_router_node(state: AgentState) -> AgentState:
     if state.get("scheduling_requested") and not state.get("scheduling_request_logged"):
         state["current_intent"] = "scheduling_request"
         if is_debug:
-            print(f"[intent_router] Message: '{latest_user_text}' -> Classified Intent: 'scheduling_request' (active scheduling flow)")
+            _safe_print(f"[intent_router] Message: '{latest_user_text}' -> Classified Intent: 'scheduling_request' (active scheduling flow)")
         return state
 
     # If explicit scheduling cues are present
     if has_sched_cue:
         state["current_intent"] = "scheduling_request"
         if is_debug:
-            print(f"[intent_router] Message: '{latest_user_text}' -> Classified Intent: 'scheduling_request' (scheduling cue matched)")
+            _safe_print(f"[intent_router] Message: '{latest_user_text}' -> Classified Intent: 'scheduling_request' (scheduling cue matched)")
         return state
 
     # If therapist was suggested and visitor affirms connecting/scheduling
@@ -427,7 +427,7 @@ def intent_router_node(state: AgentState) -> AgentState:
         if any(a in lower_user for a in affirm_cues) or _extract_preferred_datetime(latest_user_text):
             state["current_intent"] = "scheduling_request"
             if is_debug:
-                print(f"[intent_router] Message: '{latest_user_text}' -> Classified Intent: 'scheduling_request' (post-match affirmation / timing)")
+                _safe_print(f"[intent_router] Message: '{latest_user_text}' -> Classified Intent: 'scheduling_request' (post-match affirmation / timing)")
             return state
 
     # 2. Deterministic therapist matching routing (BUG 2(a) FIX)
@@ -451,28 +451,28 @@ def intent_router_node(state: AgentState) -> AgentState:
         if has_matching_cue or (is_affirm_cue and offered_recommendation):
             state["current_intent"] = "therapist_matching"
             if is_debug:
-                print(f"[intent_router] Message: '{latest_user_text}' -> Classified Intent: 'therapist_matching' (deterministic matching cue with stored concern)")
+                _safe_print(f"[intent_router] Message: '{latest_user_text}' -> Classified Intent: 'therapist_matching' (deterministic matching cue with stored concern)")
             return state
 
     # 3. Starter chip / meta matching request without a stored concern -> route to qualification_flow (BUG 3 FIX)
     if any(re.search(pat, lower_user) for pat in MATCHING_META_PATTERNS) and not stored_concern:
         state["current_intent"] = "seeking_support"
         if is_debug:
-            print(f"[intent_router] Message: '{latest_user_text}' -> Classified Intent: 'seeking_support' (starter chip / matching meta-request)")
+            _safe_print(f"[intent_router] Message: '{latest_user_text}' -> Classified Intent: 'seeking_support' (starter chip / matching meta-request)")
         return state
 
     # If visitor is in active intake qualification and provided a name, decline, or contact info
     if _is_contact_declined(latest_user_text) or "@" in latest_user_text or re.search(r'\b\d{3}[-.\s]?\d{3}[-.\s]?\d{4}\b', latest_user_text):
         state["current_intent"] = "seeking_support"
         if is_debug:
-            print(f"[intent_router] Message: '{latest_user_text}' -> Classified Intent: 'seeking_support' (intake contact/decline pattern)")
+            _safe_print(f"[intent_router] Message: '{latest_user_text}' -> Classified Intent: 'seeking_support' (intake contact/decline pattern)")
         return state
 
     # If visitor gave a vague or uncertain response ("just looking", "not sure what I need"), route to qualification flow
     if is_vague_or_uncertain(latest_user_text):
         state["current_intent"] = "seeking_support"
         if is_debug:
-            print(f"[intent_router] Message: '{latest_user_text}' -> Classified Intent: 'seeking_support' (vague/exploratory input)")
+            _safe_print(f"[intent_router] Message: '{latest_user_text}' -> Classified Intent: 'seeking_support' (vague/exploratory input)")
         return state
 
     # If visitor is asking a question about therapy types, services, or modalities, route to general_question (RAG QA)
@@ -486,7 +486,7 @@ def intent_router_node(state: AgentState) -> AgentState:
     if any(re.search(pat, lower_user) for pat in therapy_service_q_patterns):
         state["current_intent"] = "general_question"
         if is_debug:
-            print(f"[intent_router] Message: '{latest_user_text}' -> Classified Intent: 'general_question' (therapy/services inquiry)")
+            _safe_print(f"[intent_router] Message: '{latest_user_text}' -> Classified Intent: 'general_question' (therapy/services inquiry)")
         return state
 
     full_prompt = SAFETY_SYSTEM_PROMPT + "\n\n" + STYLE_SYSTEM_PROMPT + "\n\n" + INTENT_ROUTER_SYSTEM_PROMPT
@@ -508,7 +508,7 @@ def intent_router_node(state: AgentState) -> AgentState:
 
     state["current_intent"] = intent
     if is_debug:
-        print(f"[intent_router] Message: '{latest_user_text}' -> Classified Intent: '{intent}' (extracted_need: {extracted_need})")
+        _safe_print(f"[intent_router] Message: '{latest_user_text}' -> Classified Intent: '{intent}' (extracted_need: {extracted_need})")
 
     if extracted_need and not state.get("visitor_need") and has_concrete_concern(extracted_need):
         state["visitor_need"] = extracted_need
@@ -522,7 +522,7 @@ def rag_qa_node(state: AgentState) -> AgentState:
     user_messages = [m for m in state["messages"] if m["role"] == "user"]
     query = user_messages[-1]["content"]
     if is_debug:
-        print(f"[rag_qa] Node invoked with query: '{query}'")
+        _safe_print(f"[rag_qa] Node invoked with query: '{query}'")
 
     # Check for AI identity or diagnostic questions
     lower_q = query.lower()
@@ -534,13 +534,13 @@ def rag_qa_node(state: AgentState) -> AgentState:
     if search is not None:
         try:
             if is_debug:
-                print(f"[rag_qa] Calling search('{query}', top_k=3)...")
+                _safe_print(f"[rag_qa] Calling search('{query}', top_k=3)...")
             results = search(query, top_k=3)
             if is_debug:
-                print(f"[rag_qa] search() returned {len(results)} chunks:")
+                _safe_print(f"[rag_qa] search() returned {len(results)} chunks:")
                 for idx, r in enumerate(results, 1):
                     preview = r.get("text", "").replace("\n", " ")[:65]
-                    print(f"      [{idx}] {r.get('source_file')} | {r.get('section_title')} (score: {round(r.get('score', 0), 4)}) -> {preview}...")
+                    _safe_print(f"      [{idx}] {r.get('source_file')} | {r.get('section_title')} (score: {round(r.get('score', 0), 4)}) -> {preview}...")
             if results:
                 context_blocks = []
                 for idx, r in enumerate(results, 1):
@@ -550,7 +550,7 @@ def rag_qa_node(state: AgentState) -> AgentState:
                 context_str = "\n\n".join(context_blocks)
         except Exception as e:
             if is_debug:
-                print(f"[rag_qa] RAG search error: {e}")
+                _safe_print(f"[rag_qa] RAG search error: {e}")
     else:
         if is_debug:
             print("[rag_qa] search function is None!")
@@ -798,7 +798,7 @@ def therapist_matching_node(state: AgentState) -> AgentState:
             results = search(search_query, top_k=5)
             therapist_context = "\n\n".join([r.get("text", "") for r in results])
         except Exception as e:
-            print(f"[Warning] Therapist search error: {e}")
+            _safe_print(f"[Warning] Therapist search error: {e}")
 
     name_cue = f"VISITOR'S FIRST NAME: {visitor_name}\n" if visitor_name else ""
 
@@ -902,21 +902,21 @@ def scheduling_node(state: AgentState) -> AgentState:
     # 2. Extract date/time mentions if present
     detected_dt = _extract_preferred_datetime(latest_user_text)
     if is_debug:
-        print(f"[scheduling] User message: '{latest_user_text}'")
-        print(f"[scheduling] _extract_preferred_datetime returned: '{detected_dt}'")
-        print(f"[scheduling] State before update: preferred_date='{state.get('preferred_date')}', preferred_time='{state.get('preferred_time')}'")
+        _safe_print(f"[scheduling] User message: '{latest_user_text}'")
+        _safe_print(f"[scheduling] _extract_preferred_datetime returned: '{detected_dt}'")
+        _safe_print(f"[scheduling] State before update: preferred_date='{state.get('preferred_date')}', preferred_time='{state.get('preferred_time')}'")
 
     if detected_dt:
         # Always update — the user may be correcting their earlier answer
         state["preferred_date"] = detected_dt
         state["preferred_time"] = detected_dt
         if is_debug:
-            print(f"[scheduling] Updated state: preferred_date='{detected_dt}'")
+            _safe_print(f"[scheduling] Updated state: preferred_date='{detected_dt}'")
 
     preferred_timing = state.get("preferred_date") or state.get("preferred_time")
     if is_debug:
-        print(f"[scheduling] Resolved preferred_timing: '{preferred_timing}'")
-        print(f"[scheduling] Contact: '{contact}', Name: '{name}'")
+        _safe_print(f"[scheduling] Resolved preferred_timing: '{preferred_timing}'")
+        _safe_print(f"[scheduling] Contact: '{contact}', Name: '{name}'")
 
     # 3. Determine stage directive for Ellen
     if not preferred_timing:

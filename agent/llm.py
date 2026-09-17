@@ -357,6 +357,16 @@ def _mock_llm_response(
     return "Thank you for reaching out to MindBridge Wellness. How can our counseling team assist you today?"
 
 
+def _safe_print(msg: str):
+    """Print to console, safely handling unicode chars that Windows cp1252 can't encode."""
+    try:
+        print(msg)
+    except UnicodeEncodeError:
+        # Replace chars the console can't handle
+        safe_msg = msg.encode('ascii', errors='replace').decode('ascii')
+        print(safe_msg)
+
+
 def call_llm(
     system_prompt: str,
     user_prompt: str,
@@ -372,11 +382,11 @@ def call_llm(
     is_debug = os.environ.get("DEBUG", "false").lower() in ("true", "1", "yes")
 
     if is_debug:
-        print(f"\n[LLM Call]")
-        print(f"   GROQ_API_KEY loaded: {bool(raw_key)} (length: {len(raw_key)})")
-        print(f"   GROQ_MODEL:         '{model_name}'")
-        print(f"   Has Groq Client:    {client is not None}")
-        print(f"   User Prompt:        '{user_prompt[:70]}...'")
+        _safe_print(f"\n[LLM Call]")
+        _safe_print(f"   GROQ_API_KEY loaded: {bool(raw_key)} (length: {len(raw_key)})")
+        _safe_print(f"   GROQ_MODEL:         '{model_name}'")
+        _safe_print(f"   Has Groq Client:    {client is not None}")
+        _safe_print(f"   User Prompt:        '{user_prompt[:70]}...'")
 
     if client is not None:
         try:
@@ -388,7 +398,7 @@ def call_llm(
             formatted_messages.append({"role": "user", "content": user_prompt})
 
             if is_debug:
-                print(f"   Calling Groq API model='{model_name}' with {len(formatted_messages)} messages...")
+                _safe_print(f"   Calling Groq API model='{model_name}' with {len(formatted_messages)} messages...")
             kwargs: Dict[str, Any] = {
                 "model": model_name,
                 "messages": formatted_messages,
@@ -407,29 +417,37 @@ def call_llm(
                     completion = client.chat.completions.create(**kwargs)
                     raw_content = completion.choices[0].message.content or ""
                     if not json_mode:
-                        raw_content = raw_content.replace("—", ", ").replace("–", "-")
+                        raw_content = raw_content.replace("\u2014", ", ").replace("\u2013", "-")
                         raw_content = re.sub(r',\s*,', ',', raw_content)
                     if is_debug:
-                        print(f"   Groq API Response ({len(raw_content)} chars): {raw_content[:90]}...")
+                        _safe_print(f"   Groq API Response ({len(raw_content)} chars): {raw_content[:90]}...")
+                    return raw_content
+                except UnicodeEncodeError:
+                    # print() failed on Windows console but the API call itself succeeded
+                    # raw_content is already set, just return it
                     return raw_content
                 except Exception as api_err:
                     err_str = str(api_err).lower()
                     if ("429" in err_str or "rate" in err_str) and attempt < 2:
                         sleep_s = 2.0 * (attempt + 1)
                         if is_debug:
-                            print(f"[LLM Rate Limit] 429 received, backing off {sleep_s}s (attempt {attempt + 1}/3)...")
+                            _safe_print(f"[LLM Rate Limit] 429 received, backing off {sleep_s}s (attempt {attempt + 1}/3)...")
                         time.sleep(sleep_s)
                         continue
                     raise api_err
+        except UnicodeEncodeError:
+            # If we somehow got here from a print crash, raw_content should exist
+            # but if not, fall through to mock
+            pass
         except Exception as e:
             if is_debug:
-                print(f"[LLM Error] Groq API call raised exception: {type(e).__name__}: {e}")
+                _safe_print(f"[LLM Error] Groq API call raised exception: {type(e).__name__}: {e}")
                 import traceback
                 traceback.print_exc()
-                print(f"   Falling back to _mock_llm_response...")
+                _safe_print(f"   Falling back to _mock_llm_response...")
 
     if is_debug:
-        print(f"   [LLM Notice] No active Groq client. Delegating to local heuristic handler.")
+        _safe_print(f"   [LLM Notice] No active Groq client. Delegating to local heuristic handler.")
     resp = _mock_llm_response(
         system_prompt=system_prompt,
         user_prompt=user_prompt,

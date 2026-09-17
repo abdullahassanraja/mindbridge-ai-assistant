@@ -10,6 +10,13 @@ LEADS_FILE = Path(__file__).resolve().parent / "leads.json"
 HANDOFFS_FILE = Path(__file__).resolve().parent / "handoffs.json"
 
 
+def _safe_print(msg: str):
+    try:
+        print(msg)
+    except UnicodeEncodeError:
+        print(msg.encode('ascii', errors='replace').decode('ascii'))
+
+
 def send_lead_email(
     name: Optional[str],
     contact: Optional[str],
@@ -37,20 +44,20 @@ def send_lead_email(
     }
 
     # 1. Console notification banner
-    print("\n" + "=" * 60)
-    print("📢 [NEW LEAD NOTIFICATION]")
-    print(f"Time:       {timestamp}")
-    print(f"Name:       {lead_record['name']}")
-    print(f"Contact:    {lead_record['contact']}")
-    print(f"Need:       {lead_record['stated_need']}")
-    print(f"Therapist:  {lead_record['suggested_therapist']}")
-    print(f"Session ID: {lead_record['session_id']}")
-    print(f"Source:     {lead_record['source']}")
+    _safe_print("\n" + "=" * 60)
+    _safe_print("[NEW LEAD NOTIFICATION]")
+    _safe_print(f"Time:       {timestamp}")
+    _safe_print(f"Name:       {lead_record['name']}")
+    _safe_print(f"Contact:    {lead_record['contact']}")
+    _safe_print(f"Need:       {lead_record['stated_need']}")
+    _safe_print(f"Therapist:  {lead_record['suggested_therapist']}")
+    _safe_print(f"Session ID: {lead_record['session_id']}")
+    _safe_print(f"Source:     {lead_record['source']}")
     if qualification_info:
         for k, v in qualification_info.items():
             if k not in ("name", "contact"):
-                print(f"  • {k}: {v}")
-    print("=" * 60 + "\n")
+                _safe_print(f"  - {k}: {v}")
+    _safe_print("=" * 60 + "\n")
 
     # 2. Append to local leads.json fallback
     try:
@@ -104,13 +111,13 @@ def log_handoff(
         "session_id": session_id or "Not provided",
     }
 
-    print("\n" + "-" * 60)
-    print("👤 [HUMAN HANDOFF EVENT TRIGGERED]")
-    print(f"Timestamp:  {timestamp}")
-    print(f"Reason:     {reason}")
-    print(f"Turn Count: {handoff_record['message_count']}")
-    print(f"Session ID: {handoff_record['session_id']}")
-    print("-" * 60 + "\n")
+    _safe_print("\n" + "-" * 60)
+    _safe_print("[HUMAN HANDOFF EVENT TRIGGERED]")
+    _safe_print(f"Timestamp:  {timestamp}")
+    _safe_print(f"Reason:     {reason}")
+    _safe_print(f"Turn Count: {handoff_record['message_count']}")
+    _safe_print(f"Session ID: {handoff_record['session_id']}")
+    _safe_print("-" * 60 + "\n")
 
     try:
         handoffs: List[Dict[str, Any]] = []
