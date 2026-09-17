@@ -234,11 +234,26 @@ def _mock_llm_response(
                 "Need help adjusting an upcoming time?"
             )
 
-        # Insurance, Fees & Sliding Scale
-        if has_insurance:
+        # Affordability & "Expensive" inquiry
+        if any(w in user_lower for w in ["expensive", "affordable", "cheap", "cost a lot", "too much", "high price"]):
             return (
-                "We accept several major insurance plans and also offer sliding scale self-pay options.<br><br>"
-                "Our team can verify your exact coverage before your first session."
+                "We work to make counseling accessible, transparent, and manageable. We accept several major insurance plans, which often cover most or all of session costs depending on your plan benefits. "
+                "For clients without insurance or paying out-of-pocket, we offer sliding scale self-pay options based on financial circumstances.<br><br>"
+                "Our intake team will gladly verify your insurance benefits or discuss sliding scale options before your first appointment so there are no surprises."
+            )
+
+        # No Insurance / Uninsured inquiry
+        if any(w in user_lower for w in ["don't have insurance", "dont have insurance", "no insurance", "without insurance", "not have insurance", "uninsured"]):
+            return (
+                "If you don't have insurance or prefer not to use it, we offer self-pay rates as well as sliding scale options for qualifying clients based on financial need.<br><br>"
+                "Our intake team can share our current self-pay options and help you find a plan that fits your budget. Would you like us to connect you with our team?"
+            )
+
+        # Insurance, Fees & Sliding Scale
+        if has_insurance or any(w in user_lower for w in ["price", "pricing", "prices", "how much", "charge", "charges", "out of pocket"]):
+            return (
+                "We accept several major insurance plans (where clients typically only pay their plan's copay), and we also offer sliding scale self-pay options for qualifying clients.<br><br>"
+                "Our intake team will verify your exact coverage and copay details before your first session."
             )
 
         # Services & Evidence-Based Modalities
@@ -275,21 +290,32 @@ def _mock_llm_response(
 
         # Dynamic grounding: extract text from retrieved context if available
         if context_text:
-            lines = [
-                l.strip() for l in context_text.splitlines()
-                if l.strip()
-                and not l.startswith("[")
-                and not l.startswith("**[")
-                and not l.startswith("#")
-                and not l.startswith("Source:")
-                and "editable" not in l.lower()
-                and "practice to" not in l.lower()
-            ]
-            substantive = " ".join(lines[:2])
+            cleaned_lines = []
+            seen_lines = set()
+            for l in context_text.splitlines():
+                l_str = l.strip()
+                if not l_str:
+                    continue
+                if l_str.startswith("[") or l_str.startswith("**[") or l_str.startswith("#") or l_str.startswith("Source:"):
+                    continue
+                if "editable" in l_str.lower() or "practice to" in l_str.lower():
+                    continue
+                # Clean prefix headers
+                l_str = re.sub(r"^\s*(?:Our Therapists|Frequently Asked Questions|Our Services|Policies)\s*—\s*", "", l_str)
+                # Deduplicate identical lines
+                norm = re.sub(r"[^\w\s]", "", l_str).lower()
+                if norm in seen_lines:
+                    continue
+                seen_lines.add(norm)
+                cleaned_lines.append(l_str)
+
+            # Separate question lines (ending with '?') from substantive answer lines
+            answer_lines = [l for l in cleaned_lines if not l.rstrip("* ").endswith("?") and len(l.split()) >= 3]
+            selected = answer_lines[:2] if answer_lines else cleaned_lines[:2]
+            substantive = " ".join(selected)
             if substantive:
-                clean_substantive = re.sub(r"^\s*(?:Our Therapists|Frequently Asked Questions|Our Services|Policies)\s*—\s*", "", substantive)
-                clean_substantive = re.sub(r"\*\*([^*]+)\*\*", r"<b>\1</b>", clean_substantive)
-                return f"{clean_substantive}<br><br>Let me know if you'd like more details on this!"
+                substantive = re.sub(r"\*\*([^*]+)\*\*", r"<b>\1</b>", substantive)
+                return f"{substantive}<br><br>Let me know if you'd like more details on this!"
 
         return "We offer individual, couples, and family counseling tailored to your goals.<br><br>How can I help you today?"
 
