@@ -319,19 +319,56 @@ def _mock_llm_response(
                 f"</ul>Which of those sounds most helpful to explore right now?"
             )
 
+        # Check system prompt for known name or concern
+        system_name_match = re.search(r"- Name:\s*(.+?)(?:\n|$)", system_prompt)
+        known_name = system_name_match.group(1).strip() if system_name_match and "Not collected yet" not in system_name_match.group(1) else None
+        eff_name = name_str or known_name
+
+        system_concern_match = re.search(r"- Stated Concern:\s*(.+?)(?:\n|$)", system_prompt)
+        known_concern = system_concern_match.group(1).strip() if system_concern_match and "Not collected yet" not in system_concern_match.group(1) else None
+
+        prior_user_text = " ".join([m.get("content", "").lower() for m in (messages or []) if m.get("role") == "user"])
+        has_emotional_concern = any(w in user_lower or w in prior_user_text or (known_concern and w in known_concern.lower()) for w in ["anxious", "anxiety", "depress", "stress", "overwhelm", "panic", "sad", "hopeless", "struggl", "trouble", "burnout"])
+
         if has_email_or_phone:
             return "Thanks so much for sharing that! Our intake coordinator will reach out shortly to help you get scheduled. In the meantime, is there anything else I can help with?"
 
-        if name_str and not any(w in user_lower for w in ["anxious", "anxiety", "depress", "fight", "conflict", "help", "therapy", "partner", "stress"]):
+        # 1. Visitor shares emotional distress / feelings on turn 1 or early, but NAME is NOT collected yet!
+        # Be empathetic and ask for their name first
+        if not eff_name and any(w in user_lower for w in ["anx", "depres", "stress", "overwhelm", "panic", "sad", "hopeless", "struggl", "trouble", "burnout"]):
+            if "anx" in user_lower and "depres" in user_lower:
+                feelings = "anxiety and depression"
+            elif "anx" in user_lower:
+                feelings = "anxious"
+            elif "depres" in user_lower:
+                feelings = "depressed"
+            elif "stress" in user_lower or "overwhelm" in user_lower:
+                feelings = "stressed and overwhelmed"
+            else:
+                feelings = "what you're experiencing"
+
             return (
-                f"Nice to meet you, {name_str}! I can help you find the right type of support, "
+                f"I'm so sorry you're feeling {feelings} right now. Reaching out can take real courage, and we're here to help you through this.<br><br>"
+                f"Before we talk through our counseling options, may I ask your name so I know who I'm chatting with?"
+            )
+
+        # 2. Visitor provides their name (or name is known), and an emotional concern was shared!
+        # Greet by name, tell the details of how we help, and invite them forward
+        if eff_name and has_emotional_concern:
+            return (
+                f"It's really nice to meet you, {eff_name}.<br><br>"
+                f"Here at MindBridge Wellness, our individual therapy sessions focus directly on managing anxiety, depression, and stress using evidence-based approaches like CBT and ACT. "
+                f"Our licensed counselors work one-on-one with you to develop personalized coping strategies and help you regain a sense of calm.<br><br>"
+                f"Would you like to schedule an initial consultation with one of our counselors, or would you like more details on how our sessions work?"
+            )
+
+        # 3. Visitor gave name without any clinical concern
+        if eff_name and not has_emotional_concern and not any(w in user_lower for w in ["fight", "conflict", "partner", "relationship"]):
+            return (
+                f"Nice to meet you, {eff_name}! I can help you find the right type of support, "
                 f"book a consultation, or answer questions about our services, whatever's most helpful. "
                 f"What brings you in today?"
             )
-
-        if any(w in user_lower for w in ["anxious", "anxiety", "depress", "stress", "fight", "conflict", "partner", "relationship", "trouble", "struggl"]):
-            prefix = f"Thanks for sharing that, {name_str}. " if name_str else "I appreciate you sharing that with me. "
-            return f"{prefix}We have therapists who specialize in this. What's the best email or phone number for our intake coordinator to follow up with you?"
 
         if any(w in user_lower for w in ["thank you", "thanks", "appreciate it", "sounds good", "that's all", "thats all", "goodbye", "bye"]):
             return "You're very welcome! Feel free to reach out anytime whenever you're ready or have more questions. We're always here to help."

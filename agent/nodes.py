@@ -60,13 +60,13 @@ VAGUE_INPUT_PATTERNS = [
 ]
 
 CLINICAL_CONCERN_KEYWORDS = [
-    "anxiet", "depress", "stress", "worry", "panic", "burnout",
+    "anxiet", "anxious", "depress", "stress", "worry", "panic", "burnout", "overwhelm",
     "grief", "loss", "bereave", "mourn",
     "partner", "husband", "wife", "marriage", "couples", "conflict", "fight", "arguing", "relationship",
     "teen", "adolescent", "child", "son", "daughter", "family", "parent",
     "trauma", "ptsd", "abuse",
     "adhd", "focus", "ocd", "eating", "insomnia", "sleep",
-    "transition", "career", "lonel", "self-esteem"
+    "transition", "career", "lonel", "self-esteem", "hopeless", "sad", "struggl"
 ]
 
 
@@ -481,6 +481,21 @@ def intent_router_node(state: AgentState) -> AgentState:
             _safe_print(f"[intent_router] Message: '{latest_user_text}' -> Classified Intent: 'seeking_support' (vague/exploratory input)")
         return state
 
+    # 4. Emotional distress / mental health symptoms / personal concern -> route to qualification flow (seeking_support)
+    emotional_concern_patterns = [
+        r"\b(?:feeling|feel|am|struggling|suffering|dealing with)\s+\w*\s*(?:anxious|anxsious|anxios|depressed|depresed|stressed|overwhelmed|down|hopeless|sad|lost|broken|panic)\b",
+        r"\b(?:tell me what to do|what should i do|what to do|need help|help me)\b",
+        r"\b(?:i have anxiety|i have depression|having panic attacks?|severe anxiety|bad depression)\b",
+        r"\b(?:anxious|anxsious|anxios)\s+and\s+(?:depressed|depresed)\b",
+        r"\b(?:depressed|depresed)\s+and\s+(?:anxious|anxsious|anxios)\b",
+        r"\b(?:feeling|feel)\s+(?:depressed|depresed|anxious|anxsious|stressed|down|overwhelmed)\b",
+    ]
+    if any(re.search(pat, lower_user) for pat in emotional_concern_patterns) and not any(re.search(p, lower_user) for p in [r"\b(?:diagnos|what is wrong with me|what's wrong with me|medication|xanax|prescrib)\b"]):
+        state["current_intent"] = "seeking_support"
+        if is_debug:
+            _safe_print(f"[intent_router] Message: '{latest_user_text}' -> Classified Intent: 'seeking_support' (emotional concern / personal distress pattern)")
+        return state
+
     # If visitor is asking a question about therapy types, services, modalities, therapists, or policies -> general_question (RAG QA)
     therapy_service_q_patterns = [
         r"\b(?:online|in-person|in person|telehealth|virtual|video)\b",
@@ -710,11 +725,12 @@ def qualification_flow_node(state: AgentState) -> AgentState:
     elif not name and (contact or concern):
         contact_note = f"They already provided contact info: {contact}. " if contact else ""
         stage_directive = (
-            f"STAGE: NAME COLLECTION.\n"
-            f"The visitor shared their situation ('{concern}'). {contact_note}Their name is NOT known yet.\n"
-            f"Acknowledge what they shared with brief empathy, and ask for their name.\n"
-            f"Do NOT ask for contact info if they already provided it.\n"
-            f"Keep it to 1 to 2 short sentences. Do NOT use markdown asterisks or em dashes."
+            f"STAGE: EMPATHY & NAME COLLECTION.\n"
+            f"The visitor shared their personal feelings or situation ('{concern}'). {contact_note}Their name is NOT known yet.\n"
+            f"CRITICAL INSTRUCTIONS:\n"
+            f"1. Respond with warm, heartfelt empathy and validation (e.g. 'I am so sorry you are feeling that way right now. Reaching out takes courage, and we are here to help.').\n"
+            f"2. Gently ask for their name first BEFORE giving clinical details or asking for email/phone.\n"
+            f"3. Keep it comforting, warm, and concise (1 to 2 short sentences). Do NOT use markdown asterisks or em dashes."
         )
     elif name and not concern:
         stage_directive = (
@@ -728,11 +744,13 @@ def qualification_flow_node(state: AgentState) -> AgentState:
         )
     elif name and concern and not contact and not declined:
         stage_directive = (
-            f"STAGE: CONTACT INFO COLLECTION.\n"
+            f"STAGE: ADDRESS VISITOR BY NAME & PROVIDE CARE DETAILS.\n"
             f"Visitor {name} shared their concern: '{concern}'.\n"
-            f"Respond with brief, genuine human empathy/warmth (1 short sentence), then naturally ask for their email address or phone number so our care team can follow up with counselor availability.\n"
-            f"Example spirit: 'I would love to make sure our team can follow up with you. Can I grab your email or phone number?'\n"
-            f"Keep it to 1 to 3 short sentences total. Do NOT use markdown asterisks or em dashes."
+            f"CRITICAL INSTRUCTIONS:\n"
+            f"1. Greet {name} warmly by name (e.g. 'It is so nice to meet you, {name}.').\n"
+            f"2. Provide reassuring, clear details about how MindBridge Wellness helps with {concern} (e.g. individual evidence-based therapy sessions focused on anxiety, depression, and practical coping tools).\n"
+            f"3. Gently ask if they would like to set up an initial consultation with one of our counselors or if they have questions.\n"
+            f"4. Keep it warm, supportive, and conversational (2 to 3 short sentences). Do NOT use markdown asterisks or em dashes."
         )
     elif declined:
         stage_directive = (
