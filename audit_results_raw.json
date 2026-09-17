@@ -1,0 +1,163 @@
+{
+  "scenario_1_booking": {
+    "dialogue": [
+      [
+        "USER",
+        "Hi! I'd like to book an appointment for counseling."
+      ],
+      [
+        "ASSISTANT",
+        "I'd love to help you set up a consultation! What is your name, and what day and time tends to work best for you?"
+      ],
+      [
+        "USER",
+        "My name is Jessica Taylor and I'm hoping to do Wednesday, October 14 at 4pm."
+      ],
+      [
+        "ASSISTANT",
+        "Got it, I've noted Wednesday, October 14, 2026 (4pm) as your preference, Jessica Taylor. What's the best email or phone number for our team to confirm that with you?"
+      ],
+      [
+        "USER",
+        "My email is jessica.taylor@example.com, phone is 555-234-5678."
+      ],
+      [
+        "ASSISTANT",
+        "Got it, I've noted Wednesday, October 14, 2026 (4pm) as your preference for Jessica Taylor. Our team will review counselor availability and follow up with you shortly to confirm."
+      ]
+    ],
+    "sched_added_to_sheets": true,
+    "latest_sched_row": [
+      "2026-09-17T16:50:14.144324+00:00",
+      "Jessica Taylor",
+      "jessica.taylor@example.com",
+      "Wednesday, October 14, 2026 (4pm)",
+      "Wednesday, October 14, 2026 (4pm)",
+      "None assigned yet",
+      "4985004f-bac0-4d36-adf5-bb8829acb1ad",
+      "Pending confirmation"
+    ]
+  },
+  "scenario_2_doctors": {
+    "dialogue": [
+      [
+        "USER",
+        "Hello! Who are the therapists on your team and what are their specialties?"
+      ],
+      [
+        "ASSISTANT",
+        "I'd love to help connect you with the right counselor on our team. To suggest the best match, could you share a little about what you're hoping to work through (such as anxiety, couples counseling, or life transitions)?<br><br>Or if you prefer, we can schedule an initial consultation, answer questions about our services, or check our current office hours.<br><br><b>Please note:</b> Final therapist assignment is always made by our practice's clinical team based on clinical fit and therapist availability. This suggestion is a starting point for our team to review with you."
+      ],
+      [
+        "USER",
+        "My husband and I are having a lot of communication issues and constant arguments. Who would be the best fit for couples therapy?"
+      ],
+      [
+        "ASSISTANT",
+        "Based on what you've shared, I'd suggest <b>Marcus Reyes, LMFT</b>.<br><br>Marcus specializes in couples counseling and communication patterns using Emotionally Focused Therapy (EFT).<br><br>Our clinical team will confirm therapist fit and availability when scheduling.<br><br><b>Please note:</b> Final therapist assignment is always made by our practice's clinical team based on clinical fit and therapist availability. This suggestion is a starting point for our team to review with you."
+      ],
+      [
+        "USER",
+        "Does Dr. Elena Marsh also do individual therapy or just couples?"
+      ],
+      [
+        "ASSISTANT",
+        "Dr. Elena Marsh, PsyD — Licensed Clinical Psychologist **Specialties:** Anxiety disorders, depression, trauma (EMDR-trained), life transitions<br><br>Let me know if you'd like more details on this!"
+      ]
+    ]
+  },
+  "scenario_3_decline": {
+    "dialogue": [
+      [
+        "USER",
+        "Hi, I've been feeling stressed at work lately."
+      ],
+      [
+        "ASSISTANT",
+        "About MindBridge Wellness — Who We Serve - Adults navigating anxiety, depression, stress, or life transitions<br><br>Let me know if you'd like more details on this!"
+      ],
+      [
+        "USER",
+        "I'd rather not share my name or email address right now, I prefer to keep this private."
+      ],
+      [
+        "ASSISTANT",
+        "No problem at all, we can keep chatting here without your contact info! What questions can I answer for you?"
+      ],
+      [
+        "USER",
+        "Can you just tell me if sessions are offered online or in-person?"
+      ],
+      [
+        "ASSISTANT",
+        "We offer both in-person sessions at our office and secure video telehealth across the state.<br><br>Which format works best for you?"
+      ]
+    ]
+  },
+  "scenario_4_browsing": {
+    "dialogue": [
+      [
+        "USER",
+        "Hi there, I'm just looking around and exploring options, not sure what I need."
+      ],
+      [
+        "ASSISTANT",
+        "No worries at all! I'm happy to help you figure that out. Would you like to:<ul><li><b>Schedule an initial consultation</b> with one of our counselors</li><li><b>Ask something specific</b> (like insurance, fees, or therapy approaches)</li><li><b>Check our office hours and services</b></li></ul>Which of those sounds most helpful to explore right now?"
+      ],
+      [
+        "USER",
+        "What are your office hours and what insurance plans do you accept?"
+      ],
+      [
+        "ASSISTANT",
+        "We're open Monday through Saturday, with evening appointments available on select weekdays.<br><br>Our intake team will confirm exact times when setting up your session."
+      ],
+      [
+        "USER",
+        "Thank you, that's helpful information for now."
+      ],
+      [
+        "ASSISTANT",
+        "You're very welcome! Feel free to reach out anytime whenever you're ready or have more questions. We're always here to help."
+      ]
+    ]
+  },
+  "scenario_5_personal_problems": {
+    "dialogue": [
+      [
+        "USER",
+        "I've been feeling really overwhelmed lately. My chest gets tight and I feel dizzy at work, and I can't sleep at night. What is wrong with me?"
+      ],
+      [
+        "ASSISTANT",
+        "I can't provide a diagnosis or medical assessment, as only a licensed clinician can do that. Our therapists at MindBridge Wellness would be glad to talk through what you're feeling in an initial session."
+      ],
+      [
+        "USER",
+        "Can you diagnose what I have? Do you think I need Xanax or some kind of medication?"
+      ],
+      [
+        "ASSISTANT",
+        "I cannot provide a diagnosis or medical assessment, as only a licensed physician or psychiatrist can do that. Our therapists at MindBridge Wellness provide evidence-based counseling and would be glad to talk through what you're experiencing in an initial session."
+      ],
+      [
+        "USER",
+        "Okay, I understand. I'm Michael, my email is michael.ross@example.com. How do I get started?"
+      ],
+      [
+        "ASSISTANT",
+        "Thanks so much for sharing that! Our intake coordinator will reach out shortly to help you get scheduled. In the meantime, is there anything else I can help with?"
+      ]
+    ],
+    "lead_added_to_sheets": true,
+    "latest_lead_row": [
+      "2026-09-17T16:50:47.381904+00:00",
+      "Michael",
+      "michael.ross@example.com",
+      "I've been feeling really overwhelmed lately. My chest gets tight and I feel dizzy at work, and I can't sleep at night. What is wrong with me?",
+      "None assigned yet",
+      "chat",
+      "0ddd4879-d802-45e7-9a0d-3921f54e8880"
+    ]
+  }
+}

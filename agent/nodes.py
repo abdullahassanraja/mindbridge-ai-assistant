@@ -450,11 +450,14 @@ def intent_router_node(state: AgentState) -> AgentState:
     offered_recommendation = any(w in prev_assistant_text for w in ["recommendation", "suggest", "match", "therapist", "counselor", "options"])
     is_affirm_cue = any(a in lower_user.split() or a == lower_user.strip() for a in ["yes", "please", "sure", "sounds good", "okay", "yep", "i would", "i'd like that"])
 
-    if stored_concern and has_concrete_concern(stored_concern):
+    conc = stored_concern if (stored_concern and has_concrete_concern(stored_concern)) else (latest_user_text if has_concrete_concern(latest_user_text) else None)
+    if conc:
         if has_matching_cue or (is_affirm_cue and offered_recommendation):
+            state["concern_collected"] = conc
+            state["visitor_need"] = conc
             state["current_intent"] = "therapist_matching"
             if is_debug:
-                _safe_print(f"[intent_router] Message: '{latest_user_text}' -> Classified Intent: 'therapist_matching' (deterministic matching cue with stored concern)")
+                _safe_print(f"[intent_router] Message: '{latest_user_text}' -> Classified Intent: 'therapist_matching' (matching cue with concern: {conc[:40]})")
             return state
 
     # 3. Starter chip / meta matching request without a stored concern -> route to qualification_flow (BUG 3 FIX)
@@ -478,18 +481,22 @@ def intent_router_node(state: AgentState) -> AgentState:
             _safe_print(f"[intent_router] Message: '{latest_user_text}' -> Classified Intent: 'seeking_support' (vague/exploratory input)")
         return state
 
-    # If visitor is asking a question about therapy types, services, or modalities, route to general_question (RAG QA)
+    # If visitor is asking a question about therapy types, services, modalities, therapists, or policies -> general_question (RAG QA)
     therapy_service_q_patterns = [
+        r"\b(?:online|in-person|in person|telehealth|virtual|video)\b",
+        r"\b(?:who are|list of|names of)?\s*(?:the\s+)?(?:therapists?|counselors?|doctors?|team)\b",
+        r"\b(?:elena|marsh|marcus|reyes|priya|nair|jordan|whitfield)\b",
         r"\b(?:what kind of|what type of|what sort of)\s+(?:therapy|counseling|treatment|support|services?)\b",
         r"\b(?:what approaches|what methods|what modalities)\s+(?:do you|are)\b",
         r"\b(?:how do you treat|how do you approach|how does therapy work for)\b",
         r"\b(?:what are your|tell me about your)\s+(?:services|counseling services|therapy options|approaches)\b",
         r"\b(?:what do you do for|how do you help with)\s+[a-zA-Z\s]+\b",
+        r"\b(?:diagnos|what is wrong with me|what's wrong with me|medication|xanax|prescrib)\b",
     ]
     if any(re.search(pat, lower_user) for pat in therapy_service_q_patterns):
         state["current_intent"] = "general_question"
         if is_debug:
-            _safe_print(f"[intent_router] Message: '{latest_user_text}' -> Classified Intent: 'general_question' (therapy/services inquiry)")
+            _safe_print(f"[intent_router] Message: '{latest_user_text}' -> Classified Intent: 'general_question' (practice/services/therapist inquiry)")
         return state
 
     full_prompt = SAFETY_SYSTEM_PROMPT + "\n\n" + STYLE_SYSTEM_PROMPT + "\n\n" + INTENT_ROUTER_SYSTEM_PROMPT
@@ -680,16 +687,26 @@ def qualification_flow_node(state: AgentState) -> AgentState:
                 "Keep it to 2 short sentences. Do NOT use markdown asterisks or em dashes. Keep it light, warm, and friendly."
             )
         else:
-            stage_directive = (
-                "STAGE: GREETING & NAME COLLECTION.\n"
-                "The visitor's name is NOT known yet.\n"
-                "Give a warm, gentle welcome introducing yourself as Ellen, MindBridge's AI assistant (e.g. 'Hey, I'm Ellen, MindBridge's AI assistant').\n"
-                "CRITICAL: Do NOT use clinical or administrative words like 'intake assistant' or 'intake coordinator'.\n"
-                "Be calm, inviting, and friendly, appropriate for someone who may feel nervous reaching out.\n"
-                "Ask for their name in a friendly, gentle way in 1 to 2 short sentences.\n"
-                "Example spirit: 'Hi there, welcome to MindBridge Wellness! I'm Ellen, MindBridge's AI assistant here to help you find the right support. What can I call you?'\n"
-                "Do NOT use markdown asterisks or em dashes. Keep it light, warm, and friendly."
-            )
+            is_turn_one = len([m for m in state.get("messages", []) if m.get("role") == "user"]) <= 1
+            if is_turn_one:
+                stage_directive = (
+                    "STAGE: GREETING & NAME COLLECTION.\n"
+                    "The visitor's name is NOT known yet.\n"
+                    "Give a warm, gentle welcome introducing yourself as Ellen, MindBridge's AI assistant (e.g. 'Hey, I'm Ellen, MindBridge's AI assistant').\n"
+                    "CRITICAL: Do NOT use clinical or administrative words like 'intake assistant' or 'intake coordinator'.\n"
+                    "Be calm, inviting, and friendly, appropriate for someone who may feel nervous reaching out.\n"
+                    "Ask for their name in a friendly, gentle way in 1 to 2 short sentences.\n"
+                    "Example spirit: 'Hi there, welcome to MindBridge Wellness! I'm Ellen, MindBridge's AI assistant here to help you find the right support. What can I call you?'\n"
+                    "Do NOT use markdown asterisks or em dashes. Keep it light, warm, and friendly."
+                )
+            else:
+                stage_directive = (
+                    "STAGE: MID-CONVERSATION CONTINUATION.\n"
+                    "This is an ongoing conversation (turn 2 or later). The visitor's name is not yet known.\n"
+                    "CRITICAL: Do NOT say 'welcome to MindBridge Wellness' or introduce yourself as Ellen again.\n"
+                    "Acknowledge what they shared with warmth, answer their inquiry or reflect their need, and gently ask what you can call them or how you can assist.\n"
+                    "Keep it to 1 to 2 short sentences. Do NOT use markdown asterisks or em dashes."
+                )
     elif not name and (contact or concern):
         contact_note = f"They already provided contact info: {contact}. " if contact else ""
         stage_directive = (
@@ -1108,9 +1125,20 @@ def lead_capture_node(state: AgentState) -> AgentState:
     name = state.get("name_collected") or qual.get("name")
     contact = state.get("contact_collected") or qual.get("contact")
     need = state.get("concern_collected") or state.get("visitor_need")
+    if not need or not has_concrete_concern(need):
+        # Scan earlier user messages for a concrete concern
+        for m in state.get("messages", []):
+            if m.get("role") == "user" and has_concrete_concern(m.get("content")):
+                need = m.get("content")
+                state["concern_collected"] = need
+                state["visitor_need"] = need
+                break
+    if not need:
+        need = "General consultation inquiry"
+
     session_id = state.get("session_id") or "Not provided"
 
-    if name and contact and need:
+    if name and contact:
         if not state.get("lead_captured", False):
             send_lead_email(
                 name=name,

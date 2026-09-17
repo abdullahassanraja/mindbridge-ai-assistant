@@ -158,7 +158,8 @@ def _mock_llm_response(
         # Seeking support / Qualification
         if any(w in user_lower for w in [
             "fight", "fighting", "arguing", "conflict", "relationship", "partner", "husband", "wife", "marriage",
-            "couples", "anxiety", "depress", "struggling", "struggle", "trouble", "help", "need therapy", "grief", "burnout",
+            "couples", "anxiety", "anxious", "depress", "stress", "overwhelm", "panic", "lonely", "sad", "insomnia",
+            "struggling", "struggle", "trouble", "help", "need therapy", "grief", "burnout", "worry", "worried",
             "teen", "son", "daughter", "family", "counseling"
         ]):
             return json.dumps({
@@ -194,7 +195,7 @@ def _mock_llm_response(
             context_text = system_prompt.split("RETRIEVED KNOWLEDGE BASE CONTEXT:")[-1].strip()
 
         # Office Hours & Scheduling availability
-        if any(w in user_lower for w in ["hour", "hours", "open", "schedule", "saturday", "evening", "weekend", "when are you"]):
+        if any(w in user_lower for w in ["hour", "hours", "saturday", "evening", "weekend", "when are you", "what time", "business hours"]) or ("open" in user_lower and "reopen" not in user_lower) or ("schedule" in user_lower and "reschedule" not in user_lower and "cancel" not in user_lower):
             return (
                 "We're open Monday through Saturday, with evening appointments available on select weekdays.<br><br>"
                 "Our intake team will confirm exact times when setting up your session."
@@ -208,27 +209,42 @@ def _mock_llm_response(
             )
 
         # Cancellation & Rescheduling
-        if any(q in user_lower for q in ["cancel", "miss my appointment", "cancellation", "late", "reschedule"]):
+        if any(q in user_lower for q in ["cancel", "miss my appointment", "cancellation", "reschedule"]) or re.search(r"\blate\b", user_lower):
             return (
                 "We ask for at least 24 hours' notice to cancel or reschedule without a cancellation fee.<br><br>"
                 "Need help adjusting an upcoming time?"
             )
 
         # Insurance, Fees & Sliding Scale
-        if any(q in user_lower for q in ["insurance", "cost", "fee", "pay", "rate", "sliding scale", "copay"]):
+        if any(q in user_lower for q in ["insurance", "sliding scale", "copay"]) or any(re.search(p, user_lower) for p in [r"\bcosts?\b", r"\bfees?\b", r"\bpay\b", r"\bpaying\b", r"\brates?\b"]):
             return (
                 "We accept several major insurance plans and also offer sliding scale self-pay options.<br><br>"
                 "Our team can verify your exact coverage before your first session."
             )
 
         # Services & Evidence-Based Modalities
-        if any(q in user_lower for q in ["service", "modalit", "cbt", "act", "eft", "trauma", "approach", "what do you offer"]):
+        if any(q in user_lower for q in ["service", "modalit", "trauma", "approach", "what do you offer"]) or any(re.search(p, user_lower) for p in [r"\bcbt\b", r"\bact\b", r"\beft\b"]):
             return (
                 "We provide counseling across several areas:<ul>"
                 "<li><b>Individual Therapy</b>: anxiety, depression, and personal growth</li>"
                 "<li><b>Couples Therapy</b>: communication and relationship conflict</li>"
                 "<li><b>Family & Young Adult</b>: life transitions and teen support</li>"
                 "</ul>What kind of support are you looking for?"
+            )
+
+        # Medical advice / Diagnosis / Medication questions
+        if any(q in user_lower for q in ["diagnos", "what is wrong with me", "what's wrong with me", "medication", "xanax", "prescrib"]):
+            return (
+                "I cannot provide a diagnosis or medical assessment, as only a licensed physician or psychiatrist can do that. "
+                "Our therapists at MindBridge Wellness provide evidence-based counseling and would be glad to talk through what you're experiencing in an initial session."
+            )
+
+        # Therapists on team & specialties
+        if any(q in user_lower for q in ["who are the therapists", "specialties", "counselors on your team", "therapists on your team", "team of therapists"]):
+            return (
+                "Our team includes Dr. Elena Marsh (anxiety, depression, trauma/EMDR), Marcus Reyes (couples therapy and relationship communication), "
+                "Priya Nair (mindfulness, stress, burnout), and Jordan Whitfield (adolescents, teens, and young adults).<br><br>"
+                "<b>Please note:</b> Final therapist assignment is always made by our clinical team based on clinical fit and availability."
             )
 
         # First Session / Intake
@@ -243,7 +259,8 @@ def _mock_llm_response(
             lines = [l.strip() for l in context_text.splitlines() if l.strip() and not l.startswith("[") and not l.startswith("#") and not l.startswith("Source:")]
             substantive = " ".join(lines[:2])
             if substantive:
-                return f"{substantive}<br><br>Let me know if you'd like more details on this!"
+                clean_substantive = re.sub(r"^\s*(?:Our Therapists|Frequently Asked Questions|Our Services)\s*—\s*", "", substantive)
+                return f"{clean_substantive}<br><br>Let me know if you'd like more details on this!"
 
         return "We offer individual, couples, and family counseling tailored to your goals.<br><br>How can I help you today?"
 
@@ -255,12 +272,18 @@ def _mock_llm_response(
 
         has_email_or_phone = bool(re.search(r'[\w\.-]+@[\w\.-]+|\b\d{3}[-.]?\d{3}[-.]?\d{4}\b', user_prompt))
 
-        # Check if user shared name
+        # Check if user shared name (filter out common non-names)
+        NON_NAMES = {
+            "just", "looking", "here", "ready", "interested", "trying",
+            "hoping", "wondering", "feeling", "anxious", "depressed",
+            "stressed", "fine", "good", "not", "new", "sorry", "afraid",
+            "struggling", "okay", "ok", "yes", "no", "hello", "hi", "hey"
+        }
         name_match = re.search(r"(?:my name is|i'm|i am|name is|call me)\s+([A-Za-z]+)", user_prompt, re.IGNORECASE)
         tokens = user_prompt.strip().split()
-        if len(tokens) == 1 and tokens[0].isalpha() and len(tokens[0]) > 1:
+        if len(tokens) == 1 and tokens[0].isalpha() and len(tokens[0]) > 1 and tokens[0].lower() not in NON_NAMES:
             name_str = tokens[0].title()
-        elif name_match:
+        elif name_match and name_match.group(1).lower() not in NON_NAMES:
             name_str = name_match.group(1).title()
         else:
             name_str = None
@@ -290,7 +313,14 @@ def _mock_llm_response(
             prefix = f"Thanks for sharing that, {name_str}. " if name_str else "I appreciate you sharing that with me. "
             return f"{prefix}We have therapists who specialize in this. What's the best email or phone number for our intake coordinator to follow up with you?"
 
-        return "Hi there, welcome to MindBridge Wellness! I'm Ellen, MindBridge's AI assistant here to help you find the right support. What's your name?"
+        if any(w in user_lower for w in ["thank you", "thanks", "appreciate it", "sounds good", "that's all", "thats all", "goodbye", "bye"]):
+            return "You're very welcome! Feel free to reach out anytime whenever you're ready or have more questions. We're always here to help."
+
+        is_turn_one = not messages or len([m for m in messages if m.get("role") == "user"]) <= 1
+        if is_turn_one:
+            return "Hi there, welcome to MindBridge Wellness! I'm Ellen, MindBridge's AI assistant here to help you find the right support. What's your name?"
+        else:
+            return "I'd be glad to help with that! What's the best name to call you, and what questions can I answer?"
 
     # 5. Scheduling Flow stub
     if "scheduling philosophy" in system_prompt.lower() or "current scheduling state" in system_prompt.lower():
