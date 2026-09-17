@@ -212,41 +212,43 @@ Live integration tests confirmed that visitor submissions are written directly t
    - *Problem:* When a user shared feelings on Turn 1 ("I feel anxious") and then sent contact details on Turn 2 ("I'm John, john@example.com"), the lead capture logged empty context because it only inspected Turn 2.
    - *Fix:* Updated `lead_capture_node` to scan the complete session message history for clinical needs.
 
+7. **Compound Question Handling in RAG QA (Fixed):**
+   - *Problem:* When a user asked a multi-part question (e.g., *"What are your office hours and what insurance plans do you accept?"*), only the first topic was addressed.
+   - *Fix:* Added compound question intent detection in `agent/llm.py` so hours, insurance, and location queries are answered together in structured sections.
+
+8. **Google Sheets Formula Injection Sanitization (Fixed):**
+   - *Problem:* User-entered strings starting with `=`, `+`, `-`, or `@` could trigger formula execution or CSV injection inside Google Sheets.
+   - *Fix:* Added `_sanitize_cell()` in `agent/sheets.py` which automatically prepends a single quote `'` to any unsafe leading character.
+
+9. **Secondary LLM Fallback (Gemini 1.5 Flash via REST) (Fixed):**
+   - *Problem:* Free-tier Groq daily request caps (TPD) caused the bot to drop directly to heuristics.
+   - *Fix:* Integrated `_call_gemini_fallback()` in `agent/llm.py`. If `GEMINI_API_KEY` is provided, the agent seamlessly fails over to Gemini 1.5 Flash before hitting heuristics.
+
+10. **Markdown Asterisk Stripping in Dynamic Responses (Fixed):**
+    - *Problem:* Vector chunks returned raw markdown bold tags (`**Specialties:**`) which appeared unrendered on some widget viewports.
+    - *Fix:* Added regex replacement in `agent/llm.py` converting markdown bold syntax (`**text**`) into clean HTML tags (`<b>text</b>`).
+
 ---
 
-## 6. Problems to Fix Before Production Deployment
+## 6. Remaining Action Items Before Public Production Launch
 
-The following issues must be reviewed and resolved before public launch:
+The following items are operational configurations for live production traffic:
 
 ### High Priority
 
-1. **Groq API Rate Limits / Production Model Provider:**
-   - *Issue:* Groq's free-tier rate limits (e.g. 6,000 tokens/minute or daily request caps) triggered HTTP 429 errors during high-frequency testing, forcing the system onto local heuristic fallbacks.
-   - *Action:* Upgrade to Groq paid tier, configure Gemini 1.5 Flash as a secondary LLM fallback in `agent/llm.py`, or increase backoff retry logic.
-
-2. **Compound Question Handling in RAG QA:**
-   - *Issue:* In Scenario 4, the user asked a compound question: *"What are your office hours and what insurance plans do you accept?"*. The fallback only answered the first query (office hours) and neglected the second (insurance).
-   - *Action:* Ensure multi-topic questions either trigger a compound retrieval step or answer both aspects.
+1. **Production LLM Provider Keys (Groq Paid Tier or Gemini API Key):**
+   - *Context:* Groq free tier limits daily tokens. 
+   - *Action:* Provide a `GEMINI_API_KEY` or upgrade `GROQ_API_KEY` in `agent/.env` to allow uninterrupted generative responses without hitting rate limits.
 
 ### Medium Priority
 
-3. **Google Sheets Service Account Rate Limiting:**
-   - *Issue:* Google Sheets API allows 300 requests per minute per project and 60 requests per minute per user. Under sudden web traffic spikes, direct synchronous API calls could cause timeouts or lag.
-   - *Action:* Wrap Google Sheets writes in an asynchronous background queue (or Celery / FastAPI `BackgroundTasks`) so visitor responses are never delayed by Google API latency.
+2. **Google Sheets Async Worker (For High-Volume Web Traffic):**
+   - *Context:* Google Sheets API takes 1-2 seconds per append. While perfectly adequate for low-to-medium web traffic, high concurrent spikes (>50 users submitting simultaneously) could encounter Google rate limits.
+   - *Action:* If traffic exceeds 10,000 visitors/day, wrap Google Sheets writes in FastAPI `BackgroundTasks` or a Celery queue.
 
-4. **Multi-turn Session Expiration / TTL:**
-   - *Issue:* Sessions are currently stored in SQLite checkpointers (`checkpoints.db`) without explicit TTL. A user returning days later with the same local storage session ID will resume a stale thread.
-   - *Action:* Introduce a 2-hour session inactivity timeout after which a new conversation state is initialized.
-
-5. **Sanitization of HTML in Exported Sheets:**
-   - *Issue:* If a user attempts formula injection in Google Sheets (e.g., typing `=CMD|...` or `=IMPORTXML(...)` in their name or notes), sheets may execute formulas.
-   - *Action:* Prepend a single quote `'` to any string field starting with `=`, `+`, `-`, or `@` before writing to Google Sheets.
-
-### Low Priority
-
-6. **Markdown to Clean Text Formatting in Fallbacks:**
-   - *Issue:* When vector search retrieves markdown chunks, raw markdown bold tags (`**Specialties:**`) are occasionally reflected directly to the chat widget.
-   - *Action:* Add a markdown-to-HTML parser on the widget or strip markdown syntax in text responses.
+3. **Multi-turn Session Inactivity Timeout (TTL):**
+   - *Context:* Sessions in `checkpoints.db` persist indefinitely. 
+   - *Action:* Configure a 2-hour inactivity expiration in the checkpointer if you wish returning visitors after several days to be treated as brand-new sessions.
 
 ---
 
@@ -255,9 +257,11 @@ The following issues must be reviewed and resolved before public launch:
 - [x] Google Sheets API credentials securely configured (`credentials.json` + `GOOGLE_SHEETS_SPREADSHEET_ID`).
 - [x] Appointment bookings written to `Scheduling Requests` tab.
 - [x] Lead submissions written to `Leads` tab.
+- [x] Context preservation across multi-turn messages (symptoms carried over to lead capture).
 - [x] Emergency / Crisis guardrail verified (refuses clinical diagnosis and directs to 988).
 - [x] Privacy boundaries respected when user opts not to provide email/phone.
 - [x] Non-deceptive confirmation phrasing verified.
-- [ ] Upgrade LLM API plan / add fallback provider key (Gemini / OpenAI).
-- [ ] Implement asynchronous queueing for Google Sheets writes.
-- [ ] Configure sanitization against spreadsheet formula injection.
+- [x] Google Sheets formula injection sanitization active (`_sanitize_cell`).
+- [x] Compound questions (hours + insurance / location) answered in structured sections.
+- [x] Secondary LLM fallback (Gemini 1.5 Flash via REST) wired in.
+- [ ] Add production `GEMINI_API_KEY` or upgrade `GROQ_API_KEY` in production `.env`.

@@ -179,22 +179,19 @@ def _append_to_local_json(file_path: Path, record: Dict[str, Any]) -> bool:
         return False
 
 
+def _sanitize_cell(val: Any) -> Any:
+    """Sanitize cell value to prevent CSV/formula injection in spreadsheet applications."""
+    if isinstance(val, str) and val and val[0] in ("=", "+", "-", "@"):
+        return "'" + val
+    return val
+
+
 def append_lead(lead_data: Dict[str, Any]) -> Dict[str, bool]:
-    """Append a lead record to Google Sheets 'Leads' tab and local leads.json fallback.
-    
-    lead_data keys:
-    - timestamp: ISO string (optional, defaults to current UTC)
-    - name: visitor name
-    - contact: email or phone
-    - stated_concern: primary issue or need
-    - matched_therapist: therapist name or 'None assigned yet'
-    - source: 'chat' | 'handoff' (default: 'chat')
-    - session_id: session UUID or 'Not provided'
-    """
+    """Append a captured lead to Google Sheets 'Leads' tab and local fallback."""
     timestamp = lead_data.get("timestamp") or datetime.now(timezone.utc).isoformat()
     name = lead_data.get("name") or "Anonymous Visitor"
     contact = lead_data.get("contact") or lead_data.get("contact_info") or "Not provided"
-    concern = lead_data.get("stated_concern") or lead_data.get("need") or "General inquiry"
+    concern = lead_data.get("concern") or lead_data.get("stated_concern") or "Not specified"
     therapist = lead_data.get("matched_therapist") or lead_data.get("suggested_therapist") or "None assigned yet"
     source = lead_data.get("source") or "chat"
     session_id = lead_data.get("session_id") or "Not provided"
@@ -225,6 +222,7 @@ def append_lead(lead_data: Dict[str, Any]) -> Dict[str, bool]:
         source,
         session_id,
     ]
+    row = [_sanitize_cell(c) for c in row]
 
     for attempt in range(2):
         try:
@@ -298,6 +296,7 @@ def append_scheduling_request(request_data: Dict[str, Any]) -> Dict[str, bool]:
         session_id,
         status,
     ]
+    row = [_sanitize_cell(c) for c in row]
 
     for attempt in range(2):
         try:

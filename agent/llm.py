@@ -194,15 +194,34 @@ def _mock_llm_response(
         if "RETRIEVED KNOWLEDGE BASE CONTEXT:" in system_prompt:
             context_text = system_prompt.split("RETRIEVED KNOWLEDGE BASE CONTEXT:")[-1].strip()
 
+        # Compound Question Check: Hours + Insurance / Fees
+        has_hours = any(w in user_lower for w in ["hour", "hours", "saturday", "evening", "weekend", "when are you", "what time", "business hours"]) or ("open" in user_lower and "reopen" not in user_lower)
+        has_insurance = any(q in user_lower for q in ["insurance", "sliding scale", "copay"]) or any(re.search(p, user_lower) for p in [r"\bcosts?\b", r"\bfees?\b", r"\bpay\b", r"\bpaying\b", r"\brates?\b"])
+        if has_hours and has_insurance:
+            return (
+                "<b>Office Hours:</b> We're open Monday through Saturday, with evening appointments available on select weekdays.<br><br>"
+                "<b>Insurance & Fees:</b> We accept several major insurance plans and also offer sliding scale self-pay options. Our intake team can verify your exact coverage before your first session.<br><br>"
+                "Would you like help setting up a consultation or verifying your coverage?"
+            )
+
+        # Compound Question Check: Hours + Location / Telehealth
+        has_location = any(w in user_lower for w in ["location", "where", "address", "office", "directions", "telehealth", "online"])
+        if has_hours and has_location:
+            return (
+                "<b>Office Hours:</b> We're open Monday through Saturday, with evening appointments available on select weekdays.<br><br>"
+                "<b>Location & Formats:</b> We offer both in-person sessions at our office and secure video telehealth across the state.<br><br>"
+                "Which format works best for you?"
+            )
+
         # Office Hours & Scheduling availability
-        if any(w in user_lower for w in ["hour", "hours", "saturday", "evening", "weekend", "when are you", "what time", "business hours"]) or ("open" in user_lower and "reopen" not in user_lower) or ("schedule" in user_lower and "reschedule" not in user_lower and "cancel" not in user_lower):
+        if has_hours or ("schedule" in user_lower and "reschedule" not in user_lower and "cancel" not in user_lower):
             return (
                 "We're open Monday through Saturday, with evening appointments available on select weekdays.<br><br>"
                 "Our intake team will confirm exact times when setting up your session."
             )
 
         # Location & Formats
-        if any(w in user_lower for w in ["location", "where", "address", "office", "directions", "telehealth", "online"]):
+        if has_location:
             return (
                 "We offer both in-person sessions at our office and secure video telehealth across the state.<br><br>"
                 "Which format works best for you?"
@@ -216,7 +235,7 @@ def _mock_llm_response(
             )
 
         # Insurance, Fees & Sliding Scale
-        if any(q in user_lower for q in ["insurance", "sliding scale", "copay"]) or any(re.search(p, user_lower) for p in [r"\bcosts?\b", r"\bfees?\b", r"\bpay\b", r"\bpaying\b", r"\brates?\b"]):
+        if has_insurance:
             return (
                 "We accept several major insurance plans and also offer sliding scale self-pay options.<br><br>"
                 "Our team can verify your exact coverage before your first session."
@@ -260,6 +279,7 @@ def _mock_llm_response(
             substantive = " ".join(lines[:2])
             if substantive:
                 clean_substantive = re.sub(r"^\s*(?:Our Therapists|Frequently Asked Questions|Our Services)\s*—\s*", "", substantive)
+                clean_substantive = re.sub(r"\*\*([^*]+)\*\*", r"<b>\1</b>", clean_substantive)
                 return f"{clean_substantive}<br><br>Let me know if you'd like more details on this!"
 
         return "We offer individual, couples, and family counseling tailored to your goals.<br><br>How can I help you today?"
@@ -423,6 +443,50 @@ def _safe_print(msg: str):
         print(safe_msg)
 
 
+def _call_gemini_fallback(
+    system_prompt: str,
+    user_prompt: str,
+    messages: Optional[List[Dict[str, str]]] = None,
+    json_mode: bool = False,
+) -> Optional[str]:
+    """Fallback LLM invocation using Google Gemini 1.5 Flash via REST if key is present."""
+    gemini_key = os.environ.get("GEMINI_API_KEY", "").strip() or os.environ.get("GOOGLE_API_KEY", "").strip()
+    if not gemini_key:
+        return None
+    try:
+        import urllib.request
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={gemini_key}"
+        contents = []
+        if messages:
+            for m in messages:
+                role = "user" if m.get("role") == "user" else "model"
+                contents.append({"role": role, "parts": [{"text": m.get("content", "")}]})
+        contents.append({"role": "user", "parts": [{"text": user_prompt}]})
+        payload: Dict[str, Any] = {
+            "systemInstruction": {"parts": [{"text": system_prompt}]},
+            "contents": contents,
+            "generationConfig": {"temperature": 0.4},
+        }
+        if json_mode:
+            payload["generationConfig"]["responseMimeType"] = "application/json"
+        req = urllib.request.Request(
+            url,
+            data=json.dumps(payload).encode("utf-8"),
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+        with urllib.request.urlopen(req, timeout=12) as response:
+            data = json.loads(response.read().decode("utf-8"))
+            candidates = data.get("candidates", [])
+            if candidates:
+                parts = candidates[0].get("content", {}).get("parts", [])
+                if parts:
+                    return parts[0].get("text", "")
+    except Exception as e:
+        logger.warning(f"Gemini fallback error: {e}")
+    return None
+
+
 def call_llm(
     system_prompt: str,
     user_prompt: str,
@@ -431,7 +495,7 @@ def call_llm(
     temperature: float = 0.5,
     max_tokens: Optional[int] = None,
 ) -> str:
-    """Invoke Groq LLM with safety prompt and fall back to local stub if key is not configured."""
+    """Invoke Groq LLM with safety prompt and fall back to Gemini or local stub."""
     client = get_groq_client()
     model_name = get_groq_model()
     raw_key = os.environ.get("GROQ_API_KEY", "").strip()
@@ -479,15 +543,12 @@ def call_llm(
                         _safe_print(f"   Groq API Response ({len(raw_content)} chars): {raw_content[:90]}...")
                     return raw_content
                 except UnicodeEncodeError:
-                    # print() failed on Windows console but the API call itself succeeded
-                    # raw_content is already set, just return it
                     return raw_content
                 except Exception as api_err:
                     err_str = str(api_err).lower()
-                    # Daily token limit (TPD) cannot be resolved by waiting 2 seconds
                     if "tpd" in err_str or "tokens per day" in err_str:
                         if is_debug:
-                            _safe_print(f"[LLM Rate Limit] Daily token limit (TPD) reached. Falling back to local heuristic immediately.")
+                            _safe_print(f"[LLM Rate Limit] Daily token limit (TPD) reached. Falling back immediately.")
                         break
                     if ("429" in err_str or "rate" in err_str) and attempt < 2:
                         sleep_s = 2.0 * (attempt + 1)
@@ -497,18 +558,27 @@ def call_llm(
                         continue
                     raise api_err
         except UnicodeEncodeError:
-            # If we somehow got here from a print crash, raw_content should exist
-            # but if not, fall through to mock
             pass
         except Exception as e:
             if is_debug:
                 _safe_print(f"[LLM Error] Groq API call raised exception: {type(e).__name__}: {e}")
                 import traceback
                 traceback.print_exc()
-                _safe_print(f"   Falling back to _mock_llm_response...")
+
+    # Try secondary Gemini provider if available
+    gemini_resp = _call_gemini_fallback(
+        system_prompt=system_prompt,
+        user_prompt=user_prompt,
+        messages=messages,
+        json_mode=json_mode,
+    )
+    if gemini_resp:
+        if is_debug:
+            _safe_print(f"   [LLM Notice] Gemini Fallback returned: '{gemini_resp[:90]}...'")
+        return gemini_resp
 
     if is_debug:
-        _safe_print(f"   [LLM Notice] No active Groq client. Delegating to local heuristic handler.")
+        _safe_print(f"   [LLM Notice] No active Groq/Gemini response. Delegating to local heuristic handler.")
     resp = _mock_llm_response(
         system_prompt=system_prompt,
         user_prompt=user_prompt,
