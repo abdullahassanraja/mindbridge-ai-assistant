@@ -3,201 +3,1551 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MindBridge Wellness — Counseling & Mental Health Care</title>
+  <title>MindBridge Wellness — Compassionate, Evidence-Based Mental Health Care</title>
+  <meta name="description" content="MindBridge Wellness provides personalized, evidence-based counseling for individuals, couples, families, and teens. In-person and secure telehealth sessions." />
+  
+  <!-- Classical Editorial Serif Fonts: Fraunces (Display Headings), Lora (Refined Body Text), Newsreader (Accents) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500;1,9..144,600&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400&display=swap" rel="stylesheet" />
+
   <style>
+    /* ==========================================================================
+       DESIGN SYSTEM & CLASSICAL EDITORIAL SERIF TYPOGRAPHY
+       ========================================================================== */
     :root {
-      --primary: #2D5A4C;
-      --primary-dark: #1E3D33;
-      --accent: #E8F1ED;
-      --bg: #FBFBFA;
-      --text: #2D3748;
-      --text-muted: #64748B;
+      --primary: #234B3E;
+      --primary-dark: #16332A;
+      --primary-darker: #0E221B;
+      --primary-light: #416D5F;
+      --hero-sky-base: #C2DBF2;
+      --bg-warm: #FAF8F5;
+      --bg-cream: #F5F2EB;
+      --bg-card: #FFFFFF;
+      --badge-olive: #4E6032;
+      --badge-olive-bg: #EDF2E4;
+      --text-main: #13221B;
+      --text-body: #2B3A33;
+      --text-muted: #53645C;
+      --text-light: #76877F;
+      --border-subtle: #E3E7DF;
+      --border-card: #E8ECE4;
+      --shadow-sm: 0 4px 14px rgba(22, 51, 42, 0.05);
+      --shadow-md: 0 12px 30px rgba(22, 51, 42, 0.09);
+      --shadow-lg: 0 22px 45px rgba(22, 51, 42, 0.13);
+      --radius-sm: 8px;
+      --radius-md: 16px;
+      --radius-lg: 22px;
+      --radius-full: 9999px;
+      --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+      --font-body: 'Lora', Georgia, 'Times New Roman', serif;
+      --font-accent: 'Newsreader', Georgia, serif;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     body {
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
+      font-family: var(--font-body);
+      background-color: var(--bg-warm);
+      color: var(--text-body);
+      line-height: 1.7;
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
       overflow-x: hidden;
     }
 
-    header {
+    h1, h2, h3, h4, h5, h6 {
+      font-family: var(--font-display);
+      color: var(--text-main);
+      font-weight: 600;
+      line-height: 1.25;
+      letter-spacing: -0.3px;
+    }
+
+    p {
+      font-family: var(--font-body);
+      color: var(--text-muted);
+      line-height: 1.72;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font-family: var(--font-display);
+      cursor: pointer;
+      border: none;
+      outline: none;
+      letter-spacing: 0.2px;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    /* ==========================================================================
+       TOP NAVBAR
+       ========================================================================== */
+    .site-header {
       background-color: #FFFFFF;
-      border-bottom: 1px solid #E2E8F0;
-      padding: 20px 48px;
+      border-bottom: 1px solid var(--border-subtle);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+    }
+
+    .nav-container {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
+      height: 78px;
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 0 32px;
     }
 
-    @media (max-width: 768px) {
-      header {
-        padding: 16px 20px;
-        flex-direction: column;
-        gap: 12px;
-        align-items: flex-start;
-      }
-      nav a {
-        margin-left: 0 !important;
-        margin-right: 16px;
-      }
-      .hero {
-        margin: 40px auto !important;
-      }
-      .hero h1 {
-        font-size: 32px !important;
-      }
-    }
-
-    .brand {
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--primary);
+    .brand-logo {
       display: flex;
       align-items: center;
       gap: 10px;
-      text-decoration: none;
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: -0.4px;
+      color: var(--primary-darker);
     }
 
-    nav a {
-      margin-left: 24px;
-      color: var(--text-muted);
-      text-decoration: none;
-      font-weight: 500;
+    .brand-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--primary);
+      color: #FFFFFF;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-size: 15px;
-      transition: color 0.2s;
+      box-shadow: 0 2px 6px rgba(35, 75, 62, 0.2);
     }
 
-    nav a:hover {
-      color: var(--primary);
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      list-style: none;
     }
 
-    .hero {
-      max-width: 960px;
-      margin: 80px auto;
-      padding: 0 24px;
-      text-align: center;
+    .nav-links a {
+      font-family: var(--font-body);
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-muted);
+      transition: color 0.2s ease;
     }
 
-    .hero h1 {
-      font-size: 48px;
-      line-height: 1.2;
-      color: var(--primary-dark);
-      margin-bottom: 20px;
-      font-weight: 800;
+    .nav-links a:hover {
+      color: var(--primary-darker);
+    }
+
+    .btn-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 11px 26px;
+      border-radius: var(--radius-full);
+      font-size: 14.5px;
+      font-weight: 600;
+      transition: all 0.25s ease;
+    }
+
+    .btn-dark {
+      background-color: var(--primary-darker);
+      color: #FFFFFF;
+      box-shadow: 0 4px 12px rgba(14, 34, 27, 0.18);
+    }
+
+    .btn-dark:hover {
+      background-color: var(--primary);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(14, 34, 27, 0.25);
+    }
+
+    /* ==========================================================================
+       HERO BANNER (KID IMAGE BACKGROUND WITH REDUCED OPACITY)
+       ========================================================================== */
+    .hero-section {
+      position: relative;
+      background-color: #BED8EE;
+      min-height: 560px;
+      display: flex;
+      align-items: center;
+      padding: 90px 0 85px 0;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    /* Kid Image applied to background with reduced opacity */
+    .hero-bg-layer {
+      position: absolute;
+      inset: 0;
+      background-image: url('hero_kid.jpg');
+      background-size: cover;
+      background-position: right 25% center;
+      background-repeat: no-repeat;
+      opacity: 0.24; /* Reduced opacity so text is clearly visible */
+      filter: saturate(1.15) contrast(1.05);
+      z-index: 1;
+    }
+
+    /* Soft sky gradient overlay to ensure text is 100% crisp and readable */
+    .hero-gradient-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        90deg, 
+        rgba(215, 233, 248, 0.95) 0%, 
+        rgba(226, 240, 252, 0.88) 45%, 
+        rgba(238, 246, 254, 0.72) 100%
+      );
+      z-index: 2;
+    }
+
+    .hero-content-wrapper {
+      position: relative;
+      z-index: 3;
+      max-width: 820px;
+    }
+
+    .hero-headline {
+      font-family: var(--font-display);
+      font-size: 66px;
+      line-height: 1.1;
+      font-weight: 600;
+      color: var(--primary-darker);
+      letter-spacing: -1px;
+      margin-bottom: 22px;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+    }
+
+    .hero-subtext {
+      font-family: var(--font-body);
+      font-size: 19px;
+      line-height: 1.68;
+      color: #263830;
+      max-width: 660px;
+      margin-bottom: 36px;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 44px;
+      flex-wrap: wrap;
+    }
+
+    .btn-hero-primary {
+      background-color: var(--primary-darker);
+      color: #FFFFFF;
+      padding: 14px 32px;
+      border-radius: var(--radius-full);
+      font-weight: 600;
+      font-size: 15.5px;
+      box-shadow: 0 6px 18px rgba(14, 34, 27, 0.22);
+      transition: all 0.25s ease;
+    }
+
+    .btn-hero-primary:hover {
+      background-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(14, 34, 27, 0.28);
+    }
+
+    .btn-hero-secondary {
+      background-color: rgba(255, 255, 255, 0.85);
+      color: var(--primary-darker);
+      border: 1.5px solid rgba(22, 51, 42, 0.35);
+      backdrop-filter: blur(8px);
+      padding: 13px 30px;
+      border-radius: var(--radius-full);
+      font-weight: 600;
+      font-size: 15.5px;
+      transition: all 0.25s ease;
+    }
+
+    .btn-hero-secondary:hover {
+      background-color: #FFFFFF;
+      border-color: var(--primary-darker);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Floating Metric Glass Pill with Serif Numbers */
+    .hero-stats-card {
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      padding: 18px 32px;
+      display: inline-flex;
+      align-items: center;
+      gap: 36px;
+      box-shadow: 0 10px 28px rgba(22, 51, 42, 0.08);
+    }
+
+    .hero-stat-col {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .hero-stat-col .stat-num {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--primary-darker);
+      line-height: 1.1;
       letter-spacing: -0.5px;
     }
 
-    .hero p {
-      font-size: 18px;
+    .hero-stat-col .stat-label {
+      font-family: var(--font-body);
+      font-size: 13px;
       color: var(--text-muted);
-      max-width: 680px;
-      margin: 0 auto 36px;
+      font-style: italic;
+      margin-top: 2px;
     }
 
-    .hero .cta-btn {
-      display: inline-block;
-      background-color: var(--primary);
-      color: #FFFFFF;
-      padding: 14px 28px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 16px;
-      transition: background-color 0.2s;
+    .hero-stat-divider {
+      width: 1px;
+      height: 38px;
+      background: rgba(22, 51, 42, 0.15);
     }
 
-    .hero .cta-btn:hover {
-      background-color: var(--primary-dark);
+    /* ==========================================================================
+       HIGHLIGHTS STRIP (3 COLUMNS)
+       ========================================================================== */
+    .highlights-section {
+      background-color: #FFFFFF;
+      padding: 56px 0;
+      border-bottom: 1px solid var(--border-subtle);
     }
 
-    .services-grid {
-      max-width: 960px;
-      margin: 40px auto 100px;
-      padding: 0 24px;
+    .highlights-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 24px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 44px;
+    }
+
+    .highlight-card {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .highlight-icon-circle {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--badge-olive-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--badge-olive);
+      margin-bottom: 6px;
+    }
+
+    .highlight-title {
+      font-family: var(--font-display);
+      font-size: 21px;
+      font-weight: 600;
+      color: var(--primary-darker);
+      letter-spacing: -0.3px;
+    }
+
+    .highlight-desc {
+      font-family: var(--font-body);
+      font-size: 15px;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    /* ==========================================================================
+       SERVICES SECTION
+       ========================================================================== */
+    .services-section {
+      padding: 100px 0;
+      background-color: var(--bg-warm);
+    }
+
+    .section-header-split {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 52px;
+      gap: 44px;
+    }
+
+    .section-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-accent);
+      font-size: 15px;
+      font-style: italic;
+      color: var(--badge-olive);
+      margin-bottom: 12px;
+    }
+
+    .section-heading-serif {
+      font-family: var(--font-display);
+      font-size: 46px;
+      font-weight: 600;
+      line-height: 1.15;
+      color: var(--primary-darker);
+      letter-spacing: -0.8px;
+    }
+
+    .section-header-right {
+      max-width: 470px;
+    }
+
+    .section-header-right p {
+      font-size: 15.5px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    .btn-olive {
+      background-color: var(--badge-olive);
+      color: #FFFFFF;
+      padding: 12px 28px;
+      border-radius: var(--radius-full);
+      font-size: 14.5px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(78, 96, 50, 0.22);
+      transition: all 0.25s ease;
+    }
+
+    .btn-olive:hover {
+      background-color: #3B4B24;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(78, 96, 50, 0.3);
+    }
+
+    /* 3 Large Service Cards */
+    .services-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
     }
 
     .service-card {
+      position: relative;
+      height: 450px;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .service-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .service-card-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+
+    .service-card:hover .service-card-bg {
+      transform: scale(1.04);
+    }
+
+    .service-card-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(14, 34, 27, 0.05) 0%, rgba(14, 34, 27, 0.45) 50%, rgba(10, 24, 19, 0.94) 100%);
+      z-index: 1;
+    }
+
+    .service-card-btn-arrow {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      z-index: 2;
+      transition: all 0.25s ease;
+    }
+
+    .service-card:hover .service-card-btn-arrow {
       background: #FFFFFF;
-      border: 1px solid #E2E8F0;
-      border-radius: 12px;
-      padding: 32px 24px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+      color: var(--primary-darker);
+      transform: scale(1.08);
     }
 
-    .service-card h3 {
-      color: var(--primary);
-      margin-top: 0;
-      font-size: 20px;
+    .service-card-content {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 32px 26px;
+      z-index: 2;
+      color: #FFFFFF;
     }
 
-    .service-card p {
-      color: var(--text-muted);
+    .service-card-title {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 600;
+      line-height: 1.25;
+      margin-bottom: 8px;
+      color: #FFFFFF;
+    }
+
+    .service-card-text {
+      font-family: var(--font-body);
       font-size: 14px;
+      color: rgba(255, 255, 255, 0.88);
+      line-height: 1.58;
     }
 
-    footer {
+    /* ==========================================================================
+       TRUSTED MENTAL SUPPORT / WHY CHOOSE US
+       ========================================================================== */
+    .trusted-section {
+      padding: 100px 0;
       background-color: #FFFFFF;
-      border-top: 1px solid #E2E8F0;
-      padding: 32px 24px;
-      text-align: center;
-      font-size: 14px;
+      border-top: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .trusted-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 50px;
+    }
+
+    .trusted-grid {
+      display: grid;
+      grid-template-columns: 1.25fr 0.75fr;
+      gap: 36px;
+    }
+
+    .features-list {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .feature-box {
+      background-color: #F8FAF6;
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-md);
+      padding: 28px 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: all 0.25s ease;
+    }
+
+    .feature-box:hover {
+      background-color: #FFFFFF;
+      border-color: #D2DBCF;
+      box-shadow: var(--shadow-sm);
+      transform: translateX(4px);
+    }
+
+    .feature-icon-badge {
+      width: 40px;
+      height: 40px;
+      background: var(--badge-olive-bg);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--badge-olive);
+      margin-bottom: 4px;
+    }
+
+    .feature-title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--primary-darker);
+      letter-spacing: -0.3px;
+    }
+
+    .feature-desc {
+      font-family: var(--font-body);
+      font-size: 15px;
       color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    /* Tall Community Card */
+    .tall-community-card {
+      position: relative;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      min-height: 490px;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 40px 34px;
+      color: #FFFFFF;
+    }
+
+    .tall-community-card-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+      transition: transform 0.6s ease;
+    }
+
+    .tall-community-card:hover .tall-community-card-bg {
+      transform: scale(1.03);
+    }
+
+    .tall-community-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(14, 34, 27, 0.78) 0%, rgba(14, 34, 27, 0.25) 45%, rgba(10, 24, 19, 0.90) 100%);
+      z-index: 1;
+    }
+
+    .tall-community-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .tall-community-title {
+      font-family: var(--font-display);
+      font-size: 32px;
+      font-weight: 600;
+      line-height: 1.25;
+      margin-bottom: 12px;
+      color: #FFFFFF;
+    }
+
+    .tall-community-footer {
+      position: relative;
+      z-index: 2;
+    }
+
+    .btn-read-more {
+      background-color: #FFFFFF;
+      color: var(--primary-darker);
+      padding: 12px 28px;
+      border-radius: var(--radius-full);
+      font-size: 14.5px;
+      font-weight: 600;
+      display: inline-block;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+      transition: all 0.25s ease;
+    }
+
+    .btn-read-more:hover {
+      background-color: var(--bg-warm);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25);
+    }
+
+    /* ==========================================================================
+       MEET THE EXPERTS (THERAPISTS TEAM)
+       ========================================================================== */
+    .team-section {
+      padding: 100px 0 115px 0;
+      background-color: var(--bg-warm);
+    }
+
+    .team-header {
+      text-align: center;
+      margin-bottom: 58px;
+    }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+
+    .therapist-card {
+      position: relative;
+      height: 430px;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 20px;
+      background-color: #E8ECE6;
+    }
+
+    .therapist-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .therapist-photo {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      transition: transform 0.6s ease;
+    }
+
+    .therapist-card:hover .therapist-photo {
+      transform: scale(1.05);
+    }
+
+    .therapist-badge-box {
+      position: relative;
+      z-index: 2;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 14px;
+      padding: 16px 14px;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      box-shadow: 0 6px 18px rgba(22, 51, 42, 0.08);
+      transition: all 0.25s ease;
+    }
+
+    .therapist-card:hover .therapist-badge-box {
+      background: #FFFFFF;
+      box-shadow: 0 12px 28px rgba(22, 51, 42, 0.16);
+    }
+
+    .therapist-name {
+      font-family: var(--font-display);
+      font-size: 16.5px;
+      font-weight: 600;
+      color: var(--primary-darker);
+      line-height: 1.25;
+      margin-bottom: 3px;
+    }
+
+    .therapist-role {
+      font-family: var(--font-body);
+      font-size: 12px;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .therapist-specialties {
+      font-family: var(--font-body);
+      font-size: 11.5px;
+      color: #384C42;
+      margin-top: 6px;
+      line-height: 1.45;
+      border-top: 1px solid #EAECE7;
+      padding-top: 6px;
+    }
+
+    /* ==========================================================================
+       QDRANT FAQ & PRACTICE POLICIES
+       ========================================================================== */
+    .faq-section {
+      padding: 95px 0;
+      background-color: #FFFFFF;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .faq-container {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .faq-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .faq-item {
+      border-bottom: 1px solid #E6EAE4;
+      padding: 24px 0;
+    }
+
+    .faq-question {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-display);
+      font-size: 19px;
+      font-weight: 600;
+      color: var(--primary-darker);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .faq-toggle-icon {
+      font-family: var(--font-display);
+      font-size: 22px;
+      color: var(--primary);
+      transition: transform 0.25s ease;
+    }
+
+    .faq-answer {
+      font-family: var(--font-body);
+      font-size: 15.5px;
+      color: var(--text-muted);
+      line-height: 1.72;
+      margin-top: 14px;
+      display: none;
+    }
+
+    .faq-item.active .faq-answer {
+      display: block;
+    }
+
+    .faq-item.active .faq-toggle-icon {
+      transform: rotate(45deg);
+    }
+
+    /* ==========================================================================
+       CRISIS BANNER & FOOTER
+       ========================================================================== */
+    .crisis-bar {
+      background-color: #FAF4EE;
+      border-top: 1px solid #F0DFD1;
+      border-bottom: 1px solid #F0DFD1;
+      padding: 16px 20px;
+      text-align: center;
+      font-family: var(--font-body);
+      font-size: 14px;
+      color: #7E3E1A;
+    }
+
+    .crisis-bar strong {
+      color: #632C10;
+    }
+
+    .site-footer {
+      background-color: var(--primary-darker);
+      color: #C2CEC8;
+      padding: 70px 0 45px 0;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
+      gap: 44px;
+      margin-bottom: 50px;
+    }
+
+    .footer-brand h4 {
+      font-family: var(--font-display);
+      font-size: 23px;
+      color: #FFFFFF;
+      font-weight: 600;
+      margin-bottom: 14px;
+    }
+
+    .footer-brand p {
+      font-size: 14.5px;
+      line-height: 1.68;
+      color: #9AAEA4;
+      max-width: 320px;
+    }
+
+    .footer-col h5 {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 600;
+      color: #FFFFFF;
+      margin-bottom: 18px;
+    }
+
+    .footer-col ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+    }
+
+    .footer-col a {
+      font-size: 14.5px;
+      color: #9AAEA4;
+      transition: color 0.2s ease;
+    }
+
+    .footer-col a:hover {
+      color: #FFFFFF;
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      color: #7B9187;
+    }
+
+    /* ==========================================================================
+       RESPONSIVENESS
+       ========================================================================== */
+    @media (max-width: 1024px) {
+      .hero-headline {
+        font-size: 50px;
+      }
+      .services-cards-grid {
+        grid-template-columns: 1fr;
+      }
+      .service-card {
+        height: 380px;
+      }
+      .trusted-grid {
+        grid-template-columns: 1fr;
+      }
+      .tall-community-card {
+        min-height: 400px;
+      }
+      .team-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .nav-links {
+        display: none;
+      }
+      .hero-headline {
+        font-size: 38px;
+      }
+      .highlights-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+      .team-grid {
+        grid-template-columns: 1fr;
+      }
+      .section-header-split {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+      .footer-bottom {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+      }
+      .hero-stats-card {
+        flex-direction: column;
+        gap: 16px;
+      }
+      .hero-stat-divider {
+        display: none;
+      }
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <a href="#" class="brand">
-      🌿 MindBridge Wellness
-    </a>
-    <nav>
-      <a href="#services">Our Services</a>
-      <a href="#therapists">Therapists</a>
-      <a href="#policies">Policies</a>
-      <a href="#contact">Contact</a>
-    </nav>
+  <!-- ==========================================================================
+       HEADER & NAVIGATION
+       ========================================================================== -->
+  <header class="site-header">
+    <div class="nav-container">
+      <a href="#" class="brand-logo">
+        <span class="brand-icon">🌿</span>
+        <span>MindBridge Wellness</span>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="#">Home</a></li>
+          <li><a href="#about">About Us</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#therapists">Therapists</a></li>
+          <li><a href="#faqs">Resources</a></li>
+        </ul>
+      </nav>
+
+      <button class="btn-pill btn-dark launch-widget-btn" id="nav-get-help-btn">
+        Get Help
+      </button>
+    </div>
   </header>
 
-  <main>
-    <section class="hero">
-      <h1>Compassionate, Evidence-Based Counseling</h1>
-      <p>
-        Navigating life's transitions, relationship challenges, and emotional wellness with support tailored to you.
-        Sessions offered in-person and via secure video telehealth.
-      </p>
-      <a href="#schedule" class="cta-btn">Request an Appointment</a>
-    </section>
+  <!-- ==========================================================================
+       HERO BANNER (KID IMAGE BACKGROUND WITH REDUCED OPACITY & CRISP CONTRAST)
+       ========================================================================== -->
+  <section class="hero-section">
+    <!-- Kid image applied directly to background with reduced opacity -->
+    <div class="hero-bg-layer"></div>
+    
+    <!-- Serene sky gradient overlay for high contrast & clarity -->
+    <div class="hero-gradient-overlay"></div>
 
-    <section id="services" class="services-grid">
-      <div class="service-card">
-        <h3>Individual Counseling</h3>
-        <p>Goal-oriented therapy for anxiety, depression, grief, and life adjustments using CBT, ACT, and trauma-informed care.</p>
-      </div>
-      <div class="service-card">
-        <h3>Couples Therapy</h3>
-        <p>Emotionally Focused Therapy (EFT) to resolve recurring conflict cycles, deepen trust, and rebuild secure emotional connection.</p>
-      </div>
-      <div class="service-card">
-        <h3>Teen & Young Adult Support</h3>
-        <p>Specialized developmental guidance for adolescents and young adults navigating identity, academic stress, and family dynamics.</p>
-      </div>
-    </section>
-  </main>
+    <div class="container">
+      <div class="hero-content-wrapper">
+        
+        <h1 class="hero-headline">
+          Your Mental Health Matters
+        </h1>
 
-  <footer>
-    <p>&copy; 2026 MindBridge Wellness. All rights reserved. Outpatient counseling practice.</p>
+        <p class="hero-subtext">
+          Compassionate, evidence-based psychotherapy tailored to your personal journey. Find healing, clarity, and renewed resilience in a safe, confidential space.
+        </p>
+
+        <div class="hero-actions">
+          <button class="btn-hero-primary launch-widget-btn" id="hero-get-started-btn">
+            Get Started
+          </button>
+          <button class="btn-hero-secondary launch-widget-btn" id="hero-talk-therapist-btn">
+            Talk to a Therapist
+          </button>
+        </div>
+
+        <!-- Frosted Glass Metrics Card with Serif Numerals -->
+        <div class="hero-stats-card">
+          <div class="hero-stat-col">
+            <span class="stat-num">10k+</span>
+            <span class="stat-label">Clients Supported</span>
+          </div>
+          <div class="hero-stat-divider"></div>
+          <div class="hero-stat-col">
+            <span class="stat-num">4</span>
+            <span class="stat-label">Licensed Specialists</span>
+          </div>
+          <div class="hero-stat-divider"></div>
+          <div class="hero-stat-col">
+            <span class="stat-num">24/7</span>
+            <span class="stat-label">AI & Care Guidance</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       SUB-HERO HIGHLIGHTS (3 COLUMNS)
+       ========================================================================== -->
+  <section class="highlights-section" id="about">
+    <div class="container">
+      <div class="highlights-grid">
+        
+        <div class="highlight-card">
+          <div class="highlight-icon-circle">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
+          </div>
+          <h3 class="highlight-title">Personalized Care</h3>
+          <p class="highlight-desc">
+            Care tailored to your unique needs, goals, and pace—because no two journeys are the same. We blend CBT, ACT, and trauma-informed support.
+          </p>
+        </div>
+
+        <div class="highlight-card">
+          <div class="highlight-icon-circle">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20L21 3"></path><path d="M21 16v5h-5"></path><path d="M15 15l6 6"></path><path d="M4 4l5 5"></path></svg>
+          </div>
+          <h3 class="highlight-title">Practical Tools</h3>
+          <p class="highlight-desc">
+            Simple, effective evidence-based modalities (CBT, EFT, EMDR) to help you navigate stress, emotional balance, relationships, and major life changes.
+          </p>
+        </div>
+
+        <div class="highlight-card">
+          <div class="highlight-icon-circle">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg>
+          </div>
+          <h3 class="highlight-title">Safe & Private</h3>
+          <p class="highlight-desc">
+            All sessions are fully confidential and protected under HIPAA, offered in-person at our practice or through encrypted telehealth video.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       SERVICES SECTION
+       ========================================================================== -->
+  <section class="services-section" id="services">
+    <div class="container">
+      
+      <div class="section-header-split">
+        <div>
+          <div class="section-tag">✦ Clinical Services</div>
+          <h2 class="section-heading-serif">Our Mental Health<br />Services</h2>
+        </div>
+        <div class="section-header-right">
+          <p>
+            We provide personalized mental health support that fits your life. With practical tools and a safe, confidential environment, we help you feel better, think clearer.
+          </p>
+          <button class="btn-olive launch-widget-btn" id="services-view-all-btn">
+            View All Services
+          </button>
+        </div>
+      </div>
+
+      <!-- 3 Service Cards -->
+      <div class="services-cards-grid">
+        
+        <!-- Service 1: Individual Therapy -->
+        <div class="service-card launch-widget-btn" data-prompt="I'd like to learn more about Individual Therapy">
+          <img 
+            src="service_individual.jpg" 
+            alt="Individual Therapy" 
+            class="service-card-bg"
+            onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1544027993-37dbfe43562a?auto=format&fit=crop&w=800&q=80';"
+          />
+          <div class="service-card-overlay"></div>
+          <div class="service-card-btn-arrow">↗</div>
+          <div class="service-card-content">
+            <h3 class="service-card-title">Online Therapy & Counseling</h3>
+            <p class="service-card-text">
+              One-on-one sessions for anxiety, depression, trauma, and life transitions with licensed clinical psychologists and social workers.
+            </p>
+          </div>
+        </div>
+
+        <!-- Service 2: Stress & Anxiety Support -->
+        <div class="service-card launch-widget-btn" data-prompt="Tell me about your Stress & Anxiety Support and Couples Therapy">
+          <img 
+            src="service_couples.jpg" 
+            alt="Couples and Relationship Therapy" 
+            class="service-card-bg"
+            onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=800&q=80';"
+          />
+          <div class="service-card-overlay"></div>
+          <div class="service-card-btn-arrow">↗</div>
+          <div class="service-card-content">
+            <h3 class="service-card-title">Stress & Anxiety Support</h3>
+            <p class="service-card-text">
+              Evidence-based techniques and Emotionally Focused Therapy (EFT) to manage daily stress, communication breakdowns, and burnout.
+            </p>
+          </div>
+        </div>
+
+        <!-- Service 3: Self-Growth & Adolescent Programs -->
+        <div class="service-card launch-widget-btn" data-prompt="Tell me about your Teen & Adolescent Counseling and Mindfulness programs">
+          <img 
+            src="service_mindfulness.jpg" 
+            alt="Adolescent and Self-Growth Counseling" 
+            class="service-card-bg"
+            onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=800&q=80';"
+          />
+          <div class="service-card-overlay"></div>
+          <div class="service-card-btn-arrow">↗</div>
+          <div class="service-card-content">
+            <h3 class="service-card-title">Self-Growth Programs</h3>
+            <p class="service-card-text">
+              Specialized adolescent counseling (13+) and ACT mindfulness programs for emotional balance, identity, and personal strength.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       TRUSTED MENTAL SUPPORT / WHY CHOOSE US
+       ========================================================================== -->
+  <section class="trusted-section">
+    <div class="container">
+      
+      <div class="trusted-header-row">
+        <div>
+          <div class="section-tag">✦ Why Choose MindBridge</div>
+          <h2 class="section-heading-serif">Trusted Mental Support</h2>
+        </div>
+        <button class="btn-olive launch-widget-btn" id="why-choose-explore-btn">
+          Explore More
+        </button>
+      </div>
+
+      <div class="trusted-grid">
+        
+        <!-- Left 3 Feature Boxes -->
+        <div class="features-list">
+          
+          <div class="feature-box">
+            <div class="feature-icon-badge">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg>
+            </div>
+            <h3 class="feature-title">Licensed & verified therapists</h3>
+            <p class="feature-desc">
+              Our clinical staff includes licensed clinical psychologists (PsyD), marriage & family therapists (LMFT), clinical social workers (LCSW), and professional counselors (LPC).
+            </p>
+          </div>
+
+          <div class="feature-box">
+            <div class="feature-icon-badge">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            </div>
+            <h3 class="feature-title">Confidential & secure sessions</h3>
+            <p class="feature-desc">
+              All sessions are private, encrypted, and fully compliant under HIPAA guidelines for complete peace of mind, whether meeting in person or online.
+            </p>
+          </div>
+
+          <div class="feature-box">
+            <div class="feature-icon-badge">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg>
+            </div>
+            <h3 class="feature-title">Personalized mental wellness plans</h3>
+            <p class="feature-desc">
+              Personalized mental wellness plans are thoughtfully created to match your goals, emotional needs, and daily life, helping you build resilience, healthy habits, and long-term emotional balance with expert support.
+            </p>
+          </div>
+
+        </div>
+
+        <!-- Right Tall Community Card -->
+        <div class="tall-community-card">
+          <img 
+            src="community_card.jpg" 
+            alt="Community support and mindfulness" 
+            class="tall-community-card-bg"
+            onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=800&q=80';"
+          />
+          <div class="tall-community-overlay"></div>
+          
+          <div class="tall-community-content">
+            <h3 class="tall-community-title">
+              Community support and resources
+            </h3>
+          </div>
+
+          <div class="tall-community-footer">
+            <button class="btn-read-more launch-widget-btn" data-prompt="What community resources and group therapy sessions are available?">
+              Read More
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       MEET THE EXPERTS (4 THERAPISTS FROM QDRANT KNOWLEDGE BASE)
+       ========================================================================== -->
+  <section class="team-section" id="therapists">
+    <div class="container">
+      
+      <div class="team-header">
+        <div class="section-tag">✦ Clinical Faculty</div>
+        <h2 class="section-heading-serif">Meet the Experts Who<br />Truly Care</h2>
+      </div>
+
+      <div class="team-grid">
+        
+        <!-- Therapist 1: Dr. Elena Marsh, PsyD -->
+        <div class="therapist-card launch-widget-btn" data-prompt="Tell me about Dr. Elena Marsh's background and specialties">
+          <img 
+            src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80" 
+            alt="Dr. Elena Marsh, PsyD" 
+            class="therapist-photo"
+          />
+          <div class="therapist-badge-box">
+            <h4 class="therapist-name">Dr. Elena Marsh, PsyD</h4>
+            <span class="therapist-role">Licensed Clinical Psychologist</span>
+            <p class="therapist-specialties">
+              Anxiety Disorders • Depression • Trauma & EMDR • Life Transitions
+            </p>
+          </div>
+        </div>
+
+        <!-- Therapist 2: Marcus Reyes, LMFT -->
+        <div class="therapist-card launch-widget-btn" data-prompt="Tell me about Marcus Reyes's approach to couples therapy">
+          <img 
+            src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80" 
+            alt="Marcus Reyes, LMFT" 
+            class="therapist-photo"
+          />
+          <div class="therapist-badge-box">
+            <h4 class="therapist-name">Marcus Reyes, LMFT</h4>
+            <span class="therapist-role">Licensed Marriage & Family Therapist</span>
+            <p class="therapist-specialties">
+              Couples Therapy • Emotionally Focused Therapy (EFT) • Family Communication
+            </p>
+          </div>
+        </div>
+
+        <!-- Therapist 3: Priya Nair, LCSW -->
+        <div class="therapist-card launch-widget-btn" data-prompt="Tell me about Priya Nair's experience with grief and burnout">
+          <img 
+            src="https://images.unsplash.com/photo-1573497019236-17f8177b81e8?auto=format&fit=crop&w=600&q=80" 
+            alt="Priya Nair, LCSW" 
+            class="therapist-photo"
+          />
+          <div class="therapist-badge-box">
+            <h4 class="therapist-name">Priya Nair, LCSW</h4>
+            <span class="therapist-role">Licensed Clinical Social Worker</span>
+            <p class="therapist-specialties">
+              Depression • Grief & Loss • Burnout • ACT & Mindfulness
+            </p>
+          </div>
+        </div>
+
+        <!-- Therapist 4: Jordan Whitfield, LPC -->
+        <div class="therapist-card launch-widget-btn" data-prompt="Tell me about Jordan Whitfield's work with teens and adolescents">
+          <img 
+            src="https://images.unsplash.com/photo-1580894732470-3882759e663a?auto=format&fit=crop&w=600&q=80" 
+            alt="Jordan Whitfield, LPC" 
+            class="therapist-photo"
+          />
+          <div class="therapist-badge-box">
+            <h4 class="therapist-name">Jordan Whitfield, LPC</h4>
+            <span class="therapist-role">Licensed Professional Counselor</span>
+            <p class="therapist-specialties">
+              Adolescent Counseling (13+) • Identity • Academic Stress • Family Dynamics
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       QDRANT KNOWLEDGE BASE FAQS
+       ========================================================================== -->
+  <section class="faq-section" id="faqs">
+    <div class="container">
+      <div class="faq-container">
+        
+        <div class="faq-header">
+          <div class="section-tag">✦ Questions & Clinical Policies</div>
+          <h2 class="section-heading-serif">Frequently Asked Questions</h2>
+        </div>
+
+        <div class="faq-list">
+          
+          <div class="faq-item">
+            <div class="faq-question">
+              <span>Do I need a referral to start therapy?</span>
+              <span class="faq-toggle-icon">+</span>
+            </div>
+            <div class="faq-answer">
+              No, you can reach out directly — no physician referral is required to begin therapy at MindBridge Wellness.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question">
+              <span>How do I know which therapist is right for me?</span>
+              <span class="faq-toggle-icon">+</span>
+            </div>
+            <div class="faq-answer">
+              Our AI assistant can suggest a tailored match based on your goals and preferences, and our clinical intake team confirms the final assignment based on specialty fit and availability. You are also welcome to request a specific clinician by name.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question">
+              <span>Do you accept insurance and offer sliding scale rates?</span>
+              <span class="faq-toggle-icon">+</span>
+            </div>
+            <div class="faq-answer">
+              Yes, we accept several major insurance plans. Our administrative team verifies your specific mental health benefits before your first session. For self-pay clients, we offer sliding scale options based on qualifying circumstances.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question">
+              <span>Is online therapy (telehealth) as effective as in-person?</span>
+              <span class="faq-toggle-icon">+</span>
+            </div>
+            <div class="faq-answer">
+              Research consistently demonstrates telehealth is just as effective as in-person therapy for many concerns including anxiety, depression, and stress management. Video sessions are conducted through a secure, HIPAA-compliant platform.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question">
+              <span>What happens during the first session?</span>
+              <span class="faq-toggle-icon">+</span>
+            </div>
+            <div class="faq-answer">
+              Your therapist will spend the first session understanding your history, current challenges, and personal goals. It is also an open opportunity for you to ask questions and assess clinical fit.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question">
+              <span>Can this AI assistant diagnose me or provide clinical advice?</span>
+              <span class="faq-toggle-icon">+</span>
+            </div>
+            <div class="faq-answer">
+              No. Ellen, our AI assistant, is designed strictly to answer practice questions, explain services, and assist with scheduling. Clinical diagnosis and treatment are exclusively provided by our licensed therapists.
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       CRISIS DISCLAIMER BANNER
+       ========================================================================== -->
+  <div class="crisis-bar">
+    <strong>Crisis & Emergency Support:</strong> MindBridge Wellness is an outpatient practice and does not provide emergency intervention. If you are experiencing a mental health crisis, please call or text <strong>988 (Suicide & Crisis Lifeline)</strong> 24/7, or dial <strong>911</strong> immediately.
+  </div>
+
+  <!-- ==========================================================================
+       FOOTER
+       ========================================================================== -->
+  <footer class="site-footer">
+    <div class="container">
+      
+      <div class="footer-grid">
+        
+        <div class="footer-brand">
+          <h4>🌿 MindBridge Wellness</h4>
+          <p>
+            Compassionate, evidence-based mental health counseling for individuals, couples, families, and young adults.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h5>Services</h5>
+          <ul>
+            <li><a href="#services">Individual Therapy</a></li>
+            <li><a href="#services">Couples & Family</a></li>
+            <li><a href="#services">Teen Counseling (13+)</a></li>
+            <li><a href="#services">Trauma & EMDR</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>Practice</h5>
+          <ul>
+            <li><a href="#about">About Our Mission</a></li>
+            <li><a href="#therapists">Clinical Faculty</a></li>
+            <li><a href="#faqs">HIPAA & Privacy</a></li>
+            <li><a href="#faqs">Cancellation Policy</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>Contact & Hours</h5>
+          <ul>
+            <li>Mon – Sat: Daytime & Evenings</li>
+            <li>Direct: (555) 349-2810</li>
+            <li>care@mindbridgewellness.demo</li>
+            <li>In-Person & Secure Telehealth</li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 MindBridge Wellness Practice. All rights reserved.</p>
+        <p>Outpatient Mental Health Practice • Protected under HIPAA</p>
+      </div>
+
+    </div>
   </footer>
 
-  <!-- Include MindBridge Chat Widget -->
+  <!-- ==========================================================================
+       MINDBRIDGE WIDGET INTEGRATION
+       ========================================================================== -->
   <script src="widget.js"></script>
+
+  <script>
+    // FAQ Accordion Toggle Interaction
+    document.querySelectorAll('.faq-item').forEach(item => {
+      const question = item.querySelector('.faq-question');
+      question.addEventListener('click', () => {
+        const isActive = item.classList.contains('active');
+        document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
+        if (!isActive) {
+          item.classList.add('active');
+        }
+      });
+    });
+
+    // Wire up all CTA buttons to launch the MindBridge widget smoothly
+    document.querySelectorAll('.launch-widget-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        
+        // Open the widget
+        if (window.MindBridge && typeof window.MindBridge.open === 'function') {
+          window.MindBridge.open();
+        } else {
+          const launcher = document.getElementById('mindbridge-launcher-btn');
+          if (launcher) launcher.click();
+        }
+
+        // If button has specific prompt data, send it
+        const prompt = btn.getAttribute('data-prompt');
+        if (prompt && window.MindBridge && typeof window.MindBridge.send === 'function') {
+          setTimeout(() => {
+            window.MindBridge.send(prompt);
+          }, 300);
+        }
+      });
+    });
+  </script>
 
 </body>
 </html>

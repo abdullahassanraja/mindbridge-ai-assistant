@@ -64,6 +64,7 @@ def _mock_llm_response(
             r"\b(harm myself|hurt myself|cut myself|cutting|overdose)\b",
             r"\b(kill someone|hurt others|harm others)\b",
             r"\b(emergency|crisis|take all my pills)\b",
+            r"\b(point in going on|no reason to live|not worth living|give up on life)\b",
         ]
         is_crisis = any(re.search(pat, user_lower) for pat in crisis_patterns)
         if is_crisis:
@@ -75,6 +76,28 @@ def _mock_llm_response(
             "is_crisis": False,
             "reason": "No acute crisis language detected",
         })
+
+    # 1b. Scope Classifier stub
+    if "scope classifier" in system_prompt.lower() or "clearly off-topic" in system_prompt.lower():
+        off_topic_words = ["python", "code", "programming", "capital of", "poem", "poetry", "weather", "ignore previous", "homework", "sum two numbers"]
+        if any(w in user_lower for w in off_topic_words):
+            return json.dumps({
+                "is_off_topic": True,
+                "category": "other",
+                "reason": "Off-topic query detected in mock LLM",
+            })
+        return json.dumps({
+            "is_off_topic": False,
+            "category": None,
+            "reason": "Practice-related query in mock LLM",
+        })
+
+    # 1c. Scope Redirect generator stub
+    if "outside mindbridge's counseling scope" in system_prompt.lower() or "warm redirect" in system_prompt.lower():
+        return (
+            "That's outside what I can help with here, but I'm happy to answer questions about our counseling services, "
+            "help you find the right therapist, or connect you with our team. What can I help with today?"
+        )
 
     # 2. Intent Classification stub
     if "intent classification" in system_prompt.lower() or "possible intents" in system_prompt.lower():
@@ -151,7 +174,7 @@ def _mock_llm_response(
         })
 
     # 3. RAG QA stub — dynamically answers using retrieved Qdrant context from system_prompt
-    if "knowledge base qa specialist" in system_prompt.lower():
+    if "knowledge base qa specialist" in system_prompt.lower() or "practice knowledge about mindbridge" in system_prompt.lower() or "retrieved knowledge base context" in system_prompt:
         # Safety / Guardrail: AI Transparency
         if any(q in user_lower for q in ["real person", "are you an ai", "are you a bot", "who are you", "human or ai"]):
             return (
@@ -225,7 +248,7 @@ def _mock_llm_response(
         return "We offer individual, couples, and family counseling tailored to your goals.<br><br>How can I help you today?"
 
     # 4. Qualification Flow stub
-    if "intake qualifying specialist" in system_prompt.lower():
+    if "intake qualifying specialist" in system_prompt.lower() or "having a warm, friendly chat with a visitor" in system_prompt.lower() or "current intake status" in system_prompt.lower():
         # Check decline
         if any(w in user_lower for w in ["rather not", "prefer not", "skip", "private", "no thanks", "don't want to share"]):
             return "No problem at all, we can keep chatting here without your contact info! What questions can I answer for you?"
@@ -269,8 +292,21 @@ def _mock_llm_response(
 
         return "Hi there, welcome to MindBridge Wellness! I'm Ellen, MindBridge's AI assistant here to help you find the right support. What's your name?"
 
-    # 5. Therapist Matching stub
-    if "therapist matching specialist" in system_prompt.lower():
+    # 5. Scheduling Flow stub
+    if "scheduling philosophy" in system_prompt.lower() or "current scheduling state" in system_prompt.lower():
+        has_contact = bool(re.search(r'[\w\.-]+@[\w\.-]+|\b\d{3}[-.]?\d{3}[-.]?\d{4}\b', user_prompt))
+        timing = "your preferred time"
+        for t in ["wednesday afternoon around 2:30pm", "wednesday afternoon", "friday at 11am", "tuesday afternoon", "thursday", "monday"]:
+            if t in user_lower or (messages and any(t in m.get("content", "").lower() for m in messages)):
+                timing = t
+                break
+
+        if has_contact or "contact info: " in system_prompt.lower() and "not collected yet" not in system_prompt.lower():
+            return f"Got it, I've noted {timing} as your preference. Our team will confirm the exact time and send you a confirmation email shortly."
+        return "What day and time tends to work best for you?"
+
+    # 6. Therapist Matching stub
+    if "therapist matching specialist" in system_prompt.lower() or "retrieved therapist profiles" in system_prompt.lower():
         # Minimum information gate check
         if not any(w in combined_lower for w in [
             "partner", "arguing", "relationship", "marriage", "couples", "conflict",
@@ -355,14 +391,26 @@ def call_llm(
             else:
                 kwargs["max_tokens"] = 900
 
-            completion = client.chat.completions.create(**kwargs)
-            raw_content = completion.choices[0].message.content or ""
-            if not json_mode:
-                raw_content = raw_content.replace("—", ", ").replace("–", "-")
-                raw_content = re.sub(r',\s*,', ',', raw_content)
-            if is_debug:
-                print(f"   Groq API Response ({len(raw_content)} chars): {raw_content[:90]}...")
-            return raw_content
+            import time
+            for attempt in range(3):
+                try:
+                    completion = client.chat.completions.create(**kwargs)
+                    raw_content = completion.choices[0].message.content or ""
+                    if not json_mode:
+                        raw_content = raw_content.replace("—", ", ").replace("–", "-")
+                        raw_content = re.sub(r',\s*,', ',', raw_content)
+                    if is_debug:
+                        print(f"   Groq API Response ({len(raw_content)} chars): {raw_content[:90]}...")
+                    return raw_content
+                except Exception as api_err:
+                    err_str = str(api_err).lower()
+                    if ("429" in err_str or "rate" in err_str) and attempt < 2:
+                        sleep_s = 2.0 * (attempt + 1)
+                        if is_debug:
+                            print(f"[LLM Rate Limit] 429 received, backing off {sleep_s}s (attempt {attempt + 1}/3)...")
+                        time.sleep(sleep_s)
+                        continue
+                    raise api_err
         except Exception as e:
             if is_debug:
                 print(f"[LLM Error] Groq API call raised exception: {type(e).__name__}: {e}")

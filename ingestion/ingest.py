@@ -16,6 +16,10 @@ from qdrant_client.models import (
     FilterSelector,
 )
 
+from dotenv import load_dotenv
+load_dotenv(Path(__file__).parent / ".env")
+load_dotenv()
+
 from chunker import Chunk, chunk_markdown_file, chunk_markdown_text
 
 COLLECTION_NAME = "mindbridge_kb"
@@ -48,6 +52,10 @@ def get_client() -> QdrantClient:
         qdrant_url = os.environ.get("QDRANT_URL")
         if qdrant_url:
             api_key = os.environ.get("QDRANT_API_KEY")
+            if api_key:
+                api_key = api_key.strip()
+                if api_key.lower().startswith("api:"):
+                    api_key = api_key[4:].strip()
             _client = QdrantClient(url=qdrant_url, api_key=api_key)
         else:
             qdrant_path = os.environ.get("QDRANT_PATH", "./qdrant_data")

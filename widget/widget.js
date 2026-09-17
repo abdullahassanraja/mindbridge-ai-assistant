@@ -5,10 +5,15 @@
   // CONFIGURATION: BACKEND URL
   // Set to local FastAPI dev server or deployed endpoint
   // =========================================================================
-  const MINDBRIDGE_BACKEND_URL =
-    typeof window !== 'undefined' && window.location.hostname === '127.0.0.1'
-      ? 'http://127.0.0.1:8000'
-      : 'http://localhost:8000';
+  const MINDBRIDGE_BACKEND_URL = (() => {
+    const host = typeof window !== 'undefined' ? window.location.hostname : '';
+    // Local development
+    if (host === '127.0.0.1' || host === 'localhost') {
+      return 'http://127.0.0.1:8001';
+    }
+    // Production: Render-deployed API
+    return 'https://mindbridge-api.onrender.com';
+  })();
 
   const STORAGE_KEY_SESSION = 'mindbridge_session_id';
   const STORAGE_KEY_HISTORY = 'mindbridge_chat_history';
@@ -1163,4 +1168,12 @@
     e.preventDefault();
     sendMessage(inputField.value);
   });
+
+  // Expose public API on window for external buttons & landing page triggers
+  window.MindBridge = {
+    open: openChat,
+    close: closeChat,
+    send: sendMessage,
+    reset: resetChat
+  };
 })();

@@ -38,6 +38,15 @@ class AgentState(TypedDict):
     concern_collected: Optional[str]
     contact_collected: Optional[str]
     contact_declined: bool
+    # Session tracking
+    session_id: Optional[str]
+    # Scheduling fields
+    preferred_date: Optional[str]
+    preferred_time: Optional[str]
+    scheduling_requested: bool
+    scheduling_request_logged: bool
+    # Scope guardrail flag
+    off_topic: bool
 
 
 def create_initial_state() -> AgentState:
@@ -57,4 +66,11 @@ def create_initial_state() -> AgentState:
         "concern_collected": None,
         "contact_collected": None,
         "contact_declined": False,
+        "session_id": None,
+        "preferred_date": None,
+        "preferred_time": None,
+        "scheduling_requested": False,
+        "scheduling_request_logged": False,
+        "off_topic": False,
     }
+

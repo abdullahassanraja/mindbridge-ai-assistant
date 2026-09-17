@@ -7,6 +7,7 @@ from langgraph.graph import StateGraph, START, END
 from state import AgentState
 from nodes import (
     crisis_check_node,
+    scope_guard_node,
     intent_router_node,
     rag_qa_node,
     qualification_flow_node,
@@ -18,9 +19,16 @@ from nodes import (
 )
 
 
-def route_after_crisis_check(state: AgentState) -> Literal["end", "intent_router"]:
+def route_after_crisis_check(state: AgentState) -> Literal["end", "scope_guard"]:
     """If crisis detected, immediately terminate graph execution for safety."""
     if state.get("crisis_flag", False):
+        return "end"
+    return "scope_guard"
+
+
+def route_after_scope_guard(state: AgentState) -> Literal["end", "intent_router"]:
+    """If off-topic request detected, terminate graph execution with redirect response."""
+    if state.get("off_topic", False):
         return "end"
     return "intent_router"
 
@@ -54,21 +62,7 @@ def route_after_intent_router(state: AgentState) -> Literal[
 
 
 def route_after_qualification(state: AgentState) -> Literal["therapist_matching", "lead_capture"]:
-    """Check if qualification step should transition into therapist matching."""
-    user_messages = [m for m in state["messages"] if m["role"] == "user"]
-    if user_messages:
-        latest = user_messages[-1]["content"].lower()
-        matching_cues = ["recommend", "therapist", "who", "match", "suggest", "which counselor"]
-        concern = state.get("concern_collected") or state.get("visitor_need")
-
-        # STRUCTURAL GATE: Therapist matching requires at least one concrete, specific concern
-        if has_concrete_concern(concern):
-            if any(cue in latest for cue in matching_cues) or any(
-                affirm in latest for affirm in ["yes", "please", "sure", "sounds good"]
-            ):
-                if not state.get("suggested_therapist"):
-                    return "therapist_matching"
-
+    """Ensure qualification turn concludes with lead_capture so exactly one assistant message is sent per turn."""
     return "lead_capture"
 
 
@@ -76,8 +70,9 @@ def build_graph(checkpointer=None):
     """Build and compile the LangGraph StateGraph, optionally with a checkpointer."""
     builder = StateGraph(AgentState)
 
-    # 1. Add all 8 nodes
+    # 1. Add all 9 nodes
     builder.add_node("crisis_check", crisis_check_node)
+    builder.add_node("scope_guard", scope_guard_node)
     builder.add_node("intent_router", intent_router_node)
     builder.add_node("rag_qa", rag_qa_node)
     builder.add_node("qualification_flow", qualification_flow_node)
@@ -95,11 +90,21 @@ def build_graph(checkpointer=None):
         route_after_crisis_check,
         {
             "end": END,
+            "scope_guard": "scope_guard",
+        },
+    )
+
+    # 4. Scope guard conditional routing
+    builder.add_conditional_edges(
+        "scope_guard",
+        route_after_scope_guard,
+        {
+            "end": END,
             "intent_router": "intent_router",
         },
     )
 
-    # 4. Intent conditional routing
+    # 5. Intent conditional routing
     builder.add_conditional_edges(
         "intent_router",
         route_after_intent_router,
@@ -112,7 +117,7 @@ def build_graph(checkpointer=None):
         },
     )
 
-    # 5. Qualification routing to matching or lead capture
+    # 6. Qualification routing to matching or lead capture
     builder.add_conditional_edges(
         "qualification_flow",
         route_after_qualification,
@@ -122,7 +127,7 @@ def build_graph(checkpointer=None):
         },
     )
 
-    # 6. Reconvergence through lead_capture to END
+    # 7. Reconvergence through lead_capture to END
     builder.add_edge("therapist_matching", "lead_capture")
     builder.add_edge("rag_qa", "lead_capture")
     builder.add_edge("scheduling_stub", "lead_capture")

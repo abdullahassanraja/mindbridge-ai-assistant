@@ -165,6 +165,8 @@ async def chat(request: ChatRequest):
             state = create_initial_state()
             messages = []
 
+        state["session_id"] = session_id
+
         if is_debug:
             print(f"   Messages BEFORE turn: {len(messages)}")
         # 3. Append incoming user turn

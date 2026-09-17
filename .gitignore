@@ -22,7 +22,12 @@ leads.json
 **/leads.json
 handoffs.json
 **/handoffs.json
+scheduling_requests.json
+**/scheduling_requests.json
 *.log
+*credentials*.json
+project-*.json
+service_account*.json
 
 # Node dependencies & caches
 node_modules/
@@ -43,3 +48,8 @@ Thumbs.db
 .vscode/
 *.swp
 *.swo
+
+# Test screenshots & regression artifacts
+widget/*.png
+agent/regression_report.json
+task_process.md
