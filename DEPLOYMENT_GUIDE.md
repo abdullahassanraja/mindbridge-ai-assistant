@@ -52,7 +52,7 @@ base64 -w 0 < your-service-account.json
 
 | Setting | Value |
 |---|---|
-| **Name** | `mindbridge-api` |
+| **Name** | `mindbridge-ai-assistant` |
 | **Region** | Ohio (US East) |
 | **Branch** | `main` |
 | **Runtime** | Python 3 |
@@ -62,8 +62,8 @@ base64 -w 0 < your-service-account.json
 
 4. Add the **Environment Variables** from Section 2.
 5. Click **Create Web Service**.
-6. Once deployed, note the live URL (e.g. `https://mindbridge-api.onrender.com`).
-7. Test: visit `https://mindbridge-api.onrender.com/health` — should return `{"status": "ok"}`.
+6. Once deployed, note the live URL (`https://mindbridge-ai-assistant.onrender.com`).
+7. Test: visit `https://mindbridge-ai-assistant.onrender.com/health` — should return `{"status": "ok"}`.
 
 ---
 
@@ -90,13 +90,13 @@ base64 -w 0 < your-service-account.json
 After both services are live:
 
 1. **Update `ALLOWED_ORIGIN`** on the API Web Service:
-   - Go to your `mindbridge-api` service → Environment → edit `ALLOWED_ORIGIN`.
-   - Set it to the exact static site URL (e.g. `https://mindbridge-landing.onrender.com`).
+   - Go to your `mindbridge-ai-assistant` service → Environment → edit `ALLOWED_ORIGIN`.
+   - Set it to the exact static site URL (or `*` for all origins during testing).
    - Save and let the service redeploy.
 
 2. **Verify `widget.js` backend URL matches your API URL:**
-   - The widget auto-detects production vs localhost.
-   - If your API name differs from `mindbridge-api`, update the URL in `widget/widget.js` line 14 and re-push.
+   - The widget auto-detects production vs localhost and defaults to `https://mindbridge-ai-assistant.onrender.com`.
+   - Can also be overridden globally via `window.MINDBRIDGE_BACKEND_URL`.
 
 ---
 
@@ -118,7 +118,7 @@ Run these from the deployed landing page to confirm everything works:
 ### Automated Verification
 
 ```bash
-python test_live_deployment.py https://mindbridge-api.onrender.com
+python test_live_deployment.py https://mindbridge-ai-assistant.onrender.com
 ```
 
 ---

@@ -8,3 +8,4 @@ qdrant-client>=1.11.0
 fastembed>=0.3.0
 gspread>=6.0.0
 google-auth>=2.20.0
+aiofiles>=23.2.0

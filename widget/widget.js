@@ -6,13 +6,17 @@
   // Set to local FastAPI dev server or deployed endpoint
   // =========================================================================
   const MINDBRIDGE_BACKEND_URL = (() => {
+    // Explicit override via global window property
+    if (typeof window !== 'undefined' && window.MINDBRIDGE_BACKEND_URL) {
+      return window.MINDBRIDGE_BACKEND_URL;
+    }
     const host = typeof window !== 'undefined' ? window.location.hostname : '';
     // Local development
     if (host === '127.0.0.1' || host === 'localhost') {
       return 'http://127.0.0.1:8001';
     }
     // Production: Render-deployed API
-    return 'https://mindbridge-api.onrender.com';
+    return 'https://mindbridge-ai-assistant.onrender.com';
   })();
 
   const STORAGE_KEY_SESSION = 'mindbridge_session_id';

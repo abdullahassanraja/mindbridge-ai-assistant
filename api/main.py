@@ -206,6 +206,13 @@ async def chat(request: ChatRequest):
         return ChatResponse(response=fallback_msg, session_id=session_id)
 
 
+# Mount static landing page and widget assets if present
+widget_dir = api_dir.parent / "widget"
+if widget_dir.exists():
+    from fastapi.staticfiles import StaticFiles
+    app.mount("/", StaticFiles(directory=str(widget_dir), html=True), name="static")
+
+
 if __name__ == "__main__":
     import uvicorn
 
