@@ -121,8 +121,17 @@ async def run_edge_test():
             assert "Customizations" in nav_text, "Missing 'Customizations' in nav"
             assert "Why It Matters" in nav_text, "Missing 'Why It Matters' in nav"
             assert "Talk to Us" in nav_text, "Missing 'Talk to Us' in nav"
-            assert "MindBridge Wellness" in nav_text and "Ellen" in nav_text, "Missing logo text"
-            print("✓ Section 1 (Navigation) verified successfully.")
+            
+            logo_alt = await eval_js(ws, "document.querySelector('header img').alt", msg_id)
+            logo_src = await eval_js(ws, "document.querySelector('header img').src", msg_id)
+            assert "Ellen" in logo_alt and "AI Wellness Assistant" in logo_alt
+            assert "ellen_logo.png" in logo_src
+            print(f"✓ Section 1 (Navigation) verified with brand logo: '{logo_alt}'")
+
+            # Verify Tab View Favicon
+            favicons = await eval_js(ws, "Array.from(document.querySelectorAll('link[rel*=\"icon\"]')).map(l => l.getAttribute('href')).join(' ')", msg_id)
+            assert "favicon.png" in favicons or "ellen_icon.png" in favicons
+            print(f"✓ Tab View Favicon links verified: {favicons}")
 
             hero_h1 = await eval_js(ws, "document.querySelector('h1').innerText", msg_id)
             print(f"Hero H1: '{hero_h1.replace(chr(10), ' ')}'")

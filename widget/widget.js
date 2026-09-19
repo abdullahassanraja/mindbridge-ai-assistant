@@ -25,7 +25,7 @@
   // Ellen Avatar Image Path
   const currentScript = (typeof document !== 'undefined' && (document.currentScript || document.getElementById('mindbridge-widget-script'))) || null;
   const SCRIPT_BASE_URL = currentScript && currentScript.src ? currentScript.src.substring(0, currentScript.src.lastIndexOf('/')) : '';
-  const ELLEN_AVATAR_URL = SCRIPT_BASE_URL ? `${SCRIPT_BASE_URL}/ellen_avatar.jpg` : 'ellen_avatar.jpg';
+  const ELLEN_AVATAR_URL = SCRIPT_BASE_URL ? `${SCRIPT_BASE_URL}/ellen_icon.png` : 'ellen_icon.png';
 
   // 3 Quick Starter Options (displayed horizontally like the reference image)
   const STARTER_OPTIONS = [
@@ -122,7 +122,7 @@
       height: 100%;
       border-radius: 50%;
       object-fit: cover;
-      object-position: center 15%;
+      object-position: center;
       display: block;
       border: 2px solid #FFFFFF;
       background: #E2E8F0;
@@ -235,7 +235,7 @@
       height: 100%;
       border-radius: 50%;
       object-fit: cover;
-      object-position: center 15%;
+      object-position: center;
       display: block;
       border: 1.5px solid #FFFFFF;
       background: #E2E8F0;
@@ -867,9 +867,9 @@
   const container = document.createElement('div');
   container.id = 'mindbridge-widget-container';
   container.innerHTML = `
-    <!-- Floating Launcher Button with Ellen's Photo -->
-    <button id="mindbridge-launcher-btn" aria-label="Chat with Ellen - MindBridge AI Assistant">
-      <img src="${ELLEN_AVATAR_URL}" alt="Ellen - MindBridge AI Assistant" class="mindbridge-launcher-avatar-img" />
+    <!-- Floating Launcher Button with Ellen's Brand Icon -->
+    <button id="mindbridge-launcher-btn" aria-label="Chat with Ellen - Your AI Wellness Assistant">
+      <img src="${ELLEN_AVATAR_URL}" alt="Ellen - Your AI Wellness Assistant" class="mindbridge-launcher-avatar-img" />
       <span class="mindbridge-launcher-beacon" title="Online"></span>
     </button>
 
@@ -884,7 +884,7 @@
           </div>
           <div class="mindbridge-header-info">
             <div id="mindbridge-chat-title" class="mindbridge-header-title">Ellen</div>
-            <div class="mindbridge-header-subtitle">MindBridge AI Assistant</div>
+            <div class="mindbridge-header-subtitle">Your AI Wellness Assistant</div>
           </div>
         </div>
 

@@ -53,5 +53,9 @@ Thumbs.db
 
 # Test screenshots & regression artifacts
 widget/*.png
+!widget/ellen_logo.png
+!widget/ellen_icon.png
+!widget/favicon.png
+!widget/apple-touch-icon.png
 agent/regression_report.json
 task_process.md
