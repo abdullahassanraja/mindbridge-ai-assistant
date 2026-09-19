@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MindBridge Wellness · Care for your mind, inside and out</title>
-  <meta name="description" content="Compassionate, evidence-based mental health care and 24/7 intelligent intake assistance with Ellen. Connect with top licensed therapists today." />
+  <title>MindBridge Wellness · Ellen — The AI Assistant Built for Wellness Practices</title>
+  <meta name="description" content="Ellen answers every visitor, day or night, qualifies every inquiry, and never lets a potential client slip away, without adding a single thing to your team's plate." />
 
   <!-- Google Fonts: Fraunces (Editorial Display Serif) & Plus Jakarta Sans (Clean Modern Sans) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -100,7 +100,6 @@
       border: 1px solid rgba(255, 255, 255, 0.12);
     }
 
-    /* Accordion transitions */
     .faq-answer {
       max-height: 0;
       overflow: hidden;
@@ -108,7 +107,7 @@
       opacity: 0;
     }
     .faq-item.active .faq-answer {
-      max-height: 250px;
+      max-height: 280px;
       opacity: 1;
     }
     .faq-item.active .faq-icon {
@@ -119,51 +118,41 @@
 <body class="bg-linen-100 text-obsidian-800 antialiased selection:bg-sage-200 selection:text-forest-900">
 
   <!-- =========================================================================
-       1. NAVIGATION BAR (Floating Pill Capsule & Brand)
+       1. NAVIGATION
        ========================================================================= -->
   <header class="fixed top-0 left-0 right-0 z-40 transition-all duration-300 backdrop-blur-md bg-linen-100/90 border-b border-forest-900/5">
     <div class="max-w-7xl mx-auto px-5 sm:px-8 h-20 flex items-center justify-between">
       
-      <!-- Brand Logo -->
+      <!-- Logo: MindBridge Wellness · Ellen -->
       <a href="#" class="flex items-center gap-3 group">
         <div class="w-9 h-9 rounded-full bg-forest-800 text-linen-100 flex items-center justify-center font-editorial text-lg shadow-sm border border-forest-700/40 group-hover:scale-105 transition-transform">
-          M
+          E
         </div>
         <div class="flex flex-col">
-          <span class="font-editorial text-xl sm:text-2xl font-normal tracking-tight text-forest-950 leading-none">
-            mindbridge
+          <span class="font-editorial text-lg sm:text-xl font-normal tracking-tight text-forest-950 leading-none">
+            MindBridge Wellness <span class="text-terracotta-600">·</span> Ellen
           </span>
           <span class="text-[10.5px] font-medium tracking-wider uppercase text-obsidian-500 mt-0.5">
-            Wellness · Care Assistant
+            Practice AI Intake Assistant
           </span>
         </div>
       </a>
 
-      <!-- Desktop Floating Nav Capsule -->
+      <!-- Desktop Navigation Capsule -->
       <nav class="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/70 border border-forest-900/10 shadow-subtle backdrop-blur-sm text-[13.5px] font-medium text-obsidian-700">
-        <a href="#services" class="px-4 py-1.5 rounded-full hover:bg-sage-100/70 hover:text-forest-900 transition-colors">Services</a>
-        <a href="#steps" class="px-4 py-1.5 rounded-full hover:bg-sage-100/70 hover:text-forest-900 transition-colors">How It Works</a>
-        <a href="#why-safe" class="px-4 py-1.5 rounded-full hover:bg-sage-100/70 hover:text-forest-900 transition-colors">Why MindBridge</a>
-        <a href="#vibe-therapist" class="px-4 py-1.5 rounded-full hover:bg-sage-100/70 hover:text-forest-900 transition-colors">Experience</a>
-        <a href="#therapists" class="px-4 py-1.5 rounded-full hover:bg-sage-100/70 hover:text-forest-900 transition-colors">Clinicians</a>
-        <a href="#faq" class="px-4 py-1.5 rounded-full hover:bg-sage-100/70 hover:text-forest-900 transition-colors">FAQ</a>
+        <a href="#the-assistant" class="px-4 py-1.5 rounded-full hover:bg-sage-100/70 hover:text-forest-900 transition-colors">The Assistant</a>
+        <a href="#capabilities" class="px-4 py-1.5 rounded-full hover:bg-sage-100/70 hover:text-forest-900 transition-colors">Capabilities</a>
+        <a href="#customizations" class="px-4 py-1.5 rounded-full hover:bg-sage-100/70 hover:text-forest-900 transition-colors">Customizations</a>
+        <a href="#why-it-matters" class="px-4 py-1.5 rounded-full hover:bg-sage-100/70 hover:text-forest-900 transition-colors">Why It Matters</a>
       </nav>
 
-      <!-- Right Action CTA -->
+      <!-- Right Action CTA: "Talk to Us" Button -->
       <div class="flex items-center gap-3">
-        <button 
-          type="button" 
-          id="nav-chat-btn"
-          class="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full text-[13.5px] font-semibold text-forest-950 bg-sage-100 hover:bg-sage-200 border border-sage-300/80 transition-all shadow-subtle hover:scale-[1.02] active:scale-95"
-        >
-          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span>Chat with Ellen</span>
-        </button>
         <a 
-          href="#demo-modal"
-          class="open-demo-modal hidden sm:inline-flex items-center justify-center px-5 py-2.5 rounded-full text-[13.5px] font-semibold text-linen-100 bg-forest-800 hover:bg-forest-900 transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5"
+          href="#lead-capture"
+          class="inline-flex items-center justify-center px-5 py-2.5 rounded-full text-[13.5px] font-semibold text-linen-100 bg-forest-800 hover:bg-forest-900 transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0"
         >
-          Book Consultation
+          Talk to Us
         </a>
       </div>
     </div>
@@ -171,81 +160,79 @@
 
 
   <!-- =========================================================================
-       2. HERO SECTION: "Care for your mind, inside and out"
+       2. HERO SECTION
        ========================================================================= -->
-  <section class="relative pt-28 pb-12 sm:pt-36 sm:pb-20 overflow-hidden">
+  <section id="the-assistant" class="relative pt-28 pb-12 sm:pt-36 sm:pb-20 overflow-hidden">
     <div class="max-w-7xl mx-auto px-5 sm:px-8">
       
-      <!-- Big Hero Scenic Card matching reference image -->
       <div class="relative rounded-[36px] overflow-hidden min-h-[580px] sm:min-h-[660px] flex items-end shadow-float border border-forest-900/10">
         
-        <!-- Background Hero Image (Joyful woman in mountain sun) -->
+        <!-- Scenic Background Photo -->
         <img 
           src="hero_care_nature.jpg" 
-          alt="Care for your mind, inside and out" 
+          alt="The AI Assistant Built for Wellness Practices" 
           class="absolute inset-0 w-full h-full object-cover object-center"
         />
 
-        <!-- Soft gradient overlay ensuring text readability -->
-        <div class="absolute inset-0 bg-gradient-to-t from-forest-950/85 via-forest-950/40 to-transparent sm:bg-gradient-to-r sm:from-forest-950/80 sm:via-forest-950/35 sm:to-transparent"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-forest-950/90 via-forest-950/45 to-transparent sm:bg-gradient-to-r sm:from-forest-950/85 sm:via-forest-950/40 sm:to-transparent"></div>
 
         <div class="relative z-10 p-7 sm:p-14 lg:p-16 max-w-2xl text-white">
           
-          <!-- Badge -->
           <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-xs font-medium text-linen-100 mb-6">
             <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-            MindBridge Wellness · Intake AI & Licensed Therapy
+            Administrative AI for Mental Health & Wellness Practices
           </div>
 
-          <!-- Hero Display Headline -->
+          <!-- Exact Headline -->
           <h1 class="text-4xl sm:text-5xl lg:text-6xl font-normal leading-[1.12] text-linen-50 mb-6 font-editorial">
-            Care for your mind,<br />
-            <span class="italic font-medium text-sage-200">inside and out</span>
+            The AI Assistant Built for <br />
+            <span class="italic font-medium text-sage-200">Wellness Practices</span>
           </h1>
 
+          <!-- Exact Subheadline -->
           <p class="text-base sm:text-lg text-linen-200/90 leading-relaxed font-normal mb-8 max-w-xl">
-            Evidence-based therapy and 24/7 intelligent intake support from Ellen, tailored to your personal journey. Experience care that meets you right where you are.
+            Ellen answers every visitor, day or night, qualifies every inquiry, and never lets a potential client slip away, without adding a single thing to your team's plate.
           </p>
 
-          <!-- CTAs matching reference pill design -->
+          <!-- CTAs -->
           <div class="flex flex-wrap items-center gap-4">
             <a 
-              href="#demo-modal"
-              class="open-demo-modal inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full text-[14.5px] font-semibold text-forest-950 bg-linen-100 hover:bg-white transition-all shadow-subtle hover:scale-[1.02]"
+              href="#lead-capture"
+              class="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full text-[14.5px] font-semibold text-forest-950 bg-linen-100 hover:bg-white transition-all shadow-subtle hover:scale-[1.02]"
             >
-              <span>Book a Consultation</span>
+              <span>Get a Free Demo</span>
               <span class="w-6 h-6 rounded-full bg-forest-800 text-white flex items-center justify-center text-xs">➔</span>
             </a>
             <button 
               type="button" 
-              id="hero-talk-ellen-btn"
+              id="hero-see-live-demo-btn"
               class="inline-flex items-center gap-2 px-6 py-3.5 rounded-full text-[14.5px] font-medium text-linen-100 bg-white/15 hover:bg-white/25 border border-white/30 backdrop-blur-md transition-all"
             >
-              <span>Explore With Ellen</span>
+              <span>See a Live Demo</span>
             </button>
           </div>
 
         </div>
 
-        <!-- Floating Glassmorphic Stat Pills on Right (matching reference image) -->
-        <div class="hidden md:flex flex-col gap-3 absolute top-10 right-10 z-10">
-          <div class="glass-panel rounded-2xl px-5 py-3 shadow-glass flex items-center gap-3.5 bg-white/85 text-forest-950 border border-white/60">
-            <div class="w-10 h-10 rounded-full bg-forest-800 text-linen-100 flex items-center justify-center font-editorial text-sm font-semibold">
-              15k+
+        <!-- Two Qualitative Floating Badges (No Numbers) -->
+        <div class="hidden md:flex flex-col gap-3 absolute top-10 right-10 z-10 max-w-xs">
+          <div class="glass-panel rounded-2xl px-5 py-3.5 shadow-glass flex items-center gap-3.5 bg-white/90 text-forest-950 border border-white/70">
+            <div class="w-9 h-9 rounded-full bg-forest-800 text-linen-100 flex items-center justify-center text-sm font-semibold shrink-0">
+              ✓
             </div>
             <div>
-              <div class="text-xs font-bold text-forest-950 leading-tight">15k+ Inquiries Answered</div>
-              <div class="text-[11px] text-obsidian-500">24/7 Immediate Patient Support</div>
+              <div class="text-xs font-bold text-forest-950 leading-tight">Always On, Never Misses a Visitor</div>
+              <div class="text-[11px] text-obsidian-500">24/7 immediate conversational engagement</div>
             </div>
           </div>
 
-          <div class="glass-panel rounded-2xl px-5 py-3 shadow-glass flex items-center gap-3.5 bg-white/85 text-forest-950 border border-white/60">
-            <div class="w-10 h-10 rounded-full bg-amber-500 text-white flex items-center justify-center text-sm font-bold">
-              ★
+          <div class="glass-panel rounded-2xl px-5 py-3.5 shadow-glass flex items-center gap-3.5 bg-white/90 text-forest-950 border border-white/70">
+            <div class="w-9 h-9 rounded-full bg-sage-500 text-white flex items-center justify-center text-sm font-bold shrink-0">
+              🌿
             </div>
             <div>
-              <div class="text-xs font-bold text-forest-950 leading-tight">4.9 Star Rating</div>
-              <div class="text-[11px] text-obsidian-500">Exceptional Patient Experience</div>
+              <div class="text-xs font-bold text-forest-950 leading-tight">Built From Your Practice's Own Content</div>
+              <div class="text-[11px] text-obsidian-500">Strictly grounded in your policies & roster</div>
             </div>
           </div>
         </div>
@@ -257,42 +244,42 @@
 
 
   <!-- =========================================================================
-       3. STATS & TRUST BANNER (Matching Reference Light Sage Layout)
+       3. STATS BAR + "TRUSTED CARE" BLOCK
        ========================================================================= -->
   <section class="py-12 sm:py-16 bg-sage-100/90 border-y border-forest-900/5">
     <div class="max-w-7xl mx-auto px-5 sm:px-8">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
         
-        <!-- Left: Two Large Dark Badges -->
-        <div class="lg:col-span-5 flex items-center gap-4 sm:gap-6 justify-center lg:justify-start">
+        <!-- Two Qualitative Capability Statements (No Fabricated Stats) -->
+        <div class="lg:col-span-5 flex flex-col sm:flex-row items-center gap-4 sm:gap-6 justify-center lg:justify-start">
           
-          <!-- Badge 1 -->
-          <div class="w-32 h-32 sm:w-36 sm:h-36 rounded-full bg-forest-900 text-linen-100 flex flex-col items-center justify-center p-4 text-center shadow-md shrink-0">
-            <span class="font-editorial text-3xl sm:text-4xl font-normal leading-none mb-1">10k+</span>
-            <span class="text-[11px] text-sage-200 uppercase tracking-wider font-medium">Patients Helped</span>
+          <!-- Block 1 -->
+          <div class="w-full sm:w-44 h-32 rounded-3xl bg-forest-900 text-linen-100 flex flex-col items-center justify-center p-5 text-center shadow-md">
+            <span class="font-editorial text-2xl font-normal leading-tight mb-1">24/7</span>
+            <span class="text-xs text-sage-200 font-medium">Always-On Visitor Support</span>
           </div>
 
-          <!-- Badge 2 -->
-          <div class="w-32 h-32 sm:w-36 sm:h-36 rounded-full bg-forest-800 text-linen-100 flex flex-col items-center justify-center p-4 text-center shadow-md shrink-0">
-            <span class="font-editorial text-3xl sm:text-4xl font-normal leading-none mb-1">24/7</span>
-            <span class="text-[11px] text-sage-200 uppercase tracking-wider font-medium">Always Here</span>
+          <!-- Block 2 -->
+          <div class="w-full sm:w-44 h-32 rounded-3xl bg-forest-800 text-linen-100 flex flex-col items-center justify-center p-5 text-center shadow-md">
+            <span class="font-editorial text-2xl font-normal leading-tight mb-1">Zero</span>
+            <span class="text-xs text-sage-200 font-medium">Missed Inquiries Left Unanswered</span>
           </div>
 
         </div>
 
-        <!-- Right: Text & Philosophy CTA -->
+        <!-- Right: "Built for Practices Like Yours" -->
         <div class="lg:col-span-7 flex flex-col items-start text-left">
           <h2 class="font-editorial text-2xl sm:text-3xl lg:text-4xl font-normal text-forest-950 mb-3 leading-tight">
-            Trusted care for your emotional well-being.
+            Built for Practices Like Yours
           </h2>
           <p class="text-sm sm:text-base text-obsidian-700 leading-relaxed mb-6 max-w-xl">
-            MindBridge brings together licensed mental health clinicians and Ellen, our warm 24/7 administrative intake assistant. Whether you are seeking therapy for anxiety, relationship healing, or personal growth, we ensure you are heard immediately and matched with the right therapist.
+            Ellen is trained on your services, your therapists, and your policies, not a generic script borrowed from a customer-service bot.
           </p>
           <a 
-            href="#steps"
+            href="#cost-of-missed-inquiry"
             class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-xs sm:text-sm font-semibold text-linen-100 bg-forest-800 hover:bg-forest-900 transition-all shadow-sm"
           >
-            <span>Learn more about our approach</span>
+            <span>See How It Works</span>
             <span>➔</span>
           </a>
         </div>
@@ -303,97 +290,77 @@
 
 
   <!-- =========================================================================
-       4. SERVICES SECTION: "Mental healthcare for every individual"
+       4. NEW SECTION — THE REAL COST OF A MISSED INQUIRY
        ========================================================================= -->
-  <section id="services" class="py-20 sm:py-28 relative">
+  <section id="cost-of-missed-inquiry" class="py-20 sm:py-28 bg-white border-b border-forest-900/5">
     <div class="max-w-7xl mx-auto px-5 sm:px-8">
       
-      <!-- Section Header -->
-      <div class="max-w-3xl mx-auto text-center mb-14 sm:mb-16">
+      <div class="max-w-3xl mx-auto text-center mb-16">
         <h2 class="font-editorial text-3xl sm:text-4xl lg:text-5xl font-normal text-forest-950 mb-4 leading-tight">
-          Mental healthcare for <span class="italic font-medium text-forest-800">every individual</span>
+          The Real Cost of a <span class="italic font-medium text-forest-800">Missed Inquiry</span>
         </h2>
         <p class="text-base sm:text-lg text-obsidian-700 leading-relaxed">
-          Evidence-based therapy and specialized care tailored to meet you right where you are.
+          Every visitor who leaves without an answer is a client who found somewhere else, or nowhere at all.
         </p>
       </div>
 
-      <!-- 3 Service Cards Grid (Matching Reference Image) -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+      <!-- Two-Column Before vs After Comparison (Not a wall of text) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
         
-        <!-- Card 1: Anxiety Care -->
-        <div class="bg-white rounded-3xl p-8 border border-forest-900/10 shadow-subtle hover:shadow-float hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group">
+        <!-- Column 1: Without Ellen -->
+        <div class="rounded-3xl p-8 bg-linen-50 border border-red-900/10 shadow-subtle flex flex-col justify-between">
           <div>
-            <div class="w-14 h-14 rounded-2xl bg-sage-100 text-forest-800 flex items-center justify-center mb-6 group-hover:scale-105 transition-transform">
-              <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+            <div class="flex items-center justify-between pb-4 border-b border-red-900/10 mb-6">
+              <span class="font-editorial text-xl font-normal text-red-900">Without Ellen</span>
+              <span class="text-xs font-semibold uppercase tracking-wider text-red-700 bg-red-100/80 px-3 py-1 rounded-full">Lost Inquiries</span>
             </div>
-            <h3 class="font-editorial text-2xl font-normal text-forest-950 mb-3">Anxiety & Stress Care</h3>
-            <p class="text-sm text-obsidian-700 leading-relaxed mb-6">
-              Overcome persistent worry, panic, and sensory overwhelm with proven CBT, somatic experiencing, and mindfulness tools.
-            </p>
+            <ul class="space-y-5 text-sm text-obsidian-700 leading-relaxed">
+              <li class="flex items-start gap-3">
+                <span class="w-5 h-5 rounded-full bg-red-100 text-red-700 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">✕</span>
+                <span><strong>After-Hours Silence:</strong> Most inquiries happen outside business hours, when no one's there to answer.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="w-5 h-5 rounded-full bg-red-100 text-red-700 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">✕</span>
+                <span><strong>One Shot at Connection:</strong> A slow or unclear response doesn't just delay a booking, it often loses it entirely, since someone reaching out for mental health support rarely reaches out twice.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="w-5 h-5 rounded-full bg-red-100 text-red-700 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">✕</span>
+                <span><strong>Repetitive Staff Friction:</strong> Staff time spent answering repetitive questions (insurance, hours, "do you see couples") is time not spent with clients.</span>
+              </li>
+            </ul>
           </div>
-          <button 
-            type="button" 
-            class="service-chat-trigger inline-flex items-center justify-between w-full px-5 py-3 rounded-full text-xs font-semibold text-forest-900 bg-sage-100 hover:bg-sage-200 transition-colors"
-            data-topic="anxiety"
-          >
-            <span>Learn More</span>
-            <span class="w-5 h-5 rounded-full bg-forest-800 text-white flex items-center justify-center text-[10px]">➔</span>
-          </button>
+          <div class="mt-8 pt-4 border-t border-red-900/10 text-xs font-medium text-red-800 italic">
+            Visitors bounce to other directories or give up on seeking care.
+          </div>
         </div>
 
-        <!-- Card 2: Stress Care / Depression -->
-        <div class="bg-white rounded-3xl p-8 border border-forest-900/10 shadow-subtle hover:shadow-float hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group">
+        <!-- Column 2: With Ellen -->
+        <div class="rounded-3xl p-8 bg-sage-50/80 border border-forest-800/15 shadow-subtle flex flex-col justify-between">
           <div>
-            <div class="w-14 h-14 rounded-2xl bg-terracotta-100 text-terracotta-700 flex items-center justify-center mb-6 group-hover:scale-105 transition-transform">
-              <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <div class="flex items-center justify-between pb-4 border-b border-forest-800/15 mb-6">
+              <span class="font-editorial text-xl font-normal text-forest-950">With Ellen</span>
+              <span class="text-xs font-semibold uppercase tracking-wider text-forest-800 bg-sage-200/80 px-3 py-1 rounded-full">Every Visitor Answered</span>
             </div>
-            <h3 class="font-editorial text-2xl font-normal text-forest-950 mb-3">Depression & Mood Care</h3>
-            <p class="text-sm text-obsidian-700 leading-relaxed mb-6">
-              Rediscover vitality, gentle momentum, and emotional resilience with therapists specializing in mood restoration.
-            </p>
+            <ul class="space-y-5 text-sm text-obsidian-700 leading-relaxed">
+              <li class="flex items-start gap-3">
+                <span class="w-5 h-5 rounded-full bg-forest-800 text-linen-100 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">✓</span>
+                <span><strong>Instant 24/7 Validation:</strong> Prospective clients receive warm, grounded answers midnight or Sunday, right when therapeutic intent is highest.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="w-5 h-5 rounded-full bg-forest-800 text-linen-100 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">✓</span>
+                <span><strong>Gentle, Seamless Intake:</strong> Answers questions about specialties, fees, and scheduling, then queues qualified inquiries for your team.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="w-5 h-5 rounded-full bg-forest-800 text-linen-100 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">✓</span>
+                <span><strong>Zero Administrative Burnout:</strong> Routine logistics are resolved automatically, freeing your staff to focus on current clients and practice growth.</span>
+              </li>
+            </ul>
           </div>
-          <button 
-            type="button" 
-            class="service-chat-trigger inline-flex items-center justify-between w-full px-5 py-3 rounded-full text-xs font-semibold text-forest-900 bg-sage-100 hover:bg-sage-200 transition-colors"
-            data-topic="depression"
-          >
-            <span>Learn More</span>
-            <span class="w-5 h-5 rounded-full bg-forest-800 text-white flex items-center justify-center text-[10px]">➔</span>
-          </button>
+          <div class="mt-8 pt-4 border-t border-forest-800/15 text-xs font-medium text-forest-800 italic">
+            Fewer missed inquiries, faster responses, and protected clinical hours.
+          </div>
         </div>
 
-        <!-- Card 3: Relationship Care -->
-        <div class="bg-white rounded-3xl p-8 border border-forest-900/10 shadow-subtle hover:shadow-float hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group">
-          <div>
-            <div class="w-14 h-14 rounded-2xl bg-sage-100 text-forest-800 flex items-center justify-center mb-6 group-hover:scale-105 transition-transform">
-              <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
-            </div>
-            <h3 class="font-editorial text-2xl font-normal text-forest-950 mb-3">Couples & Relational Care</h3>
-            <p class="text-sm text-obsidian-700 leading-relaxed mb-6">
-              Deepen safety, navigate complex life transitions, and rebuild meaningful, honest communication with your partner.
-            </p>
-          </div>
-          <button 
-            type="button" 
-            class="service-chat-trigger inline-flex items-center justify-between w-full px-5 py-3 rounded-full text-xs font-semibold text-forest-900 bg-sage-100 hover:bg-sage-200 transition-colors"
-            data-topic="couples"
-          >
-            <span>Learn More</span>
-            <span class="w-5 h-5 rounded-full bg-forest-800 text-white flex items-center justify-center text-[10px]">➔</span>
-          </button>
-        </div>
-
-      </div>
-
-      <!-- Navigation Arrows Indicator matching reference -->
-      <div class="flex items-center justify-center gap-3">
-        <button type="button" class="w-10 h-10 rounded-full border border-forest-900/20 bg-white text-forest-900 flex items-center justify-center hover:bg-sage-100 transition-colors" aria-label="Previous services">
-          ←
-        </button>
-        <button type="button" class="w-10 h-10 rounded-full border border-forest-900/20 bg-forest-800 text-linen-100 flex items-center justify-center hover:bg-forest-900 transition-colors" aria-label="Next services">
-          →
-        </button>
       </div>
 
     </div>
@@ -401,77 +368,300 @@
 
 
   <!-- =========================================================================
-       5. SIMPLE STEPS (Matching Scenic Meadow Image & 4 Frosted Cards)
+       5. NEW SECTION — HOW THIS HELPS YOU GROW
+       ========================================================================= -->
+  <section class="py-20 sm:py-28 bg-linen-50 border-b border-forest-900/5">
+    <div class="max-w-4xl mx-auto px-5 sm:px-8 text-center">
+      
+      <span class="text-xs font-semibold uppercase tracking-widest text-forest-700 mb-3 block">
+        Sustainable Practice Growth
+      </span>
+
+      <!-- Headline -->
+      <h2 class="font-editorial text-3xl sm:text-4xl lg:text-5xl font-normal text-forest-950 mb-8 leading-tight">
+        It's Not Just About Answering Questions
+      </h2>
+
+      <!-- Verbatim Body Copy -->
+      <div class="text-base sm:text-lg text-obsidian-700 leading-relaxed space-y-6 max-w-2xl mx-auto text-center font-normal">
+        <p>
+          Every visitor who reaches out and doesn't get an answer is a booking that doesn't happen. Every hour your staff spends answering &ldquo;do you take my insurance&rdquo; is an hour not spent with a client, or not spent growing the practice.
+        </p>
+        <p class="font-medium text-forest-950">
+          Ellen doesn't just save time. She closes the gap between someone deciding to reach out and someone becoming a client, at the exact moment that gap is easiest to lose.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- =========================================================================
+       6. NEW SECTION — REVENUE IMPACT CALCULATOR
+       ========================================================================= -->
+  <section id="calculator" class="py-20 sm:py-28 bg-white border-b border-forest-900/5">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      
+      <div class="max-w-3xl mx-auto text-center mb-14">
+        <h2 class="font-editorial text-3xl sm:text-4xl lg:text-5xl font-normal text-forest-950 mb-3 leading-tight">
+          See What Missed Inquiries Are Actually Costing You
+        </h2>
+        <p class="text-base sm:text-lg text-obsidian-700 leading-relaxed font-normal">
+          No guessing. Put in your own numbers.
+        </p>
+      </div>
+
+      <!-- Centered Glassmorphism Card Matching Existing Design System -->
+      <div class="max-w-3xl mx-auto rounded-3xl p-8 sm:p-12 glass-panel shadow-glass border border-forest-900/10">
+        
+        <!-- 3 Input Fields -->
+        <div class="space-y-6 mb-10">
+          
+          <!-- Field 1: Monthly Visitors -->
+          <div>
+            <label for="calc-visitors" class="block text-xs sm:text-sm font-semibold text-forest-950 mb-2">
+              How many people visit your website per month?
+            </label>
+            <input 
+              type="number" 
+              id="calc-visitors" 
+              value="200" 
+              placeholder="200"
+              min="1"
+              class="w-full h-12 px-4 rounded-xl bg-linen-50 border border-forest-900/15 focus:border-forest-800 focus:bg-white text-sm text-obsidian-900 focus:outline-none focus:ring-2 focus:ring-forest-800/10 transition-all font-medium"
+            />
+          </div>
+
+          <!-- Field 2: Conversion Rate -->
+          <div>
+            <label for="calc-conversion" class="block text-xs sm:text-sm font-semibold text-forest-950 mb-2">
+              Of the people who inquire, what percentage do you currently convert to a booked session? (%)
+            </label>
+            <input 
+              type="number" 
+              id="calc-conversion" 
+              value="20" 
+              placeholder="20"
+              min="0"
+              max="100"
+              class="w-full h-12 px-4 rounded-xl bg-linen-50 border border-forest-900/15 focus:border-forest-800 focus:bg-white text-sm text-obsidian-900 focus:outline-none focus:ring-2 focus:ring-forest-800/10 transition-all font-medium"
+            />
+          </div>
+
+          <!-- Field 3: Average Client Value -->
+          <div>
+            <label for="calc-value" class="block text-xs sm:text-sm font-semibold text-forest-950 mb-1">
+              What's the average value of a client to your practice? ($)
+            </label>
+            <span class="block text-xs text-obsidian-500 mb-2 italic">
+              per session or per client, whichever you'd like to estimate
+            </span>
+            <input 
+              type="number" 
+              id="calc-value" 
+              value="150" 
+              placeholder="150"
+              min="1"
+              class="w-full h-12 px-4 rounded-xl bg-linen-50 border border-forest-900/15 focus:border-forest-800 focus:bg-white text-sm text-obsidian-900 focus:outline-none focus:ring-2 focus:ring-forest-800/10 transition-all font-medium"
+            />
+          </div>
+
+        </div>
+
+        <!-- Live-Updating Results Box -->
+        <div class="rounded-2xl p-6 sm:p-8 bg-sage-50/90 border border-forest-900/10 space-y-4 mb-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-forest-900/10">
+            <span class="text-xs sm:text-sm font-medium text-obsidian-700">Estimated inquiries that go unanswered or unconverted each month:</span>
+            <span id="res-unconverted" class="font-editorial text-2xl font-semibold text-forest-950">160</span>
+          </div>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-forest-900/10">
+            <span class="text-xs sm:text-sm font-medium text-obsidian-700">If even half of those converted instead:</span>
+            <span class="font-editorial text-2xl font-semibold text-forest-950"><span id="res-clients">80</span> more clients / month</span>
+          </div>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-1">
+            <span class="text-sm font-bold text-forest-950">Estimated monthly value:</span>
+            <span id="res-monthly-value" class="font-editorial text-3xl font-bold text-forest-900">$12,000</span>
+          </div>
+        </div>
+
+        <!-- Visible Caption Under Result -->
+        <p class="text-xs text-obsidian-600 leading-relaxed mb-8 text-center">
+          This is a simple estimate based on the numbers you entered, not a guarantee. Actual results depend on your specific practice and visitors.
+        </p>
+
+        <!-- CTA Below Result -->
+        <div class="text-center">
+          <a 
+            href="#lead-capture"
+            class="inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-sm font-semibold text-linen-100 bg-forest-800 hover:bg-forest-900 transition-all shadow-subtle hover:scale-[1.02]"
+          >
+            <span>Want to See This In Action for Your Practice? → Get a Free Demo</span>
+          </a>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- =========================================================================
+       7. THREE-CARD MILESTONE SECTION (WHAT ELLEN DOES FOR YOUR PRACTICE)
+       ========================================================================= -->
+  <section id="capabilities" class="py-20 sm:py-28 relative">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      
+      <!-- Section Header -->
+      <div class="max-w-3xl mx-auto text-center mb-16">
+        <h2 class="font-editorial text-3xl sm:text-4xl lg:text-5xl font-normal text-forest-950 mb-4 leading-tight">
+          What Ellen Does For Your Practice
+        </h2>
+        <p class="text-base sm:text-lg text-obsidian-700 leading-relaxed">
+          Every conversation grounded in your practice's real information, matched to what your visitors actually need.
+        </p>
+      </div>
+
+      <!-- 3 Cards Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+        
+        <!-- Card 1 -->
+        <div class="bg-white rounded-3xl p-8 border border-forest-900/10 shadow-subtle hover:shadow-float hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
+          <div>
+            <div class="w-14 h-14 rounded-2xl bg-sage-100 text-forest-800 flex items-center justify-center mb-6">
+              <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <h3 class="font-editorial text-2xl font-normal text-forest-950 mb-3">Instant, Grounded Answers</h3>
+            <p class="text-sm text-obsidian-700 leading-relaxed mb-6">
+              Real answers on services, policies, and insurance, straight from your practice, never guessed.
+            </p>
+          </div>
+          <button 
+            type="button" 
+            class="capability-example-btn inline-flex items-center justify-between w-full px-5 py-3 rounded-full text-xs font-semibold text-forest-900 bg-sage-100 hover:bg-sage-200 transition-colors"
+            data-prompt="What are your practice policies and insurance options?"
+          >
+            <span>See Example</span>
+            <span class="w-5 h-5 rounded-full bg-forest-800 text-white flex items-center justify-center text-[10px]">➔</span>
+          </button>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="bg-white rounded-3xl p-8 border border-forest-900/10 shadow-subtle hover:shadow-float hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
+          <div>
+            <div class="w-14 h-14 rounded-2xl bg-terracotta-100 text-terracotta-700 flex items-center justify-center mb-6">
+              <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            </div>
+            <h3 class="font-editorial text-2xl font-normal text-forest-950 mb-3">Smart Therapist Matching</h3>
+            <p class="text-sm text-obsidian-700 leading-relaxed mb-6">
+              Routes visitors to the specialist who fits, your team confirms the final call.
+            </p>
+          </div>
+          <button 
+            type="button" 
+            class="capability-example-btn inline-flex items-center justify-between w-full px-5 py-3 rounded-full text-xs font-semibold text-forest-900 bg-sage-100 hover:bg-sage-200 transition-colors"
+            data-prompt="I need help finding the right therapist for anxiety."
+          >
+            <span>See Example</span>
+            <span class="w-5 h-5 rounded-full bg-forest-800 text-white flex items-center justify-center text-[10px]">➔</span>
+          </button>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="bg-white rounded-3xl p-8 border border-forest-900/10 shadow-subtle hover:shadow-float hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
+          <div>
+            <div class="w-14 h-14 rounded-2xl bg-sage-100 text-forest-800 flex items-center justify-center mb-6">
+              <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            </div>
+            <h3 class="font-editorial text-2xl font-normal text-forest-950 mb-3">Zero-Loss Lead Capture</h3>
+            <p class="text-sm text-obsidian-700 leading-relaxed mb-6">
+              Every inquiry logged automatically, nothing sits unread in an inbox.
+            </p>
+          </div>
+          <button 
+            type="button" 
+            class="capability-example-btn inline-flex items-center justify-between w-full px-5 py-3 rounded-full text-xs font-semibold text-forest-900 bg-sage-100 hover:bg-sage-200 transition-colors"
+            data-prompt="I would like to request an intake consultation."
+          >
+            <span>See Example</span>
+            <span class="w-5 h-5 rounded-full bg-forest-800 text-white flex items-center justify-center text-[10px]">➔</span>
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- =========================================================================
+       8. FOUR-STEP SECTION (SIMPLE STEPS TO GET ELLEN LIVE)
        ========================================================================= -->
   <section id="steps" class="py-12 sm:py-16 relative">
     <div class="max-w-7xl mx-auto px-5 sm:px-8">
       
-      <!-- Big Card with Background Image -->
       <div class="relative rounded-[36px] overflow-hidden min-h-[640px] flex flex-col justify-between p-8 sm:p-14 lg:p-16 shadow-float border border-forest-900/10 text-white">
         
-        <!-- Scenic Image of Happy Friends in Wildflower Meadow -->
         <img 
           src="simple_steps_friends.jpg" 
-          alt="Simple steps to start healing today" 
+          alt="Simple Steps to Get Ellen Live" 
           class="absolute inset-0 w-full h-full object-cover object-center"
         />
 
-        <!-- Dark Gradient Overlay -->
-        <div class="absolute inset-0 bg-gradient-to-b from-forest-950/80 via-forest-950/45 to-forest-950/90"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-forest-950/85 via-forest-950/50 to-forest-950/90"></div>
 
         <!-- Header Content -->
         <div class="relative z-10 max-w-xl">
           <h2 class="font-editorial text-3xl sm:text-4xl lg:text-5xl font-normal text-linen-50 mb-4 leading-tight">
-            Simple steps to <span class="italic text-sage-200">start healing today</span>
+            Simple Steps to <span class="italic text-sage-200">Get Ellen Live</span>
           </h2>
           <p class="text-sm sm:text-base text-linen-200/90 leading-relaxed mb-6">
-            Starting therapy should feel welcoming, not intimidating. Ellen and our clinical team make your intake seamless, safe, and transparent.
+            From first conversation to a working assistant on your site, without a long implementation process.
           </p>
           <a 
-            href="#demo-modal"
-            class="open-demo-modal inline-flex items-center gap-2 px-6 py-3 rounded-full text-xs sm:text-sm font-semibold text-forest-950 bg-linen-100 hover:bg-white transition-all shadow-sm"
+            href="#lead-capture"
+            class="inline-flex items-center gap-2 px-6 py-3 rounded-full text-xs sm:text-sm font-semibold text-forest-950 bg-linen-100 hover:bg-white transition-all shadow-sm"
           >
-            <span>Begin Your Journey</span>
+            <span>Get Started Free</span>
             <span class="w-5 h-5 rounded-full bg-forest-800 text-white flex items-center justify-center text-[10px]">➔</span>
           </a>
         </div>
 
-        <!-- 4 Glassmorphic Step Cards across Bottom (Exact match to reference) -->
+        <!-- 4 Step Cards across Bottom -->
         <div class="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mt-12">
           
           <!-- Step 1 -->
           <div class="glass-panel-dark rounded-2xl p-6 border border-white/20">
             <span class="text-xs font-bold text-sage-300 tracking-wider block mb-2">STEP 01</span>
-            <h3 class="font-editorial text-lg text-linen-50 mb-2">Reach Out Anytime</h3>
+            <h3 class="font-editorial text-lg text-linen-50 mb-2">Tell Us About Your Practice</h3>
             <p class="text-xs text-linen-200/80 leading-relaxed">
-              Connect with Ellen 24/7 right on our website or submit our gentle online intake.
+              Share your services, therapists, and policies.
             </p>
           </div>
 
           <!-- Step 2 -->
           <div class="glass-panel-dark rounded-2xl p-6 border border-white/20">
             <span class="text-xs font-bold text-sage-300 tracking-wider block mb-2">STEP 02</span>
-            <h3 class="font-editorial text-lg text-linen-50 mb-2">Personalized Match</h3>
+            <h3 class="font-editorial text-lg text-linen-50 mb-2">We Build Ellen Around You</h3>
             <p class="text-xs text-linen-200/80 leading-relaxed">
-              We align your focus area, schedule preferences, and insurance with the ideal therapist.
+              Trained on your actual content, not a generic script.
             </p>
           </div>
 
           <!-- Step 3 -->
           <div class="glass-panel-dark rounded-2xl p-6 border border-white/20">
             <span class="text-xs font-bold text-sage-300 tracking-wider block mb-2">STEP 03</span>
-            <h3 class="font-editorial text-lg text-linen-50 mb-2">Confirm Session</h3>
+            <h3 class="font-editorial text-lg text-linen-50 mb-2">Preview & Approve</h3>
             <p class="text-xs text-linen-200/80 leading-relaxed">
-              Choose in-person or telehealth care with clear, upfront pricing and scheduling confirmation.
+              See exactly how Ellen responds before she goes live.
             </p>
           </div>
 
           <!-- Step 4 -->
           <div class="glass-panel-dark rounded-2xl p-6 border border-white/20">
             <span class="text-xs font-bold text-sage-300 tracking-wider block mb-2">STEP 04</span>
-            <h3 class="font-editorial text-lg text-linen-50 mb-2">Begin Healing</h3>
+            <h3 class="font-editorial text-lg text-linen-50 mb-2">Go Live on Your Site</h3>
             <p class="text-xs text-linen-200/80 leading-relaxed">
-              Meet your counselor in a judgment-free sanctuary dedicated to lasting growth.
+              Start capturing every visitor, day one.
             </p>
           </div>
 
@@ -484,123 +674,118 @@
 
 
   <!-- =========================================================================
-       6. WHY PEOPLE FEEL SAFE WITH OUR CARE (5-Element Grid & Tall Center Photo)
+       9. "WHY PRACTICES TRUST ELLEN" SECTION
        ========================================================================= -->
-  <section id="why-safe" class="py-20 sm:py-28 relative">
+  <section id="customizations" class="py-20 sm:py-28 relative">
     <div class="max-w-7xl mx-auto px-5 sm:px-8">
       
-      <!-- Section Header -->
       <div class="max-w-3xl mx-auto text-center mb-16">
         <h2 class="font-editorial text-3xl sm:text-4xl lg:text-5xl font-normal text-forest-950 mb-4 leading-tight">
-          Why people feel safe <span class="italic font-medium text-forest-800">with our care</span>
+          Why Practices Trust Ellen
         </h2>
         <p class="text-base sm:text-lg text-obsidian-700 leading-relaxed">
-          Grounded in clinical excellence, compassionate listening, and uncompromising patient privacy.
+          Built with the guardrails a mental health practice actually needs, not bolted on as an afterthought.
         </p>
       </div>
 
-      <!-- 5-Element Grid: Left 2 cards, Center tall image, Right 2 cards -->
+      <!-- 5-Element Layout: 2 cards left, tall photo center, 2 cards right -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch mb-12">
         
-        <!-- Left Column (2 Cards) -->
+        <!-- Left Column -->
         <div class="lg:col-span-4 flex flex-col justify-between gap-6">
-          <!-- Card 1 -->
           <div class="bg-white rounded-3xl p-7 sm:p-8 border border-forest-900/10 shadow-subtle flex-1 flex flex-col justify-between">
             <div>
               <div class="w-12 h-12 rounded-2xl bg-sage-100 text-forest-800 flex items-center justify-center mb-5">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
               </div>
-              <h3 class="font-editorial text-xl font-normal text-forest-950 mb-2">Evidence-Based Therapy</h3>
+              <h3 class="font-editorial text-xl font-normal text-forest-950 mb-2">Never Guesses</h3>
               <p class="text-xs sm:text-sm text-obsidian-700 leading-relaxed">
-                Proven therapeutic modalities including CBT, ACT, and somatic experiencing tailored to your individual healing goals.
+                Every answer comes from your real practice content, never invented.
               </p>
             </div>
-            <div class="mt-4 pt-4 border-t border-forest-900/5 text-[11px] font-semibold text-forest-700 uppercase tracking-wider">
-              Clinical Excellence
+            <div class="mt-4 pt-4 border-t border-forest-900/5 text-xs font-semibold text-forest-700">
+              Learn More →
             </div>
           </div>
 
-          <!-- Card 2 -->
           <div class="bg-white rounded-3xl p-7 sm:p-8 border border-forest-900/10 shadow-subtle flex-1 flex flex-col justify-between">
             <div>
               <div class="w-12 h-12 rounded-2xl bg-terracotta-100 text-terracotta-700 flex items-center justify-center mb-5">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
               </div>
-              <h3 class="font-editorial text-xl font-normal text-forest-950 mb-2">Compassionate First Contact</h3>
+              <h3 class="font-editorial text-xl font-normal text-forest-950 mb-2">Built-In Clinical Boundaries</h3>
               <p class="text-xs sm:text-sm text-obsidian-700 leading-relaxed">
-                Ellen provides immediate, warm listening without clinical judgment or rigid questionnaires, available 24/7.
+                Never diagnoses, never gives clinical advice, ever.
               </p>
             </div>
-            <div class="mt-4 pt-4 border-t border-forest-900/5 text-[11px] font-semibold text-terracotta-600 uppercase tracking-wider">
-              Human-Centered Intake
+            <div class="mt-4 pt-4 border-t border-forest-900/5 text-xs font-semibold text-terracotta-600">
+              Learn More →
             </div>
           </div>
         </div>
 
-        <!-- Center Column: Tall Portrait Image (Sunhat woman in wildflower meadow) -->
+        <!-- Center Tall Photo -->
         <div class="lg:col-span-4 rounded-3xl overflow-hidden min-h-[420px] lg:min-h-[520px] shadow-float border border-forest-900/10 relative">
           <img 
             src="tall_sunhat_meadow.jpg" 
-            alt="Serene walk in wildflower meadow" 
+            alt="Practices Trust Ellen" 
             class="w-full h-full object-cover object-center"
           />
-          <div class="absolute inset-0 bg-gradient-to-t from-forest-950/60 via-transparent to-transparent"></div>
+          <div class="absolute inset-0 bg-gradient-to-t from-forest-950/70 via-transparent to-transparent"></div>
           <div class="absolute bottom-6 left-6 right-6 text-white text-center">
-            <span class="font-editorial text-lg italic text-linen-100">&ldquo;A peaceful sanctuary for your mind.&rdquo;</span>
+            <span class="font-editorial text-lg italic text-linen-100">&ldquo;Strict clinical guardrails you can rely on.&rdquo;</span>
           </div>
         </div>
 
-        <!-- Right Column (2 Cards) -->
+        <!-- Right Column -->
         <div class="lg:col-span-4 flex flex-col justify-between gap-6">
-          <!-- Card 3 -->
           <div class="bg-white rounded-3xl p-7 sm:p-8 border border-forest-900/10 shadow-subtle flex-1 flex flex-col justify-between">
             <div>
               <div class="w-12 h-12 rounded-2xl bg-sage-100 text-forest-800 flex items-center justify-center mb-5">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
               </div>
-              <h3 class="font-editorial text-xl font-normal text-forest-950 mb-2">Confidential & Secure</h3>
+              <h3 class="font-editorial text-xl font-normal text-forest-950 mb-2">Handles Crisis Correctly</h3>
               <p class="text-xs sm:text-sm text-obsidian-700 leading-relaxed">
-                Bank-grade encryption and rigorous HIPAA compliance safeguard every inquiry, message, and clinical record.
+                Fixed, tested crisis response, real resources, every time.
               </p>
             </div>
-            <div class="mt-4 pt-4 border-t border-forest-900/5 text-[11px] font-semibold text-forest-700 uppercase tracking-wider">
-              Strict Privacy Standard
+            <div class="mt-4 pt-4 border-t border-forest-900/5 text-xs font-semibold text-forest-700">
+              Learn More →
             </div>
           </div>
 
-          <!-- Card 4 -->
           <div class="bg-white rounded-3xl p-7 sm:p-8 border border-forest-900/10 shadow-subtle flex-1 flex flex-col justify-between">
             <div>
               <div class="w-12 h-12 rounded-2xl bg-terracotta-100 text-terracotta-700 flex items-center justify-center mb-5">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
               </div>
-              <h3 class="font-editorial text-xl font-normal text-forest-950 mb-2">Tailored to Your Schedule</h3>
+              <h3 class="font-editorial text-xl font-normal text-forest-950 mb-2">Knows When to Step Aside</h3>
               <p class="text-xs sm:text-sm text-obsidian-700 leading-relaxed">
-                Choose daytime, evening, or weekend sessions across both in-person and secure telehealth options.
+                Seamless handoff to your team, whenever it's needed.
               </p>
             </div>
-            <div class="mt-4 pt-4 border-t border-forest-900/5 text-[11px] font-semibold text-terracotta-600 uppercase tracking-wider">
-              Flexible Appointments
+            <div class="mt-4 pt-4 border-t border-forest-900/5 text-xs font-semibold text-terracotta-600">
+              Learn More →
             </div>
           </div>
         </div>
 
       </div>
 
-      <!-- Dark Forest Green Banner Card Below (matching reference image) -->
+      <!-- Dark CTA Banner -->
       <div class="rounded-3xl bg-forest-900 text-white p-8 sm:p-12 text-center max-w-4xl mx-auto shadow-float border border-forest-800">
         <h3 class="font-editorial text-2xl sm:text-3xl lg:text-4xl font-normal text-linen-50 mb-3">
-          You do not have to carry everything alone.
+          You Don't Have to Be Available 24/7. Ellen Is.
         </h3>
         <p class="text-sm sm:text-base text-sage-200/90 leading-relaxed max-w-xl mx-auto mb-8 font-normal">
-          Whether it is midnight or a Sunday afternoon, take a quiet breath. Ellen is here right now to listen and connect you with support.
+          Ellen works quietly in the background so your clinical schedule is full and your staff isn't interrupted by repetitive inquiries.
         </p>
         <button 
           type="button" 
-          id="safe-section-chat-btn"
+          id="see-ellen-action-btn"
           class="inline-flex items-center gap-2.5 px-8 py-3.5 rounded-full text-sm font-semibold text-forest-950 bg-linen-100 hover:bg-white transition-all shadow-sm hover:scale-[1.02]"
         >
-          <span>Talk to Ellen Now</span>
+          <span>See Ellen In Action</span>
           <span class="w-5 h-5 rounded-full bg-forest-800 text-white flex items-center justify-center text-[10px]">➔</span>
         </button>
       </div>
@@ -610,160 +795,72 @@
 
 
   <!-- =========================================================================
-       7. VIBE-CODED YOUNG THERAPIST FEATURE (User Requested Cool Vibe)
+       10. WHAT THIS ACTUALLY SOLVES (3 Scenario Cards, No Fake Testimonials)
        ========================================================================= -->
-  <section id="vibe-therapist" class="py-20 sm:py-28 bg-sage-50/60 border-y border-forest-900/5">
-    <div class="max-w-7xl mx-auto px-5 sm:px-8">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-        
-        <!-- Left: Cool Young Therapist Image with Phone and Plants -->
-        <div class="lg:col-span-6 relative">
-          <div class="relative rounded-[32px] overflow-hidden shadow-float border border-forest-900/10">
-            <img 
-              src="therapist_phone_happy.jpg" 
-              alt="Young therapist using phone and happy" 
-              class="w-full h-auto object-cover"
-            />
-            
-            <!-- Floating Vibe Pill Badge -->
-            <div class="absolute bottom-6 left-6 right-6 glass-panel rounded-2xl p-4 shadow-glass border border-white/80 flex items-center gap-3.5">
-              <span class="w-3 h-3 rounded-full bg-emerald-500 animate-ping"></span>
-              <div>
-                <span class="text-xs font-bold text-forest-950 block">Instant Connection · Zero Phone Tag</span>
-                <span class="text-[11px] text-obsidian-600">Therapists receiving qualified intake notes seamlessly</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Right: Editorial Vibe Copy -->
-        <div class="lg:col-span-6 flex flex-col items-start text-left">
-          
-          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sage-100 text-[12px] font-semibold text-forest-800 mb-5 border border-sage-200">
-            ✨ Modern Practice Experience
-          </div>
-
-          <h2 class="font-editorial text-3xl sm:text-4xl lg:text-5xl font-normal text-forest-950 mb-6 leading-tight">
-            Therapy that feels like a <span class="italic font-medium text-forest-800">breath of fresh air</span>
-          </h2>
-
-          <p class="text-base sm:text-lg text-obsidian-700 leading-relaxed mb-8">
-            No phone tag, no clinical coldness, and no waiting days just to find out if someone accepts your insurance. Reaching out should feel as natural as texting a trusted friend. Ellen handles the logistics so our clinicians can focus 100% on you.
-          </p>
-
-          <div class="space-y-4 text-sm text-obsidian-800 mb-9 w-full">
-            <div class="flex items-center gap-3">
-              <div class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center text-xs font-bold shrink-0">✓</div>
-              <span><strong>Instant 24/7 intake</strong> right from your phone or laptop.</span>
-            </div>
-            <div class="flex items-center gap-3">
-              <div class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center text-xs font-bold shrink-0">✓</div>
-              <span><strong>Matched with warm clinicians</strong> who truly understand your lifestyle.</span>
-            </div>
-            <div class="flex items-center gap-3">
-              <div class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center text-xs font-bold shrink-0">✓</div>
-              <span><strong>Frictionless scheduling</strong> with clear, upfront session fees.</span>
-            </div>
-          </div>
-
-          <div class="flex flex-wrap items-center gap-4">
-            <button 
-              type="button" 
-              id="vibe-chat-btn"
-              class="inline-flex items-center gap-2 px-7 py-3.5 rounded-full text-sm font-semibold text-linen-100 bg-forest-800 hover:bg-forest-900 transition-all shadow-subtle hover:scale-[1.02]"
-            >
-              <span>Chat with Ellen Right Now</span>
-              <span>➔</span>
-            </button>
-            <a 
-              href="#therapists"
-              class="inline-flex items-center gap-2 px-6 py-3.5 rounded-full text-sm font-medium text-forest-900 bg-white hover:bg-sage-100 border border-forest-900/15 transition-all"
-            >
-              Meet Our Clinicians
-            </a>
-          </div>
-
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-
-  <!-- =========================================================================
-       8. STORIES FROM PEOPLE WHO CHOSE OUR CARE (Testimonials Mosaic)
-       ========================================================================= -->
-  <section class="py-20 sm:py-28 relative">
+  <section id="why-it-matters" class="py-20 sm:py-28 relative">
     <div class="max-w-7xl mx-auto px-5 sm:px-8">
       
       <!-- Section Header -->
       <div class="max-w-3xl mx-auto text-center mb-16">
         <h2 class="font-editorial text-3xl sm:text-4xl lg:text-5xl font-normal text-forest-950 mb-4 leading-tight">
-          Stories from people <span class="italic font-medium text-forest-800">who chose our care</span>
+          What This Actually Solves
         </h2>
         <p class="text-base sm:text-lg text-obsidian-700 leading-relaxed">
-          Real reflections from individuals who found clarity, peace, and compassionate guidance.
+          Real situations practices run into, and how Ellen handles them.
         </p>
       </div>
 
-      <!-- 3-Column Asymmetric Mosaic (Matching Reference Design) -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 mb-12">
+      <!-- 3 Scenario Cards (Clearly not attributed to real people, no fake ratings/names) -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
         
-        <!-- Column 1: Testimonial on top, photo below -->
-        <div class="flex flex-col gap-6">
-          <div class="bg-white rounded-3xl p-7 border border-forest-900/10 shadow-subtle">
-            <div class="flex items-center gap-1 text-amber-500 text-xs mb-3">★★★★★</div>
-            <p class="text-sm text-obsidian-800 leading-relaxed mb-4 italic">
-              &ldquo;Reaching out at 11pm when anxiety was spiraling felt terrifying. Ellen answered immediately and warmly. I was booked with Dr. Emily two days later. Life feels manageable again.&rdquo;
+        <!-- Scenario 1 -->
+        <div class="bg-white rounded-3xl p-8 border border-forest-900/10 shadow-subtle flex flex-col justify-between">
+          <div>
+            <div class="w-12 h-12 rounded-2xl bg-sage-100 text-forest-800 flex items-center justify-center mb-6">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+            </div>
+            <h3 class="font-editorial text-2xl font-normal text-forest-950 mb-3">The 11pm Visitor</h3>
+            <p class="text-sm text-obsidian-700 leading-relaxed">
+              Someone finally decides to reach out after hours. Ellen answers immediately instead of losing them to a closed tab.
             </p>
-            <span class="text-xs font-bold text-forest-950 block">Marcus T.</span>
-            <span class="text-[11px] text-obsidian-500">Individual Therapy Client</span>
           </div>
-          <div class="rounded-3xl overflow-hidden h-64 border border-forest-900/10 shadow-subtle">
-            <img src="service_individual.jpg" alt="Client story portrait" class="w-full h-full object-cover" />
+          <div class="mt-8 pt-4 border-t border-forest-900/5 text-xs text-forest-700 font-semibold">
+            Scenario: After-Hours Intake Capture
           </div>
         </div>
 
-        <!-- Column 2: Photo on top, testimonial below -->
-        <div class="flex flex-col gap-6">
-          <div class="rounded-3xl overflow-hidden h-64 border border-forest-900/10 shadow-subtle">
-            <img src="hero_kid.jpg" alt="Client story portrait" class="w-full h-full object-cover" />
-          </div>
-          <div class="bg-white rounded-3xl p-7 border border-forest-900/10 shadow-subtle">
-            <div class="flex items-center gap-1 text-amber-500 text-xs mb-3">★★★★★</div>
-            <p class="text-sm text-obsidian-800 leading-relaxed mb-4 italic">
-              &ldquo;Dr. Elena Marsh helped us untangle years of miscommunication in couples therapy. MindBridge created the safe space we desperately needed.&rdquo;
+        <!-- Scenario 2 -->
+        <div class="bg-white rounded-3xl p-8 border border-forest-900/10 shadow-subtle flex flex-col justify-between">
+          <div>
+            <div class="w-12 h-12 rounded-2xl bg-terracotta-100 text-terracotta-700 flex items-center justify-center mb-6">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+            </div>
+            <h3 class="font-editorial text-2xl font-normal text-forest-950 mb-3">The Repetitive Question</h3>
+            <p class="text-sm text-obsidian-700 leading-relaxed">
+              &ldquo;Do you take my insurance?&rdquo; asked for the hundredth time. Ellen answers it instantly, freeing your staff for real conversations.
             </p>
-            <span class="text-xs font-bold text-forest-950 block">Sarah & David L.</span>
-            <span class="text-[11px] text-obsidian-500">Couples Counseling</span>
+          </div>
+          <div class="mt-8 pt-4 border-t border-forest-900/5 text-xs text-terracotta-600 font-semibold">
+            Scenario: Routine Policy Resolution
           </div>
         </div>
 
-        <!-- Column 3: Testimonial on top, photo below -->
-        <div class="flex flex-col gap-6">
-          <div class="bg-white rounded-3xl p-7 border border-forest-900/10 shadow-subtle">
-            <div class="flex items-center gap-1 text-amber-500 text-xs mb-3">★★★★★</div>
-            <p class="text-sm text-obsidian-800 leading-relaxed mb-4 italic">
-              &ldquo;The matching process was effortless. I felt understood from my very first session. Being able to do telehealth during my lunch break fits my life perfectly.&rdquo;
+        <!-- Scenario 3 -->
+        <div class="bg-white rounded-3xl p-8 border border-forest-900/10 shadow-subtle flex flex-col justify-between">
+          <div>
+            <div class="w-12 h-12 rounded-2xl bg-sage-100 text-forest-800 flex items-center justify-center mb-6">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <h3 class="font-editorial text-2xl font-normal text-forest-950 mb-3">The Uncertain Visitor</h3>
+            <p class="text-sm text-obsidian-700 leading-relaxed">
+              Someone who doesn't know where to start. Ellen guides them warmly toward the right next step instead of a confusing form.
             </p>
-            <span class="text-xs font-bold text-forest-950 block">Devon K.</span>
-            <span class="text-[11px] text-obsidian-500">Mindfulness & Stress Client</span>
           </div>
-          <div class="rounded-3xl overflow-hidden h-64 border border-forest-900/10 shadow-subtle">
-            <img src="community_card.jpg" alt="Client story portrait" class="w-full h-full object-cover" />
+          <div class="mt-8 pt-4 border-t border-forest-900/5 text-xs text-forest-700 font-semibold">
+            Scenario: Warm Guided Triage
           </div>
         </div>
 
-      </div>
-
-      <!-- Navigation Arrows Indicator -->
-      <div class="flex items-center justify-center gap-3">
-        <button type="button" class="w-10 h-10 rounded-full border border-forest-900/20 bg-white text-forest-900 flex items-center justify-center hover:bg-sage-100 transition-colors" aria-label="Previous story">
-          ←
-        </button>
-        <button type="button" class="w-10 h-10 rounded-full border border-forest-900/20 bg-forest-800 text-linen-100 flex items-center justify-center hover:bg-forest-900 transition-colors" aria-label="Next story">
-          →
-        </button>
       </div>
 
     </div>
@@ -771,112 +868,109 @@
 
 
   <!-- =========================================================================
-       9. MEET THE PROFESSIONALS (Featured Therapist & Clinical Roster)
+       11. SEE ELLEN IN ACTION (Conversation Snippets)
        ========================================================================= -->
-  <section id="therapists" class="py-20 sm:py-28 bg-white border-y border-forest-900/5">
+  <section id="ellen-in-action" class="py-20 sm:py-28 bg-white border-y border-forest-900/5">
     <div class="max-w-7xl mx-auto px-5 sm:px-8">
       
       <!-- Section Header -->
       <div class="max-w-3xl mx-auto text-center mb-16">
         <h2 class="font-editorial text-3xl sm:text-4xl lg:text-5xl font-normal text-forest-950 mb-4 leading-tight">
-          Meet the professionals <span class="italic font-medium text-forest-800">behind the care</span>
+          See Ellen In Action
         </h2>
         <p class="text-base sm:text-lg text-obsidian-700 leading-relaxed">
-          Licensed psychologists, counselors, and therapists dedicated to your emotional flourishing.
+          A few real examples of how she handles different visitors.
         </p>
       </div>
 
-      <!-- Featured Therapist Spotlight Card (Matching Reference Layout) -->
-      <div class="rounded-3xl bg-sage-50/70 border border-forest-900/10 p-8 sm:p-12 mb-12 shadow-subtle">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-          
-          <!-- Left Bio Card -->
-          <div class="lg:col-span-7 flex flex-col items-start text-left">
-            <span class="text-xs font-bold text-forest-700 uppercase tracking-wider mb-2">Featured Clinical Lead</span>
-            <h3 class="font-editorial text-3xl sm:text-4xl font-normal text-forest-950 mb-2">Dr. Emily Chen, PsyD</h3>
-            <p class="text-sm font-semibold text-terracotta-600 mb-5">Lead Clinical Psychologist · Anxiety & Burnout Specialist</p>
-            
-            <blockquote class="font-editorial text-xl text-forest-900 italic leading-relaxed mb-6">
-              &ldquo;Therapy is not about fixing what is broken; it is about creating the safe space for your natural resilience and emotional peace to grow.&rdquo;
-            </blockquote>
-
-            <div class="space-y-2 text-xs text-obsidian-700 mb-8">
-              <div><strong>Specialties:</strong> Panic Disorders, High-Achiever Burnout, Somatic Experiencing</div>
-              <div><strong>Education & Training:</strong> Stanford & UC Berkeley Trained · 12+ Years Clinical Practice</div>
-            </div>
-
-            <a 
-              href="#demo-modal"
-              class="open-demo-modal inline-flex items-center gap-2 px-6 py-3 rounded-full text-xs sm:text-sm font-semibold text-linen-100 bg-forest-800 hover:bg-forest-900 transition-all shadow-sm"
-            >
-              <span>Book with Dr. Chen</span>
-              <span>➔</span>
-            </a>
-          </div>
-
-          <!-- Right: Cutout Photo Portrait -->
-          <div class="lg:col-span-5 flex justify-center">
-            <div class="w-full max-w-sm rounded-3xl overflow-hidden shadow-float border border-white/80">
-              <img 
-                src="therapist_lead_emily.jpg" 
-                alt="Dr. Emily Chen, Lead Clinical Psychologist" 
-                class="w-full h-auto object-cover"
-              />
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- Clinical Team Thumbnails Row (Matching Reference) -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 mb-10">
+      <!-- Featured Real Example Exchange Card -->
+      <div class="rounded-3xl bg-sage-50/70 border border-forest-900/10 p-8 sm:p-12 mb-10 shadow-subtle max-w-4xl mx-auto">
         
-        <!-- Member 1 -->
-        <div class="bg-linen-50 rounded-2xl p-4 text-center border border-forest-900/10 hover:shadow-subtle transition-all">
-          <div class="w-16 h-16 rounded-full overflow-hidden mx-auto mb-3 border border-forest-900/10">
-            <img src="therapist_elena_1789586235360.jpg" alt="Dr. Marcus Vance" class="w-full h-full object-cover" onerror="this.src='ellen_avatar.jpg'" />
+        <div class="flex items-center gap-3 mb-6 pb-4 border-b border-forest-900/10">
+          <div class="w-10 h-10 rounded-full bg-forest-800 text-linen-100 flex items-center justify-center font-editorial font-bold">
+            E
           </div>
-          <div class="text-xs font-bold text-forest-950">Dr. Marcus Vance</div>
-          <div class="text-[10.5px] text-obsidian-500 mt-0.5">Adult Psychiatry</div>
+          <div>
+            <span class="text-xs font-bold text-forest-950 block">Couples Counseling Inquiry Example</span>
+            <span class="text-[11px] text-obsidian-500">Live conversational response snippet</span>
+          </div>
         </div>
 
-        <!-- Member 2 -->
-        <div class="bg-linen-50 rounded-2xl p-4 text-center border border-forest-900/10 hover:shadow-subtle transition-all">
-          <div class="w-16 h-16 rounded-full overflow-hidden mx-auto mb-3 border border-forest-900/10">
-            <img src="ellen_avatar.jpg" alt="Elena Marsh" class="w-full h-full object-cover" />
+        <div class="space-y-4 mb-6 text-sm">
+          <!-- Visitor message -->
+          <div class="flex justify-end">
+            <div class="max-w-[85%] rounded-2xl rounded-tr-sm bg-forest-800 text-linen-100 px-4 py-3 shadow-sm">
+              &ldquo;My partner and I are having a hard time communicating lately. Do you have couples therapists who have evening openings?&rdquo;
+            </div>
           </div>
-          <div class="text-xs font-bold text-forest-950">Elena Marsh, LMFT</div>
-          <div class="text-[10.5px] text-obsidian-500 mt-0.5">Couples Counseling</div>
+
+          <!-- Ellen response -->
+          <div class="flex justify-start">
+            <div class="max-w-[90%] rounded-2xl rounded-tl-sm bg-white border border-forest-900/10 text-obsidian-800 px-5 py-4 shadow-subtle">
+              <p class="mb-2.5">
+                I understand how challenging relationship strain can feel, and reaching out together is a meaningful step.
+              </p>
+              <p class="mb-2.5">
+                Yes, our practice has licensed marriage and family therapists who offer evening appointments on select weekdays to accommodate busy schedules.
+              </p>
+              <p class="text-forest-800 font-medium">
+                May I ask your preferred weekday so our clinical team can confirm therapist availability with you?
+              </p>
+            </div>
+          </div>
         </div>
 
-        <!-- Member 3: Active Card (Dark Highlight matching reference) -->
-        <div class="bg-forest-900 text-white rounded-2xl p-4 text-center border border-forest-800 shadow-sm">
-          <div class="w-16 h-16 rounded-full overflow-hidden mx-auto mb-3 ring-2 ring-sage-300">
-            <img src="therapist_lead_emily.jpg" alt="Dr. Emily Chen" class="w-full h-full object-cover" />
-          </div>
-          <div class="text-xs font-bold text-linen-100">Dr. Emily Chen</div>
-          <div class="text-[10.5px] text-sage-200 mt-0.5">Lead Psychologist</div>
-        </div>
-
-        <!-- Member 4 -->
-        <div class="bg-linen-50 rounded-2xl p-4 text-center border border-forest-900/10 hover:shadow-subtle transition-all">
-          <div class="w-16 h-16 rounded-full overflow-hidden mx-auto mb-3 border border-forest-900/10">
-            <img src="service_individual.jpg" alt="Samuel O'Connor" class="w-full h-full object-cover" />
-          </div>
-          <div class="text-xs font-bold text-forest-950">Samuel O'Connor</div>
-          <div class="text-[10.5px] text-obsidian-500 mt-0.5">Mindfulness & ACT</div>
+        <!-- Caveat badge -->
+        <div class="p-3.5 rounded-xl bg-linen-100 border border-forest-900/10 text-xs text-obsidian-600 flex items-center gap-2">
+          <span class="text-forest-800 font-bold">Note:</span>
+          <span>Final assignment and scheduling confirmation is always handled directly by your practice team.</span>
         </div>
 
       </div>
 
-      <div class="text-center">
-        <a 
-          href="#demo-modal"
-          class="open-demo-modal inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-xs font-semibold text-forest-900 bg-sage-100 hover:bg-sage-200 border border-sage-300/60 transition-all"
+      <!-- 4 Smaller Scenario Cards -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 max-w-4xl mx-auto">
+        
+        <button 
+          type="button" 
+          class="scenario-snippet-btn bg-linen-50 hover:bg-sage-100 rounded-2xl p-5 text-center border border-forest-900/10 hover:shadow-subtle transition-all"
+          data-prompt="Hi, I'm reaching out late at night. Are you accepting new patients for individual counseling?"
         >
-          <span>Explore Full Clinical Roster</span>
-          <span>➔</span>
-        </a>
+          <div class="text-2xl mb-2">🌙</div>
+          <div class="text-xs sm:text-sm font-bold text-forest-950">Late-Night Inquiry</div>
+          <div class="text-[11px] text-obsidian-500 mt-1">Test 11pm intake ➔</div>
+        </button>
+
+        <button 
+          type="button" 
+          class="scenario-snippet-btn bg-linen-50 hover:bg-sage-100 rounded-2xl p-5 text-center border border-forest-900/10 hover:shadow-subtle transition-all"
+          data-prompt="Do you take Blue Cross or offer out-of-network superbills?"
+        >
+          <div class="text-2xl mb-2">📋</div>
+          <div class="text-xs sm:text-sm font-bold text-forest-950">Insurance Question</div>
+          <div class="text-[11px] text-obsidian-500 mt-1">Test policy answers ➔</div>
+        </button>
+
+        <button 
+          type="button" 
+          class="scenario-snippet-btn bg-linen-50 hover:bg-sage-100 rounded-2xl p-5 text-center border border-forest-900/10 hover:shadow-subtle transition-all"
+          data-prompt="I am feeling overwhelmed and having a severe crisis."
+        >
+          <div class="text-2xl mb-2">🛡️</div>
+          <div class="text-xs sm:text-sm font-bold text-forest-950">Crisis Detected</div>
+          <div class="text-[11px] text-obsidian-500 mt-1">Test 988 guardrails ➔</div>
+        </button>
+
+        <button 
+          type="button" 
+          class="scenario-snippet-btn bg-linen-50 hover:bg-sage-100 rounded-2xl p-5 text-center border border-forest-900/10 hover:shadow-subtle transition-all"
+          data-prompt="I'd like to book an initial consultation with Dr. Emily."
+        >
+          <div class="text-2xl mb-2">📅</div>
+          <div class="text-xs sm:text-sm font-bold text-forest-950">Ready to Book</div>
+          <div class="text-[11px] text-obsidian-500 mt-1">Test booking intake ➔</div>
+        </button>
+
       </div>
 
     </div>
@@ -884,7 +978,130 @@
 
 
   <!-- =========================================================================
-       10. FREQUENTLY ASKED QUESTIONS (Matching Reference 2-Col Accordion)
+       12. NEW SECTION — LEAD CAPTURE FORM (GET ELLEN BUILT FOR YOUR PRACTICE)
+       ========================================================================= -->
+  <section id="lead-capture" class="py-20 sm:py-28 bg-linen-50 border-b border-forest-900/5">
+    <div class="max-w-2xl mx-auto px-5 sm:px-8">
+      
+      <!-- Headline & Subheadline -->
+      <div class="text-center mb-10">
+        <span class="text-xs font-semibold uppercase tracking-widest text-forest-700 mb-2 block">
+          Tailored Practice Demonstration
+        </span>
+        <h2 class="font-editorial text-3xl sm:text-4xl lg:text-5xl font-normal text-forest-950 mb-3 leading-tight">
+          Get Ellen Built For Your Practice
+        </h2>
+        <p class="text-base sm:text-lg text-obsidian-700 leading-relaxed font-normal">
+          Tell us a bit about your practice, we'll reach out with a custom demo.
+        </p>
+      </div>
+
+      <!-- Glassmorphic Form Card -->
+      <div class="glass-panel rounded-3xl p-8 sm:p-10 shadow-glass border border-forest-900/10 bg-white">
+        
+        <form id="practice-inquiry-form" class="space-y-5 text-left">
+          
+          <!-- Practice Name (required) -->
+          <div>
+            <label class="block text-xs font-semibold text-obsidian-700 mb-1.5" for="lead-practice-name">
+              Practice Name <span class="text-red-500">*</span>
+            </label>
+            <input 
+              type="text" 
+              id="lead-practice-name" 
+              required 
+              placeholder="e.g. Pacific Coast Therapy Collective" 
+              class="w-full h-12 px-4 rounded-xl bg-linen-50 border border-forest-900/15 focus:border-forest-800 focus:bg-white text-sm text-obsidian-900 focus:outline-none focus:ring-2 focus:ring-forest-800/10 transition-all"
+            />
+          </div>
+
+          <!-- Your Name (required) -->
+          <div>
+            <label class="block text-xs font-semibold text-obsidian-700 mb-1.5" for="lead-contact-name">
+              Your Name <span class="text-red-500">*</span>
+            </label>
+            <input 
+              type="text" 
+              id="lead-contact-name" 
+              required 
+              placeholder="e.g. Dr. Jordan Hayes" 
+              class="w-full h-12 px-4 rounded-xl bg-linen-50 border border-forest-900/15 focus:border-forest-800 focus:bg-white text-sm text-obsidian-900 focus:outline-none focus:ring-2 focus:ring-forest-800/10 transition-all"
+            />
+          </div>
+
+          <!-- Email (required) -->
+          <div>
+            <label class="block text-xs font-semibold text-obsidian-700 mb-1.5" for="lead-contact-email">
+              Email Address <span class="text-red-500">*</span>
+            </label>
+            <input 
+              type="email" 
+              id="lead-contact-email" 
+              required 
+              placeholder="jordan@pacifictherapy.demo" 
+              class="w-full h-12 px-4 rounded-xl bg-linen-50 border border-forest-900/15 focus:border-forest-800 focus:bg-white text-sm text-obsidian-900 focus:outline-none focus:ring-2 focus:ring-forest-800/10 transition-all"
+            />
+          </div>
+
+          <!-- Website URL (optional) -->
+          <div>
+            <label class="block text-xs font-semibold text-obsidian-700 mb-1.5" for="lead-website-url">
+              Website URL <span class="text-obsidian-400 font-normal">(Optional)</span>
+            </label>
+            <input 
+              type="text" 
+              id="lead-website-url" 
+              placeholder="https://pacifictherapy.demo" 
+              class="w-full h-12 px-4 rounded-xl bg-linen-50 border border-forest-900/15 focus:border-forest-800 focus:bg-white text-sm text-obsidian-900 focus:outline-none focus:ring-2 focus:ring-forest-800/10 transition-all"
+            />
+          </div>
+
+          <!-- Hoping Ellen helps with (optional textarea) -->
+          <div>
+            <label class="block text-xs font-semibold text-obsidian-700 mb-1.5" for="lead-notes">
+              What are you hoping Ellen helps with? <span class="text-obsidian-400 font-normal">(Optional)</span>
+            </label>
+            <textarea 
+              id="lead-notes" 
+              rows="3" 
+              placeholder="e.g. Answering late-night insurance questions, routing to 4 different clinician specialties, freeing front desk staff..."
+              class="w-full p-4 rounded-xl bg-linen-50 border border-forest-900/15 focus:border-forest-800 focus:bg-white text-sm text-obsidian-900 focus:outline-none focus:ring-2 focus:ring-forest-800/10 transition-all"
+            ></textarea>
+          </div>
+
+          <!-- Submit Button -->
+          <button 
+            type="submit" 
+            id="lead-submit-btn"
+            class="w-full h-13 py-3.5 rounded-xl font-semibold text-sm text-linen-100 bg-forest-800 hover:bg-forest-900 transition-all shadow-subtle hover:shadow-float active:scale-[0.99] flex items-center justify-center gap-2"
+          >
+            <span>Get My Free Demo</span>
+            <span class="text-xs">➔</span>
+          </button>
+
+        </form>
+
+        <!-- Success Confirmation Display -->
+        <div id="lead-success-msg" class="hidden text-center py-10">
+          <div class="w-14 h-14 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center mx-auto mb-4 text-2xl font-bold">
+            ✓
+          </div>
+          <h3 class="font-editorial text-2xl sm:text-3xl text-forest-950 mb-2 font-normal">
+            We've Received Your Practice Inquiry
+          </h3>
+          <p class="text-xs sm:text-sm text-obsidian-600 leading-relaxed max-w-md mx-auto">
+            Thank you! Our team will review your practice information and reach out within 24 to 48 hours with a customized demo of Ellen trained on your website.
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- =========================================================================
+       13. FAQ SECTION (7 Practice-Owner Questions)
        ========================================================================= -->
   <section id="faq" class="py-20 sm:py-28 relative">
     <div class="max-w-7xl mx-auto px-5 sm:px-8">
@@ -897,7 +1114,7 @@
               Frequently<br />Asked Questions
             </h2>
             <p class="text-sm sm:text-base text-obsidian-700 leading-relaxed mb-6">
-              Have more questions? Ellen is online 24/7 to answer anything about services, fees, or therapist match.
+              Answers to common questions from practice directors and clinic managers about onboarding Ellen.
             </p>
             <button 
               type="button" 
@@ -909,7 +1126,6 @@
             </button>
           </div>
 
-          <!-- Square Image (Woman in Wildflower Sunset Field) -->
           <div class="rounded-3xl overflow-hidden shadow-subtle border border-forest-900/10 max-w-sm">
             <img 
               src="faq_field_sunlight.jpg" 
@@ -919,72 +1135,83 @@
           </div>
         </div>
 
-        <!-- Right Column: Interactive Accordion List -->
+        <!-- Right Column: 7 Practice-Owner Questions -->
         <div class="lg:col-span-7 space-y-4">
           
-          <!-- FAQ 1 (Open by default with sage highlight matching reference) -->
+          <!-- FAQ 1 (Open by default) -->
           <div class="faq-item active rounded-2xl bg-sage-150 border border-sage-300 p-6 cursor-pointer transition-all">
             <div class="faq-header flex items-center justify-between font-semibold text-sm sm:text-base text-forest-950">
-              <span>How quickly can I be matched with a therapist?</span>
+              <span>Does Ellen replace my staff?</span>
               <span class="faq-icon text-lg text-forest-800 transition-transform duration-200">+</span>
             </div>
             <div class="faq-answer mt-3 text-xs sm:text-sm text-obsidian-700 leading-relaxed">
-              Most clients are matched and scheduled within 24 to 48 hours. Ellen can check immediate counselor availability and reserve your preferred day and time in real time.
+              No. Ellen is designed to assist your team, not replace them. She handles after-hours inquiries, answers repetitive logistical questions (hours, accepted insurances, practice focus), and gathers prospective client preferences. Your clinical and administrative staff always retains final review over therapist assignment and appointment confirmation.
             </div>
           </div>
 
           <!-- FAQ 2 -->
           <div class="faq-item rounded-2xl bg-white border border-forest-900/10 p-6 cursor-pointer transition-all hover:bg-sage-50/50">
             <div class="faq-header flex items-center justify-between font-semibold text-sm sm:text-base text-forest-950">
-              <span>Do you accept health insurance or provide superbills?</span>
+              <span>How long does setup take?</span>
               <span class="faq-icon text-lg text-forest-800 transition-transform duration-200">+</span>
             </div>
             <div class="faq-answer mt-3 text-xs sm:text-sm text-obsidian-700 leading-relaxed">
-              Yes, we work with several major PPO health plans and provide comprehensive itemized superbills for out-of-network reimbursement. Ellen can verify your plan coverage during intake.
+              Most practice builds are ready to preview in 2 to 3 business days. We train Ellen on your practice website, clinician biographies, accepted insurance plans, and published policies so she is grounded in your real information before she ever interacts with a visitor.
             </div>
           </div>
 
           <!-- FAQ 3 -->
           <div class="faq-item rounded-2xl bg-white border border-forest-900/10 p-6 cursor-pointer transition-all hover:bg-sage-50/50">
             <div class="faq-header flex items-center justify-between font-semibold text-sm sm:text-base text-forest-950">
-              <span>Is my conversation with Ellen completely confidential?</span>
+              <span>Can Ellen be customized to our specific therapists and specialties?</span>
               <span class="faq-icon text-lg text-forest-800 transition-transform duration-200">+</span>
             </div>
             <div class="faq-answer mt-3 text-xs sm:text-sm text-obsidian-700 leading-relaxed">
-              Absolutely. MindBridge operates under strict HIPAA administrative guidelines with 256-bit encryption. Your disclosures are shared solely with the clinician preparing for your session.
+              Yes. Ellen is configured specifically around your roster of clinicians, their individual focus areas (e.g. CBT, trauma, couples, adolescents), and their current caseload availability, rather than following a one-size-fits-all script.
             </div>
           </div>
 
           <!-- FAQ 4 -->
           <div class="faq-item rounded-2xl bg-white border border-forest-900/10 p-6 cursor-pointer transition-all hover:bg-sage-50/50">
             <div class="faq-header flex items-center justify-between font-semibold text-sm sm:text-base text-forest-950">
-              <span>What is the difference between Ellen and a human counselor?</span>
+              <span>What happens if a visitor mentions a crisis?</span>
               <span class="faq-icon text-lg text-forest-800 transition-transform duration-200">+</span>
             </div>
             <div class="faq-answer mt-3 text-xs sm:text-sm text-obsidian-700 leading-relaxed">
-              Ellen is our administrative AI assistant. She provides 24/7 intake support, answers logistical questions, and matches you with clinicians. She does not diagnose or provide medical therapy.
+              Safety guardrails are hardcoded into Ellen's routing architecture. If crisis, self-harm, or emergency language is detected, Ellen immediately provides established crisis intervention resources (988 Suicide & Crisis Lifeline, Crisis Text Line, and 911) and stops standard intake dialogue.
             </div>
           </div>
 
           <!-- FAQ 5 -->
           <div class="faq-item rounded-2xl bg-white border border-forest-900/10 p-6 cursor-pointer transition-all hover:bg-sage-50/50">
             <div class="faq-header flex items-center justify-between font-semibold text-sm sm:text-base text-forest-950">
-              <span>Can I choose between in-person and telehealth sessions?</span>
+              <span>Is there a free demo before we commit to anything?</span>
               <span class="faq-icon text-lg text-forest-800 transition-transform duration-200">+</span>
             </div>
             <div class="faq-answer mt-3 text-xs sm:text-sm text-obsidian-700 leading-relaxed">
-              Yes, we offer both in-person appointments at our tranquil clinic and encrypted, high-definition telehealth sessions across the state.
+              Yes. We build a functional demonstration of Ellen trained on your practice's public content so you can test her conversations directly before making any commitment.
             </div>
           </div>
 
           <!-- FAQ 6 -->
           <div class="faq-item rounded-2xl bg-white border border-forest-900/10 p-6 cursor-pointer transition-all hover:bg-sage-50/50">
             <div class="faq-header flex items-center justify-between font-semibold text-sm sm:text-base text-forest-950">
-              <span>What if I need immediate crisis support?</span>
+              <span>How is our practice's and clients' data handled?</span>
               <span class="faq-icon text-lg text-forest-800 transition-transform duration-200">+</span>
             </div>
             <div class="faq-answer mt-3 text-xs sm:text-sm text-obsidian-700 leading-relaxed">
-              If you or a loved one are experiencing acute distress or suicidal thoughts, please dial or text 988 for the National Suicide & Crisis Lifeline, or call 911 immediately.
+              We operate under standard administrative HIPAA safeguards and industry-standard encryption. Visitor inquiries and contact information are transmitted securely and delivered directly to your practice without unauthorized sharing.
+            </div>
+          </div>
+
+          <!-- FAQ 7 -->
+          <div class="faq-item rounded-2xl bg-white border border-forest-900/10 p-6 cursor-pointer transition-all hover:bg-sage-50/50">
+            <div class="faq-header flex items-center justify-between font-semibold text-sm sm:text-base text-forest-950">
+              <span>Does Ellen integrate with our existing scheduling or CRM tools?</span>
+              <span class="faq-icon text-lg text-forest-800 transition-transform duration-200">+</span>
+            </div>
+            <div class="faq-answer mt-3 text-xs sm:text-sm text-obsidian-700 leading-relaxed">
+              Ellen can log inquiries and intake requests directly into Google Sheets, send instant notifications, or connect with practice management workflows via secure webhooks without disrupting your existing operations.
             </div>
           </div>
 
@@ -996,46 +1223,44 @@
 
 
   <!-- =========================================================================
-       11. BOTTOM PANORAMA CTA ("Start your journey to healing today")
+       14. FINAL CTA BANNER
        ========================================================================= -->
   <section class="py-16 sm:py-24 relative overflow-hidden">
     <div class="max-w-7xl mx-auto px-5 sm:px-8">
       
-      <!-- Panoramic Scenic Banner matching reference image -->
       <div class="relative rounded-[36px] overflow-hidden min-h-[460px] flex items-center justify-center text-center p-8 sm:p-14 shadow-float border border-forest-900/10 text-white">
         
-        <!-- Panoramic Mountain Meadow Background Image -->
         <img 
           src="bottom_landscape_meadow.jpg" 
-          alt="Start your journey to healing today" 
+          alt="Start Giving Every Visitor an Answer" 
           class="absolute inset-0 w-full h-full object-cover object-center"
         />
 
-        <!-- Dark Gradient Overlay -->
         <div class="absolute inset-0 bg-gradient-to-t from-forest-950/85 via-forest-950/50 to-forest-950/80"></div>
 
         <div class="relative z-10 max-w-2xl mx-auto">
+          <!-- Exact Headline -->
           <h2 class="font-editorial text-3xl sm:text-4xl lg:text-5xl font-normal text-linen-50 mb-4 leading-tight">
-            Start your journey to <span class="italic text-sage-200">healing today</span>
+            Start Giving Every Visitor an Answer
           </h2>
+          <!-- Exact Subheadline -->
           <p class="text-base sm:text-lg text-linen-200/90 leading-relaxed mb-8 max-w-lg mx-auto">
-            Take the first gentle step. Reach out right now to check therapist openings, discuss insurance, or speak with Ellen.
+            See exactly how Ellen would work on your site, no commitment required.
           </p>
           <div class="flex flex-wrap items-center justify-center gap-4">
             <a 
-              href="#demo-modal"
-              class="open-demo-modal inline-flex items-center gap-2.5 px-8 py-4 rounded-full text-sm font-semibold text-forest-950 bg-linen-100 hover:bg-white transition-all shadow-subtle hover:scale-[1.02]"
+              href="#lead-capture"
+              class="inline-flex items-center gap-2.5 px-8 py-4 rounded-full text-sm font-semibold text-forest-950 bg-linen-100 hover:bg-white transition-all shadow-subtle hover:scale-[1.02]"
             >
-              <span>Book a Consultation</span>
+              <span>Get a Free Demo</span>
               <span class="w-6 h-6 rounded-full bg-forest-800 text-white flex items-center justify-center text-xs">➔</span>
             </a>
-            <button 
-              type="button" 
-              id="bottom-chat-btn"
+            <a 
+              href="#lead-capture"
               class="inline-flex items-center gap-2 px-7 py-4 rounded-full text-sm font-medium text-linen-100 bg-white/20 hover:bg-white/30 border border-white/30 backdrop-blur-md transition-all"
             >
-              <span>Chat with Ellen</span>
-            </button>
+              <span>See Pricing</span>
+            </a>
           </div>
         </div>
 
@@ -1046,72 +1271,73 @@
 
 
   <!-- =========================================================================
-       12. FOOTER (Dark Forest Green matching reference design)
+       15. FOOTER
        ========================================================================= -->
   <footer class="bg-forest-950 text-linen-200/80 pt-20 pb-14 border-t border-white/10">
     <div class="max-w-7xl mx-auto px-5 sm:px-8">
       
       <div class="grid grid-cols-1 md:grid-cols-12 gap-10 pb-16 border-b border-white/10">
         
-        <!-- Brand & Contact Info -->
+        <!-- Brand & Contact Placeholders (Flagged for real user input) -->
         <div class="md:col-span-5 flex flex-col items-start">
           <div class="flex items-center gap-3 mb-4">
             <div class="w-9 h-9 rounded-full bg-forest-800 text-linen-100 flex items-center justify-center font-editorial text-lg shadow-sm border border-forest-700/40">
-              M
+              E
             </div>
-            <span class="font-editorial text-2xl text-linen-50">mindbridge</span>
+            <span class="font-editorial text-2xl text-linen-50">MindBridge Wellness · Ellen</span>
           </div>
           <p class="text-xs sm:text-sm text-sage-200/70 leading-relaxed max-w-sm mb-6">
-            Compassionate, evidence-based outpatient mental health care combined with Ellen, our warm 24/7 intake assistant.
+            The AI intake assistant built specifically for outpatient mental health and wellness practices.
           </p>
           <div class="text-xs text-sage-200/60 space-y-1.5">
-            <div>📍 450 Sutter St, Suite 1400, San Francisco, CA</div>
-            <div>📞 (555) 349-2810 · Mon–Fri 8am–8pm PT</div>
-            <div>✉️ care@mindbridgewellness.demo</div>
+            <div>📍 Practice Address: 450 Sutter St, Suite 1400, San Francisco, CA <span class="text-sage-400 font-semibold italic">[Pending Real Address]</span></div>
+            <div>📞 Practice Phone: (555) 349-2810 <span class="text-sage-400 font-semibold italic">[Pending Real Phone]</span></div>
+            <div>✉️ Inquiries: care@mindbridgewellness.demo <span class="text-sage-400 font-semibold italic">[Pending Real Email]</span></div>
           </div>
         </div>
 
-        <!-- Links: Services -->
+        <!-- Links: The Assistant -->
         <div class="md:col-span-2">
-          <h4 class="text-xs font-bold uppercase tracking-wider text-linen-100 mb-4">Care Services</h4>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-linen-100 mb-4">The Assistant</h4>
           <ul class="space-y-2.5 text-xs text-sage-200/70">
-            <li><a href="#services" class="hover:text-white transition-colors">Anxiety & Panic</a></li>
-            <li><a href="#services" class="hover:text-white transition-colors">Depression & Mood</a></li>
-            <li><a href="#services" class="hover:text-white transition-colors">Couples Therapy</a></li>
-            <li><a href="#services" class="hover:text-white transition-colors">Burnout & Somatics</a></li>
-            <li><a href="#services" class="hover:text-white transition-colors">Telehealth Care</a></li>
+            <li><a href="#the-assistant" class="hover:text-white transition-colors">Overview</a></li>
+            <li><a href="#cost-of-missed-inquiry" class="hover:text-white transition-colors">Why Inquiries Matter</a></li>
+            <li><a href="#calculator" class="hover:text-white transition-colors">Revenue Calculator</a></li>
+            <li><a href="#capabilities" class="hover:text-white transition-colors">Capabilities</a></li>
           </ul>
         </div>
 
-        <!-- Links: Approach -->
+        <!-- Links: Integration -->
         <div class="md:col-span-2">
-          <h4 class="text-xs font-bold uppercase tracking-wider text-linen-100 mb-4">Approach</h4>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-linen-100 mb-4">Practice Fit</h4>
           <ul class="space-y-2.5 text-xs text-sage-200/70">
-            <li><a href="#steps" class="hover:text-white transition-colors">How Intake Works</a></li>
-            <li><a href="#why-safe" class="hover:text-white transition-colors">Clinical Standards</a></li>
-            <li><a href="#therapists" class="hover:text-white transition-colors">Clinical Team</a></li>
-            <li><a href="#faq" class="hover:text-white transition-colors">Insurance & Fees</a></li>
+            <li><a href="#steps" class="hover:text-white transition-colors">Implementation Steps</a></li>
+            <li><a href="#customizations" class="hover:text-white transition-colors">Clinical Boundaries</a></li>
+            <li><a href="#why-it-matters" class="hover:text-white transition-colors">What It Solves</a></li>
+            <li><a href="#faq" class="hover:text-white transition-colors">Practice Owner FAQ</a></li>
           </ul>
         </div>
 
-        <!-- Links: 24/7 Care & Crisis -->
+        <!-- Demo Inquiries Column -->
         <div class="md:col-span-3">
-          <h4 class="text-xs font-bold uppercase tracking-wider text-linen-100 mb-4">Immediate Support</h4>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-linen-100 mb-4">Custom Demonstration</h4>
           <p class="text-xs text-sage-200/70 leading-relaxed mb-4">
-            Ellen is online 24/7 on this page to answer questions, explain insurance, and schedule sessions.
+            See how Ellen looks and sounds when trained on your clinic's services and clinician roster.
           </p>
-          <div class="p-3.5 rounded-xl bg-white/5 border border-white/10 text-[11px] text-sage-200/80 leading-relaxed">
-            <strong class="text-white block mb-1">In an emergency:</strong>
-            Call or text <strong>988</strong> for immediate crisis support, or call <strong>911</strong>.
-          </div>
+          <a 
+            href="#lead-capture" 
+            class="inline-block px-5 py-2.5 rounded-full text-xs font-semibold text-linen-100 bg-forest-800 hover:bg-forest-900 border border-forest-700/60 transition-all shadow-sm"
+          >
+            Get a Free Demo ➔
+          </a>
         </div>
 
       </div>
 
-      <!-- Bottom Compliance Disclaimer & Copyright -->
+      <!-- Compliance Statement & Copyright -->
       <div class="pt-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs text-sage-200/50">
         <p>
-          Ellen is an administrative AI assistant, not a licensed medical provider. She does not diagnose, treat, or provide clinical medical advice.
+          Ellen is an administrative AI assistant, not a licensed medical provider. She does not diagnose, treat, or provide clinical advice.
         </p>
         <p>&copy; 2026 MindBridge Wellness. All rights reserved.</p>
       </div>
@@ -1121,111 +1347,48 @@
 
 
   <!-- =========================================================================
-       13. CONSULTATION / INTAKE BOOKING MODAL
-       ========================================================================= -->
-  <div id="demo-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 hidden bg-forest-950/60 backdrop-blur-md transition-opacity" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-    <div class="glass-panel w-full max-w-lg rounded-3xl p-7 sm:p-9 shadow-2xl border border-white/90 relative overflow-hidden bg-white">
-      
-      <!-- Close button -->
-      <button 
-        type="button" 
-        id="close-modal-btn"
-        class="absolute top-6 right-6 w-9 h-9 rounded-full bg-linen-100 hover:bg-linen-200 text-obsidian-700 flex items-center justify-center transition-colors"
-        aria-label="Close modal"
-      >
-        ✕
-      </button>
-
-      <div class="mb-6">
-        <span class="text-xs font-semibold uppercase tracking-wider text-forest-700 block mb-1">
-          MindBridge Wellness
-        </span>
-        <h3 id="modal-title" class="font-editorial text-2xl sm:text-3xl font-normal text-forest-950">
-          Book Your Initial Consultation
-        </h3>
-        <p class="text-xs sm:text-sm text-obsidian-600 mt-2 leading-relaxed">
-          Share a few details and our clinical coordinator will reach out to confirm your therapist match within 24 hours.
-        </p>
-      </div>
-
-      <form id="practice-demo-form" class="space-y-4 text-left">
-        <div>
-          <label class="block text-xs font-semibold text-obsidian-700 mb-1" for="modal-contact-name">Your Full Name</label>
-          <input 
-            type="text" 
-            id="modal-contact-name" 
-            required 
-            placeholder="e.g. Jordan Hayes" 
-            class="w-full h-11 px-4 rounded-xl bg-linen-50 border border-forest-900/15 focus:border-forest-800 text-sm text-obsidian-900 focus:outline-none focus:ring-2 focus:ring-forest-800/10"
-          />
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-semibold text-obsidian-700 mb-1" for="modal-contact-email">Email Address</label>
-            <input 
-              type="email" 
-              id="modal-contact-email" 
-              required 
-              placeholder="jordan@example.com" 
-              class="w-full h-11 px-4 rounded-xl bg-linen-50 border border-forest-900/15 focus:border-forest-800 text-sm text-obsidian-900 focus:outline-none focus:ring-2 focus:ring-forest-800/10"
-            />
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-obsidian-700 mb-1" for="modal-contact-phone">Phone (Optional)</label>
-            <input 
-              type="tel" 
-              id="modal-contact-phone" 
-              placeholder="(555) 000-0000" 
-              class="w-full h-11 px-4 rounded-xl bg-linen-50 border border-forest-900/15 focus:border-forest-800 text-sm text-obsidian-900 focus:outline-none focus:ring-2 focus:ring-forest-800/10"
-            />
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-xs font-semibold text-obsidian-700 mb-1" for="modal-service-focus">Primary Care Interest</label>
-          <select 
-            id="modal-service-focus" 
-            class="w-full h-11 px-4 rounded-xl bg-linen-50 border border-forest-900/15 focus:border-forest-800 text-sm text-obsidian-900 focus:outline-none focus:ring-2 focus:ring-forest-800/10"
-          >
-            <option value="Anxiety">Anxiety & Stress Coping</option>
-            <option value="Depression">Depression & Mood Support</option>
-            <option value="Couples">Couples / Relationship Therapy</option>
-            <option value="General">General Personal Growth</option>
-          </select>
-        </div>
-
-        <button 
-          type="submit" 
-          id="modal-submit-btn"
-          class="w-full h-12 rounded-xl font-semibold text-sm text-linen-100 bg-forest-800 hover:bg-forest-900 transition-all shadow-subtle hover:shadow-float mt-2"
-        >
-          Submit Consultation Request
-        </button>
-      </form>
-
-      <div id="modal-success" class="hidden text-center py-8">
-        <div class="w-12 h-12 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center mx-auto mb-4 text-xl">✓</div>
-        <h4 class="font-editorial text-2xl text-forest-950 mb-2">Thank you!</h4>
-        <p class="text-xs sm:text-sm text-obsidian-600 leading-relaxed">
-          We have received your consultation inquiry. Our clinical intake team will follow up within 24 hours. You can also chat directly with Ellen right now using the button on the bottom right.
-        </p>
-      </div>
-
-    </div>
-  </div>
-
-
-  <!-- =========================================================================
-       14. REAL DEPLOYED WIDGET INTEGRATION
+       WIDGET SCRIPT INTEGRATION & INTERACTION LOGIC
        ========================================================================= -->
   <script src="widget.js"></script>
 
-  <!-- Interactive script linking buttons to Ellen and FAQ accordion -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       
-      // 1. FAQ Accordion functionality
+      // 1. REVENUE IMPACT CALCULATOR LOGIC
+      const inpVisitors = document.getElementById('calc-visitors');
+      const inpConversion = document.getElementById('calc-conversion');
+      const inpValue = document.getElementById('calc-value');
+
+      const resUnconverted = document.getElementById('res-unconverted');
+      const resClients = document.getElementById('res-clients');
+      const resMonthlyValue = document.getElementById('res-monthly-value');
+
+      function updateCalculator() {
+        const visitors = Math.max(0, parseFloat(inpVisitors.value) || 0);
+        const convRatePercent = Math.min(100, Math.max(0, parseFloat(inpConversion.value) || 0));
+        const clientVal = Math.max(0, parseFloat(inpValue.value) || 0);
+
+        // Calculation logic:
+        // unconverted inquiries = visitors * (1 - conversion rate entered / 100)
+        // additional potential clients = unconverted inquiries * 0.5
+        // estimated monthly value = additional potential clients * client value entered
+        const unconverted = visitors * (1 - (convRatePercent / 100));
+        const additionalClients = unconverted * 0.5;
+        const monthlyValue = additionalClients * clientVal;
+
+        if (resUnconverted) resUnconverted.textContent = Math.round(unconverted).toLocaleString();
+        if (resClients) resClients.textContent = Math.round(additionalClients).toLocaleString();
+        if (resMonthlyValue) resMonthlyValue.textContent = '$' + Math.round(monthlyValue).toLocaleString();
+      }
+
+      if (inpVisitors && inpConversion && inpValue) {
+        inpVisitors.addEventListener('input', updateCalculator);
+        inpConversion.addEventListener('input', updateCalculator);
+        inpValue.addEventListener('input', updateCalculator);
+        updateCalculator();
+      }
+
+      // 2. FAQ ACCORDION LOGIC
       document.querySelectorAll('.faq-item').forEach(item => {
         item.addEventListener('click', () => {
           const isActive = item.classList.contains('active');
@@ -1244,75 +1407,95 @@
         });
       });
 
-      // 2. Triggers to launch Ellen Chatbot directly
-      const launchEllen = (initialMessage) => {
+      // 3. CHATBOT OPEN / SEND HELPERS
+      const openEllen = (message) => {
         if (window.MindBridge && typeof window.MindBridge.open === 'function') {
           window.MindBridge.open();
-          if (initialMessage && typeof window.MindBridge.send === 'function') {
+          if (message && typeof window.MindBridge.send === 'function') {
             setTimeout(() => {
-              window.MindBridge.send(initialMessage);
+              window.MindBridge.send(message);
             }, 300);
           }
         }
       };
 
-      // Nav Chat button
-      const navChatBtn = document.getElementById('nav-chat-btn');
-      if (navChatBtn) navChatBtn.addEventListener('click', () => launchEllen());
-
-      // Hero explore with Ellen button
-      const heroTalkBtn = document.getElementById('hero-talk-ellen-btn');
-      if (heroTalkBtn) heroTalkBtn.addEventListener('click', () => launchEllen("Hi Ellen, can you tell me more about your therapy services and how to get started?"));
-
-      // Safe section chat button
-      const safeChatBtn = document.getElementById('safe-section-chat-btn');
-      if (safeChatBtn) safeChatBtn.addEventListener('click', () => launchEllen("I'd like to understand what appointment openings you have available."));
-
-      // Vibe section chat button
-      const vibeChatBtn = document.getElementById('vibe-chat-btn');
-      if (vibeChatBtn) vibeChatBtn.addEventListener('click', () => launchEllen("Hi! I'm looking to find the right therapist for my needs."));
-
-      // FAQ Ask Ellen button
-      const faqAskBtn = document.getElementById('faq-ask-ellen-btn');
-      if (faqAskBtn) faqAskBtn.addEventListener('click', () => launchEllen("Do you accept insurance or offer sliding scale rates?"));
-
-      // Bottom Banner chat button
-      const bottomChatBtn = document.getElementById('bottom-chat-btn');
-      if (bottomChatBtn) bottomChatBtn.addEventListener('click', () => launchEllen("I'd like to book an initial consultation."));
-
-      // Service Card Learn More triggers
-      document.querySelectorAll('.service-chat-trigger').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const topic = btn.getAttribute('data-topic');
-          launchEllen(`Can you tell me more about your ${topic} therapy and which clinicians specialize in it?`);
-        });
-      });
-
-      // 3. Modal open / close handlers
-      const modal = document.getElementById('demo-modal');
-      const closeBtn = document.getElementById('close-modal-btn');
-      const demoForm = document.getElementById('practice-demo-form');
-      const modalSuccess = document.getElementById('modal-success');
-
-      document.querySelectorAll('.open-demo-modal').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.preventDefault();
-          if (modal) modal.classList.remove('hidden');
-        });
-      });
-
-      if (closeBtn && modal) {
-        closeBtn.addEventListener('click', () => modal.classList.add('hidden'));
-        modal.addEventListener('click', (e) => {
-          if (e.target === modal) modal.classList.add('hidden');
-        });
+      const heroLiveBtn = document.getElementById('hero-see-live-demo-btn');
+      if (heroLiveBtn) {
+        heroLiveBtn.addEventListener('click', () => openEllen());
       }
 
-      if (demoForm) {
-        demoForm.addEventListener('submit', (e) => {
+      const seeEllenActionBtn = document.getElementById('see-ellen-action-btn');
+      if (seeEllenActionBtn) {
+        seeEllenActionBtn.addEventListener('click', () => openEllen());
+      }
+
+      const faqAskEllenBtn = document.getElementById('faq-ask-ellen-btn');
+      if (faqAskEllenBtn) {
+        faqAskEllenBtn.addEventListener('click', () => openEllen("Hi Ellen, can you explain how you handle visitor inquiries?"));
+      }
+
+      // Capability "See Example" buttons
+      document.querySelectorAll('.capability-example-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const prompt = btn.getAttribute('data-prompt');
+          openEllen(prompt);
+        });
+      });
+
+      // Scenario snippet buttons
+      document.querySelectorAll('.scenario-snippet-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const prompt = btn.getAttribute('data-prompt');
+          openEllen(prompt);
+        });
+      });
+
+      // 4. LEAD CAPTURE FORM SUBMISSION (WIRED TO API & GOOGLE SHEETS)
+      const leadForm = document.getElementById('practice-inquiry-form');
+      const leadSuccess = document.getElementById('lead-success-msg');
+
+      if (leadForm) {
+        leadForm.addEventListener('submit', async (e) => {
           e.preventDefault();
-          demoForm.classList.add('hidden');
-          if (modalSuccess) modalSuccess.classList.remove('hidden');
+          const practiceName = document.getElementById('lead-practice-name').value;
+          const contactName = document.getElementById('lead-contact-name').value;
+          const email = document.getElementById('lead-contact-email').value;
+          const website = document.getElementById('lead-website-url').value;
+          const notes = document.getElementById('lead-notes').value;
+
+          const submitBtn = document.getElementById('lead-submit-btn');
+          if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting Request...';
+          }
+
+          const payload = {
+            practice_name: practiceName,
+            name: contactName,
+            email: email,
+            website: website,
+            notes: notes
+          };
+
+          try {
+            // Determine backend URL
+            const backendUrl = (window.MINDBRIDGE_BACKEND_URL) || (
+              window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:'
+                ? 'http://127.0.0.1:8001' 
+                : 'https://mindbridge-ai-assistant.onrender.com'
+            );
+
+            await fetch(`${backendUrl}/api/practice-inquiry`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
+            });
+          } catch (err) {
+            console.warn('[Practice Inquiry Submission]: Logged locally, network err:', err);
+          } finally {
+            leadForm.classList.add('hidden');
+            if (leadSuccess) leadSuccess.classList.remove('hidden');
+          }
         });
       }
 

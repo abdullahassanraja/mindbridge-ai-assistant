@@ -206,6 +206,28 @@ async def chat(request: ChatRequest):
         return ChatResponse(response=fallback_msg, session_id=session_id)
 
 
+class PracticeInquiryRequest(BaseModel):
+    practice_name: str
+    name: str
+    email: str
+    website: Optional[str] = None
+    notes: Optional[str] = None
+
+
+@app.post("/api/practice-inquiry")
+async def create_practice_inquiry(inquiry: PracticeInquiryRequest):
+    """Log a wellness practice owner demo inquiry to Google Sheets 'Practice Inquiries' tab."""
+    from sheets import append_practice_inquiry
+    res = append_practice_inquiry({
+        "practice_name": inquiry.practice_name,
+        "name": inquiry.name,
+        "email": inquiry.email,
+        "website": inquiry.website,
+        "notes": inquiry.notes,
+    })
+    return {"status": "ok", "recorded": res}
+
+
 # Mount static landing page and widget assets if present
 widget_dir = api_dir.parent / "widget"
 if widget_dir.exists():

@@ -27,6 +27,9 @@ SCHEDULING_JSON_PATH = AGENT_DIR / "scheduling_requests.json"
 
 LEADS_TAB_NAME = "Leads"
 SCHEDULING_TAB_NAME = "Scheduling Requests"
+PRACTICE_INQUIRIES_TAB_NAME = "Practice Inquiries"
+
+PRACTICE_INQUIRIES_JSON_PATH = AGENT_DIR / "practice_inquiries.json"
 
 LEADS_HEADERS = [
     "Timestamp",
@@ -47,6 +50,15 @@ SCHEDULING_HEADERS = [
     "Matched Therapist (if any)",
     "Session ID",
     "Status",
+]
+
+PRACTICE_INQUIRIES_HEADERS = [
+    "Timestamp",
+    "Practice Name",
+    "Contact Name",
+    "Email",
+    "Website URL",
+    "Hoping Ellen Helps With",
 ]
 
 SCOPES = [
@@ -321,3 +333,60 @@ def append_scheduling_request(request_data: Dict[str, Any]) -> Dict[str, bool]:
             )
 
     return results
+
+
+def append_practice_inquiry(inquiry_data: Dict[str, Any]) -> Dict[str, bool]:
+    """Append a wellness practice owner demo inquiry to Google Sheets 'Practice Inquiries' tab and local fallback."""
+    timestamp = inquiry_data.get("timestamp") or datetime.now(timezone.utc).isoformat()
+    practice_name = inquiry_data.get("practice_name") or "Not provided"
+    name = inquiry_data.get("name") or inquiry_data.get("contact_name") or "Not provided"
+    email = inquiry_data.get("email") or "Not provided"
+    website = inquiry_data.get("website") or inquiry_data.get("website_url") or "Not provided"
+    notes = inquiry_data.get("notes") or inquiry_data.get("hoping_for") or "Not specified"
+
+    structured_record = {
+        "timestamp": timestamp,
+        "practice_name": practice_name,
+        "name": name,
+        "email": email,
+        "website": website,
+        "hoping_for": notes,
+    }
+
+    results = {"local_json": False, "google_sheets": False}
+
+    # 1. Parallel write to local fallback JSON
+    results["local_json"] = _append_to_local_json(PRACTICE_INQUIRIES_JSON_PATH, structured_record)
+
+    # 2. Write to Google Sheets in 'Practice Inquiries' tab (never mixed with fictional patient leads)
+    row = [
+        timestamp,
+        practice_name,
+        name,
+        email,
+        website,
+        notes,
+    ]
+    row = [_sanitize_cell(c) for c in row]
+
+    for attempt in range(2):
+        try:
+            spreadsheet = _get_spreadsheet()
+            worksheet = _get_or_create_worksheet(spreadsheet, PRACTICE_INQUIRIES_TAB_NAME, PRACTICE_INQUIRIES_HEADERS)
+            worksheet.append_row(row, value_input_option="USER_ENTERED")
+            results["google_sheets"] = True
+            logger.info(f"[Google Sheets] Successfully appended practice inquiry for '{practice_name}' to '{PRACTICE_INQUIRIES_TAB_NAME}'.")
+            break
+        except Exception as err:
+            err_str = str(err).lower()
+            if attempt == 0 and ("10054" in err_str or "connection" in err_str or "reset" in err_str or "aborted" in err_str):
+                import time
+                time.sleep(1.0)
+                continue
+            logger.error(
+                f"[Google Sheets Error] Failed appending practice inquiry to Sheets: {err}. "
+                f"Local fallback record saved: {results['local_json']}"
+            )
+
+    return results
+

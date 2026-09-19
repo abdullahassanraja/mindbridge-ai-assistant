@@ -24,6 +24,8 @@ handoffs.json
 **/handoffs.json
 scheduling_requests.json
 **/scheduling_requests.json
+practice_inquiries.json
+**/practice_inquiries.json
 *.log
 *credentials*.json
 project-*.json
