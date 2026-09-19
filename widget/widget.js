@@ -25,7 +25,7 @@
   // Ellen Avatar Image Path
   const currentScript = (typeof document !== 'undefined' && (document.currentScript || document.getElementById('mindbridge-widget-script'))) || null;
   const SCRIPT_BASE_URL = currentScript && currentScript.src ? currentScript.src.substring(0, currentScript.src.lastIndexOf('/')) : '';
-  const ELLEN_AVATAR_URL = SCRIPT_BASE_URL ? `${SCRIPT_BASE_URL}/ellen_icon.png` : 'ellen_icon.png';
+  const ELLEN_AVATAR_URL = SCRIPT_BASE_URL ? `${SCRIPT_BASE_URL}/ellen_avatar.jpg` : 'ellen_avatar.jpg';
 
   // 3 Quick Starter Options (displayed horizontally like the reference image)
   const STARTER_OPTIONS = [
