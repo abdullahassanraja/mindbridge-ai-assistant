@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-DEFAULT_GROQ_MODEL = "openai/gpt-oss-120b"
+DEFAULT_GROQ_MODEL = "openai/gpt-oss-20b"
 
 
 def get_groq_model() -> str:
@@ -598,10 +598,11 @@ def call_llm(
             }
             if json_mode:
                 kwargs["response_format"] = {"type": "json_object"}
+                kwargs["max_tokens"] = max_tokens if max_tokens else 180
             elif max_tokens:
-                kwargs["max_tokens"] = max(max_tokens, 900)
+                kwargs["max_tokens"] = max_tokens
             else:
-                kwargs["max_tokens"] = 900
+                kwargs["max_tokens"] = 380
 
             import time
             for attempt in range(3):

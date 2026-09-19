@@ -298,30 +298,43 @@ def crisis_check_node(state: AgentState) -> AgentState:
         return state
 
     latest_user_text = user_messages[-1]["content"]
+    lower_user = latest_user_text.lower()
 
-    # Classify message using safety classifier
-    full_prompt = SAFETY_SYSTEM_PROMPT + "\n\n" + CRISIS_DETECTION_SYSTEM_PROMPT
-    raw_response = call_llm(
-        system_prompt=full_prompt,
-        user_prompt=latest_user_text,
-        json_mode=True,
-    )
-
-    is_crisis = False
-    try:
-        parsed = json.loads(raw_response)
-        is_crisis = bool(parsed.get("is_crisis", False))
-    except Exception:
-        pass
-
-    # Deterministic safety fallback: keyword scan always runs to safeguard against LLM drift or API drops
-    crisis_keywords = [
-        "suicide", "kill myself", "end my life", "end it all", "die", "harm myself",
-        "cut myself", "overdose", "point in going on", "no reason to live",
-        "better off dead", "don't want to live", "dont want to live", "not worth living"
+    # 1. Fast-path acute crisis detection (instant 0ms response without API roundtrip latency)
+    acute_crisis_patterns = [
+        r"\b(?:suicide|suicidal)\b",
+        r"\b(?:kill myself|end my life|end it all|want to die|take my own life)\b",
+        r"\b(?:harm myself|hurt myself|cut myself|cutting|overdose)\b",
+        r"\b(?:point in going on|no reason to live|not worth living|give up on life)\b",
+        r"\b(?:better off dead|don't want to live|dont want to live)\b",
+        r"\b(?:take all my pills|hang myself|jump off|shoot myself)\b",
     ]
-    if any(k in latest_user_text.lower() for k in crisis_keywords):
-        is_crisis = True
+    is_crisis = any(re.search(pat, lower_user) for pat in acute_crisis_patterns)
+
+    # 2. If not an acute keyword match, check if message has ANY potential distress or safety indicators
+    if not is_crisis:
+        distress_indicators = [
+            "suicid", "kill", "die", "death", "harm", "hurt", "cut", "overdose",
+            "pill", "end it", "hopeless", "worth living", "point in", "better off",
+            "bleed", "hang", "jump", "shoot", "poison", "emergency", "crisis",
+            "danger", "hazard", "threat"
+        ]
+        has_potential_risk = any(w in lower_user for w in distress_indicators)
+
+        # Only invoke the remote LLM safety classifier if potential risk indicators are present
+        if has_potential_risk:
+            full_prompt = SAFETY_SYSTEM_PROMPT + "\n\n" + CRISIS_DETECTION_SYSTEM_PROMPT
+            raw_response = call_llm(
+                system_prompt=full_prompt,
+                user_prompt=latest_user_text,
+                json_mode=True,
+                max_tokens=120,
+            )
+            try:
+                parsed = json.loads(raw_response)
+                is_crisis = bool(parsed.get("is_crisis", False))
+            except Exception:
+                pass
 
     if is_crisis:
         state["crisis_flag"] = True

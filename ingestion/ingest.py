@@ -177,8 +177,16 @@ def remove_document(source_file: str) -> None:
     print(f"Removed document points for source_file: '{source_file}'")
 
 
+_SEARCH_CACHE: Dict[str, List[Dict[str, Any]]] = {}
+
+
 def search(query: str, top_k: int = 4) -> List[Dict[str, Any]]:
     """Embed query, query Qdrant points, and return list of result dicts with score."""
+    clean_q = query.strip().lower()
+    cache_key = f"{clean_q}::{top_k}"
+    if cache_key in _SEARCH_CACHE:
+        return _SEARCH_CACHE[cache_key]
+
     client = get_client()
     ensure_collection(client)
 
@@ -203,6 +211,9 @@ def search(query: str, top_k: int = 4) -> List[Dict[str, Any]]:
             "score": point.score,
         })
 
+    if len(_SEARCH_CACHE) > 256:
+        _SEARCH_CACHE.clear()
+    _SEARCH_CACHE[cache_key] = results
     return results
 
 

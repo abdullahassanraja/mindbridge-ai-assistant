@@ -73,12 +73,14 @@ CLINICAL_SAFEGUARD_KEYWORDS = [
 ]
 
 PRACTICE_SAFEGUARD_PATTERNS = [
-    r"\b(office hours?|hours|schedule|appointment|session|cost|fee|rates?|sliding scale|insurance|in-person|telehealth|video)\b",
+    r"\b(office hours?|hours|schedule|scheduling|appointment|session|consultation|book|booking|cost|fee|rates?|sliding scale|insurance|in-person|telehealth|video|intake|services?)\b",
     r"\b(elena marsh|marcus reyes|priya nair|jordan whitfield|cbt|act|eft|emdr)\b",
     r"\b(hi|hello|hey|good morning|good afternoon|good evening|howdy|thanks|thank you|bye|goodbye)\b",
     r"\b(talk to a human|real person|speak to someone|call me|human)\b",
     r"\b(can you help|help me|need help|looking for help|where to begin|where do i start)\b",
     r"\b(feel off|feeling off|feel down|feeling down|not feeling like myself|don't know what's wrong|dont know whats wrong|what's wrong with me|whats wrong with me)\b",
+    r"\b(?:find|recommend|suggest|match|looking for)\s+(?:me\s+)?(?:a\s+|the\s+|someone\s+)?(?:right\s+)?(?:therapist|counselor|support|options?)\b",
+    r"\b(?:therapist|counselor|psychologist|therapy|counseling)\b",
 ]
 
 

@@ -756,9 +756,18 @@
     }
 
     /* Mobile Responsive View */
-    @media (max-width: 540px) {
+    @media (max-width: 640px) {
       #mindbridge-widget-container {
-        position: static !important;
+        position: fixed !important;
+        bottom: calc(18px + env(safe-area-inset-bottom, 0px)) !important;
+        right: calc(18px + env(safe-area-inset-right, 0px)) !important;
+        left: auto !important;
+        top: auto !important;
+        z-index: 999999 !important;
+      }
+      #mindbridge-launcher-btn {
+        width: 62px !important;
+        height: 62px !important;
       }
       #mindbridge-chat-window {
         position: fixed !important;
@@ -767,12 +776,22 @@
         right: 0 !important;
         bottom: 0 !important;
         width: 100vw !important;
+        width: 100dvw !important;
         height: 100vh !important;
+        height: 100dvh !important;
         max-height: 100vh !important;
+        max-height: 100dvh !important;
         border-radius: 0 !important;
         border: none !important;
         box-shadow: none !important;
         z-index: 999999 !important;
+      }
+      #mindbridge-chat-footer {
+        padding: 10px 14px calc(28px + env(safe-area-inset-bottom, 16px)) 14px !important;
+        background: rgba(255, 255, 255, 0.96) !important;
+      }
+      .mindbridge-input-wrapper {
+        padding: 5px 6px 5px 12px !important;
       }
     }
   `;
