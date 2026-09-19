@@ -770,6 +770,19 @@
         top: auto !important;
         z-index: 999999 !important;
       }
+      #mindbridge-widget-container.open {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: 100vw !important;
+        width: 100dvw !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        z-index: 9999999 !important;
+        overflow: hidden !important;
+      }
       #mindbridge-launcher-btn {
         width: 62px !important;
         height: 62px !important;
@@ -791,42 +804,51 @@
         box-shadow: none !important;
         z-index: 999999 !important;
         overscroll-behavior: contain !important;
+        display: flex !important;
+        flex-direction: column !important;
+        overflow: hidden !important;
       }
       #mindbridge-chat-header {
-        position: sticky !important;
+        position: relative !important;
         top: 0 !important;
         left: 0 !important;
         right: 0 !important;
         flex-shrink: 0 !important;
-        z-index: 50 !important;
-        padding: 12px 16px !important;
-        background: rgba(255, 255, 255, 0.98) !important;
-        backdrop-filter: blur(20px) !important;
-        -webkit-backdrop-filter: blur(20px) !important;
+        height: 62px !important;
+        box-sizing: border-box !important;
+        z-index: 100 !important;
+        padding: 10px 16px !important;
+        background: #FFFFFF !important;
+        border-bottom: 1px solid rgba(226, 232, 240, 0.95) !important;
+        box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05) !important;
       }
       #mindbridge-content-area {
-        flex: 1 1 auto !important;
+        flex: 1 1 0 !important;
         min-height: 0 !important;
         height: auto !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
       }
       #mindbridge-message-list {
         flex: 1 1 auto !important;
         min-height: 0 !important;
         height: auto !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
       }
       #mindbridge-welcome-view {
         flex: 1 1 auto !important;
         min-height: 0 !important;
         height: auto !important;
+        overflow-y: auto !important;
       }
       #mindbridge-chat-footer {
         flex-shrink: 0 !important;
         position: relative !important;
-        z-index: 40 !important;
-        padding: 10px 14px calc(24px + env(safe-area-inset-bottom, 14px)) 14px !important;
-        background: rgba(255, 255, 255, 0.98) !important;
-        backdrop-filter: blur(20px) !important;
-        -webkit-backdrop-filter: blur(20px) !important;
+        z-index: 100 !important;
+        padding: 10px 14px calc(20px + env(safe-area-inset-bottom, 12px)) 14px !important;
+        background: #FFFFFF !important;
+        border-top: 1px solid rgba(226, 232, 240, 0.9) !important;
       }
       #mindbridge-chat-footer.keyboard-active {
         padding-bottom: 10px !important;
@@ -1124,11 +1146,14 @@
   // Open Chat Window
   function openChat() {
     isOpen = true;
+    container.classList.add('open');
     chatWindow.style.display = 'flex';
     launcherBtn.style.display = 'none';
 
     if (window.innerWidth <= 640) {
       document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
+      window.scrollTo(0, 0);
       syncMobileLayout();
     }
 
@@ -1150,12 +1175,16 @@
   // Close Chat Window
   function closeChat() {
     isOpen = false;
+    container.classList.remove('open');
     stopTicker();
     chatWindow.style.display = 'none';
     launcherBtn.style.display = 'flex';
 
     document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
     chatWindow.style.top = '';
+    chatWindow.style.left = '';
+    chatWindow.style.width = '';
     chatWindow.style.height = '';
     chatForm.classList.remove('keyboard-active');
   }
@@ -1165,6 +1194,8 @@
     if (typeof window === 'undefined' || !isOpen || window.innerWidth > 640) {
       if (chatWindow) {
         chatWindow.style.top = '';
+        chatWindow.style.left = '';
+        chatWindow.style.width = '';
         chatWindow.style.height = '';
       }
       if (chatForm) {
@@ -1173,18 +1204,31 @@
       return;
     }
 
+    // Always maintain viewport lock at 0 so document cannot scroll behind or push header away
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+
     if (window.visualViewport) {
       const vv = window.visualViewport;
       chatWindow.style.position = 'fixed';
       chatWindow.style.top = `${vv.offsetTop}px`;
+      chatWindow.style.left = `${vv.offsetLeft}px`;
+      chatWindow.style.width = `${vv.width}px`;
       chatWindow.style.height = `${vv.height}px`;
 
-      const isKeyboard = (window.innerHeight - vv.height) > 100;
+      const isKeyboard = (window.innerHeight - vv.height) > 80;
       if (isKeyboard) {
         chatForm.classList.add('keyboard-active');
       } else {
         chatForm.classList.remove('keyboard-active');
       }
+    } else {
+      chatWindow.style.position = 'fixed';
+      chatWindow.style.top = '0px';
+      chatWindow.style.left = '0px';
+      chatWindow.style.width = '100vw';
+      chatWindow.style.height = '100dvh';
     }
 
     if (messageList && messageList.style.display !== 'none') {
@@ -1199,8 +1243,12 @@
 
   inputField.addEventListener('focus', () => {
     if (window.innerWidth <= 640) {
+      window.scrollTo(0, 0);
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
       setTimeout(syncMobileLayout, 50);
-      setTimeout(syncMobileLayout, 250);
+      setTimeout(syncMobileLayout, 150);
+      setTimeout(syncMobileLayout, 300);
       setTimeout(syncMobileLayout, 500);
     }
   });
@@ -1208,7 +1256,7 @@
   inputField.addEventListener('blur', () => {
     if (window.innerWidth <= 640) {
       setTimeout(syncMobileLayout, 50);
-      setTimeout(syncMobileLayout, 250);
+      setTimeout(syncMobileLayout, 200);
     }
   });
 
