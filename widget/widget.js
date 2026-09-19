@@ -529,6 +529,52 @@
       letter-spacing: -0.1px;
     }
 
+    .mindbridge-suggestion-chips {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      margin: 4px 0 10px 0;
+      animation: mindbridgeFadeIn 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .mindbridge-chip-btn {
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(22, 56, 46, 0.16);
+      border-radius: 14px;
+      padding: 9px 13px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #132E24;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.18s ease;
+      box-shadow: 0 2px 6px rgba(15, 37, 31, 0.04);
+      outline: none;
+      touch-action: manipulation;
+    }
+
+    .mindbridge-chip-btn:hover {
+      background: #FFFFFF;
+      border-color: #16382E;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(15, 37, 31, 0.08);
+    }
+
+    .mindbridge-chip-btn:active {
+      transform: scale(0.98);
+      background: #F4F7F5;
+    }
+
+    .mindbridge-chip-arrow {
+      color: #2A6352;
+      font-size: 12px;
+      margin-left: 8px;
+      flex-shrink: 0;
+    }
+
     /* =========================================================================
        ACTIVE MESSAGE LIST & GEMINI-STYLE CHAT BUBBLES
        ========================================================================= */
@@ -770,6 +816,9 @@
         top: auto !important;
         z-index: 999999 !important;
       }
+      #mindbridge-widget-container:not(.open) #mindbridge-chat-window {
+        display: none !important;
+      }
       #mindbridge-widget-container.open {
         position: fixed !important;
         top: 0 !important;
@@ -783,11 +832,8 @@
         z-index: 9999999 !important;
         overflow: hidden !important;
       }
-      #mindbridge-launcher-btn {
-        width: 62px !important;
-        height: 62px !important;
-      }
-      #mindbridge-chat-window {
+      #mindbridge-widget-container.open #mindbridge-chat-window {
+        display: flex !important;
         position: fixed !important;
         top: 0 !important;
         left: 0 !important;
@@ -804,9 +850,12 @@
         box-shadow: none !important;
         z-index: 999999 !important;
         overscroll-behavior: contain !important;
-        display: flex !important;
         flex-direction: column !important;
         overflow: hidden !important;
+      }
+      #mindbridge-launcher-btn {
+        width: 62px !important;
+        height: 62px !important;
       }
       #mindbridge-chat-header {
         position: relative !important;
@@ -814,20 +863,35 @@
         left: 0 !important;
         right: 0 !important;
         flex-shrink: 0 !important;
-        height: 62px !important;
+        height: 58px !important;
         box-sizing: border-box !important;
         z-index: 100 !important;
-        padding: 10px 16px !important;
+        padding: 8px 12px 8px 14px !important;
         background: #FFFFFF !important;
         border-bottom: 1px solid rgba(226, 232, 240, 0.95) !important;
         box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05) !important;
       }
+      #mindbridge-chat-header .mindbridge-icon-btn {
+        width: 44px !important;
+        height: 44px !important;
+        min-width: 44px !important;
+        min-height: 44px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        cursor: pointer !important;
+        touch-action: manipulation !important;
+        -webkit-tap-highlight-color: transparent !important;
+        border-radius: 50% !important;
+      }
       #mindbridge-content-area {
-        flex: 1 1 0 !important;
+        flex: 1 1 0% !important;
         min-height: 0 !important;
         height: auto !important;
         overflow-y: auto !important;
         -webkit-overflow-scrolling: touch !important;
+        display: flex !important;
+        flex-direction: column !important;
       }
       #mindbridge-message-list {
         flex: 1 1 auto !important;
@@ -835,6 +899,9 @@
         height: auto !important;
         overflow-y: auto !important;
         -webkit-overflow-scrolling: touch !important;
+        padding: 14px 14px 8px 14px !important;
+        display: flex !important;
+        gap: 12px !important;
       }
       #mindbridge-welcome-view {
         flex: 1 1 auto !important;
@@ -846,12 +913,12 @@
         flex-shrink: 0 !important;
         position: relative !important;
         z-index: 100 !important;
-        padding: 10px 14px calc(20px + env(safe-area-inset-bottom, 12px)) 14px !important;
+        padding: 8px 12px calc(14px + env(safe-area-inset-bottom, 8px)) 12px !important;
         background: #FFFFFF !important;
         border-top: 1px solid rgba(226, 232, 240, 0.9) !important;
       }
       #mindbridge-chat-footer.keyboard-active {
-        padding-bottom: 10px !important;
+        padding-bottom: 8px !important;
       }
       .mindbridge-input-wrapper {
         padding: 6px 6px 6px 14px !important;
@@ -1143,17 +1210,77 @@
     }
   }
 
+  // Initialize conversation with Ellen's warm greeting and interactive starter chips
+  function initConversation() {
+    showActiveChatView();
+    messageList.innerHTML = '';
+
+    const greetingDiv = document.createElement('div');
+    greetingDiv.className = 'mindbridge-message assistant';
+    greetingDiv.innerHTML = `
+      <p>Hi there! I'm <strong>Ellen</strong>, an intake assistant trained on our practice's services, clinicians, and policies.</p>
+      <p>How can I help you today? You can choose a topic below or type any question.</p>
+    `;
+    messageList.appendChild(greetingDiv);
+
+    // Suggestion chips right inside the chat stream
+    const chipsDiv = document.createElement('div');
+    chipsDiv.className = 'mindbridge-suggestion-chips';
+    chipsDiv.id = 'mindbridge-suggestion-chips';
+    chipsDiv.innerHTML = `
+      <button type="button" class="mindbridge-chip-btn" data-prompt="Help me find the right therapist">
+        <span>Help me find the right therapist</span>
+        <span class="mindbridge-chip-arrow">➔</span>
+      </button>
+      <button type="button" class="mindbridge-chip-btn" data-prompt="I'd like to book an intake consultation">
+        <span>I'd like to book a consultation</span>
+        <span class="mindbridge-chip-arrow">➔</span>
+      </button>
+      <button type="button" class="mindbridge-chip-btn" data-prompt="What counseling services do you offer?">
+        <span>What services do you offer?</span>
+        <span class="mindbridge-chip-arrow">➔</span>
+      </button>
+    `;
+    messageList.appendChild(chipsDiv);
+
+    chipsDiv.querySelectorAll('.mindbridge-chip-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const prompt = btn.getAttribute('data-prompt');
+        if (prompt) sendMessage(prompt);
+      });
+      btn.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        const prompt = btn.getAttribute('data-prompt');
+        if (prompt) sendMessage(prompt);
+      }, { passive: false });
+    });
+
+    requestAnimationFrame(() => {
+      messageList.scrollTop = messageList.scrollHeight;
+    });
+  }
+
   // Open Chat Window
   function openChat() {
     isOpen = true;
     container.classList.add('open');
-    chatWindow.style.display = 'flex';
-    launcherBtn.style.display = 'none';
+    chatWindow.classList.add('open');
+    chatWindow.style.setProperty('display', 'flex', 'important');
+    launcherBtn.style.setProperty('display', 'none', 'important');
 
     if (window.innerWidth <= 640) {
+      // Save current page scroll position and freeze body so background cannot scroll
+      const scrollY = window.scrollY || window.pageYOffset || 0;
+      document.body.dataset.mbScrollY = String(scrollY);
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.left = '0';
+      document.body.style.right = '0';
+      document.body.style.width = '100%';
+      document.body.style.height = '100%';
       document.body.style.overflow = 'hidden';
       document.documentElement.style.overflow = 'hidden';
-      window.scrollTo(0, 0);
+
       syncMobileLayout();
     }
 
@@ -1163,8 +1290,7 @@
       messageList.innerHTML = '';
       history.forEach((m) => appendMessage(m.role, m.text));
     } else {
-      // First time open: show the soothing animated aura, ticker & 3 starter cards!
-      showWelcomeView();
+      initConversation();
     }
 
     if (window.innerWidth > 640) {
@@ -1173,20 +1299,44 @@
   }
 
   // Close Chat Window
-  function closeChat() {
+  function closeChat(e) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     isOpen = false;
     container.classList.remove('open');
+    chatWindow.classList.remove('open');
     stopTicker();
-    chatWindow.style.display = 'none';
-    launcherBtn.style.display = 'flex';
 
+    // Hide chat window with !important override
+    chatWindow.style.setProperty('display', 'none', 'important');
+    launcherBtn.style.setProperty('display', 'flex', 'important');
+
+    // Restore page scroll
+    const savedY = parseInt(document.body.dataset.mbScrollY || '0', 10);
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.left = '';
+    document.body.style.right = '';
+    document.body.style.width = '';
+    document.body.style.height = '';
     document.body.style.overflow = '';
     document.documentElement.style.overflow = '';
+    if (savedY > 0) {
+      window.scrollTo(0, savedY);
+    }
+
     chatWindow.style.top = '';
     chatWindow.style.left = '';
     chatWindow.style.width = '';
     chatWindow.style.height = '';
+    chatWindow.style.transform = '';
     chatForm.classList.remove('keyboard-active');
+
+    if (inputField) {
+      inputField.blur();
+    }
   }
 
   // Sync mobile virtual keyboard & visualViewport (WhatsApp-style fixed header)
@@ -1197,6 +1347,7 @@
         chatWindow.style.left = '';
         chatWindow.style.width = '';
         chatWindow.style.height = '';
+        chatWindow.style.transform = '';
       }
       if (chatForm) {
         chatForm.classList.remove('keyboard-active');
@@ -1204,18 +1355,20 @@
       return;
     }
 
-    // Always maintain viewport lock at 0 so document cannot scroll behind or push header away
-    window.scrollTo(0, 0);
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
-
     if (window.visualViewport) {
       const vv = window.visualViewport;
       chatWindow.style.position = 'fixed';
-      chatWindow.style.top = `${vv.offsetTop}px`;
-      chatWindow.style.left = `${vv.offsetLeft}px`;
+      chatWindow.style.top = '0px';
+      chatWindow.style.left = '0px';
       chatWindow.style.width = `${vv.width}px`;
       chatWindow.style.height = `${vv.height}px`;
+
+      // Handle any visual viewport offset translation smoothly
+      if (vv.offsetTop > 0) {
+        chatWindow.style.transform = `translateY(${vv.offsetTop}px)`;
+      } else {
+        chatWindow.style.transform = 'none';
+      }
 
       const isKeyboard = (window.innerHeight - vv.height) > 80;
       if (isKeyboard) {
@@ -1229,10 +1382,13 @@
       chatWindow.style.left = '0px';
       chatWindow.style.width = '100vw';
       chatWindow.style.height = '100dvh';
+      chatWindow.style.transform = 'none';
     }
 
     if (messageList && messageList.style.display !== 'none') {
-      messageList.scrollTop = messageList.scrollHeight;
+      requestAnimationFrame(() => {
+        messageList.scrollTop = messageList.scrollHeight;
+      });
     }
   }
 
@@ -1243,9 +1399,6 @@
 
   inputField.addEventListener('focus', () => {
     if (window.innerWidth <= 640) {
-      window.scrollTo(0, 0);
-      document.body.scrollTop = 0;
-      document.documentElement.scrollTop = 0;
       setTimeout(syncMobileLayout, 50);
       setTimeout(syncMobileLayout, 150);
       setTimeout(syncMobileLayout, 300);
@@ -1261,16 +1414,36 @@
   });
 
   // Reset conversation to fresh state
-  function resetChat() {
+  function resetChat(e) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     clearHistory();
-    showWelcomeView();
-    inputField.value = '';
-    inputField.focus();
+    initConversation();
+    if (inputField) {
+      inputField.value = '';
+      if (window.innerWidth > 640) inputField.focus();
+    }
   }
 
   launcherBtn.addEventListener('click', openChat);
+  launcherBtn.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    openChat();
+  }, { passive: false });
+
   closeBtn.addEventListener('click', closeChat);
+  closeBtn.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    closeChat(e);
+  }, { passive: false });
+
   resetBtn.addEventListener('click', resetChat);
+  resetBtn.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    resetChat(e);
+  }, { passive: false });
 
   // Core send message logic
   async function sendMessage(text) {
