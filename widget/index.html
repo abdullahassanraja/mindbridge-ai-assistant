@@ -25,43 +25,62 @@
         extend: {
           colors: {
             forest: {
-              950: '#0A1A15',
-              900: '#0F251F',
-              850: '#132E24',
-              800: '#16382E',
-              700: '#1F4D3F',
-              600: '#2A6352',
+              950: '#15070D', // Midnight Plum (Darkest contrast)
+              900: '#220B16', // Deep Velvet Plum (Headings, primary dark buttons)
+              850: '#2C0F1D', // Rich Plum
+              800: '#381325', // Velvet Berry (Dark cards, active states)
+              700: '#521D38', // Muted Plum
+              600: '#B83A60', // Rich Rose Accent
             },
             linen: {
-              50: '#FAF9F6',
-              100: '#F7F5F0',
-              200: '#EFECE4',
-              300: '#E6E1D6',
+              50: '#FFFFFF',  // Crisp Pure White
+              100: '#FFF9FB', // Delicate Pearl Pink White
+              200: '#FFF0F5', // Soft Blush Wash
+              300: '#FDE1EB', // Delicate Baby Pink
             },
             sage: {
-              50: '#F4F7F5',
-              100: '#E8F0E9',
-              150: '#DFEAE1',
-              200: '#D5E2D9',
-              300: '#B8CCC0',
-              400: '#8FAFA0',
-              500: '#5F8571',
-              700: '#3A5748',
+              50: '#FFF5F8',  // Milk Baby Pink (card fills)
+              100: '#FDE8EE', // Soft Baby Pink (pill tags, icon boxes)
+              150: '#FCDCE5', // Active Accordion Highlight
+              200: '#F8C8D6', // Soft Rose Border
+              300: '#F4A6BD', // Accent Rose Line
+              400: '#DF6C8C', // Soft Rose Badge Text
+              500: '#C94B6E', // Vibrant Rose Accent
+              700: '#94294A', // Deep Readable Rose Text (High contrast on pink)
             },
             terracotta: {
-              50: '#FDF7F5',
-              100: '#F9ECE7',
-              200: '#F2D5CB',
-              500: '#D97757',
-              600: '#C86D51',
-              700: '#AC573E',
+              50: '#FFF5F6',
+              100: '#FDE8EB',
+              200: '#FBD0D8',
+              500: '#E0657C',
+              600: '#CE526B',
+              700: '#AD3951',
             },
             obsidian: {
-              900: '#171D1A',
-              800: '#222B27',
-              700: '#33403A',
-              500: '#5B6E65',
-              400: '#7E9187',
+              900: '#1D1217',
+              800: '#2A1B22',
+              700: '#402D36',
+              500: '#6C5862',
+              400: '#96818C',
+            },
+            babypink: {
+              50: '#FFF5F8',
+              100: '#FDE8EE',
+              150: '#FCDCE5',
+              200: '#F8C8D6',
+              300: '#F4A6BD',
+              400: '#DF6C8C',
+              500: '#C94B6E',
+              600: '#B83A60',
+              700: '#94294A',
+            },
+            plum: {
+              950: '#15070D',
+              900: '#220B16',
+              850: '#2C0F1D',
+              800: '#381325',
+              700: '#521D38',
+              600: '#B83A60',
             }
           },
           fontFamily: {
@@ -69,9 +88,9 @@
             sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
           },
           boxShadow: {
-            'subtle': '0 2px 14px rgba(15, 37, 31, 0.05)',
-            'glass': '0 8px 30px rgba(15, 37, 31, 0.07)',
-            'float': '0 20px 48px -12px rgba(15, 37, 31, 0.14)',
+            'subtle': '0 2px 14px rgba(45, 18, 30, 0.05)',
+            'glass': '0 8px 30px rgba(45, 18, 30, 0.07)',
+            'float': '0 20px 48px -12px rgba(45, 18, 30, 0.12)',
           }
         }
       }
@@ -80,8 +99,8 @@
 
   <style>
     body {
-      background-color: #F7F5F0;
-      color: #222B27;
+      background-color: #FFF9FB;
+      color: #2A1B22;
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
@@ -93,17 +112,18 @@
     }
 
     .glass-panel {
-      background: rgba(255, 255, 255, 0.88);
+      background: rgba(255, 255, 255, 0.94);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
-      border: 1px solid rgba(22, 56, 46, 0.08);
+      border: 1px solid rgba(248, 200, 214, 0.55);
+      box-shadow: 0 4px 20px rgba(201, 75, 110, 0.05);
     }
 
     .glass-panel-dark {
-      background: rgba(19, 46, 36, 0.85);
+      background: rgba(34, 11, 22, 0.88);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 225, 235, 0.15);
     }
 
     .faq-answer {
@@ -179,7 +199,7 @@
         <div class="relative z-10 p-7 sm:p-14 lg:p-16 max-w-2xl text-white">
           
           <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-xs font-medium text-linen-100 mb-6">
-            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            <span class="w-2 h-2 rounded-full bg-rose-400"></span>
             Administrative AI for Mental Health & Wellness Practices
           </div>
 
@@ -228,7 +248,7 @@
 
           <div class="glass-panel rounded-2xl px-5 py-3.5 shadow-glass flex items-center gap-3.5 bg-white/90 text-forest-950 border border-white/70">
             <div class="w-9 h-9 rounded-full bg-sage-500 text-white flex items-center justify-center text-sm font-bold shrink-0">
-              🌿
+              🌸
             </div>
             <div>
               <div class="text-xs font-bold text-forest-950 leading-tight">Built From Your Practice's Own Content</div>
@@ -1083,7 +1103,7 @@
 
         <!-- Success Confirmation Display -->
         <div id="lead-success-msg" class="hidden text-center py-10">
-          <div class="w-14 h-14 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center mx-auto mb-4 text-2xl font-bold">
+          <div class="w-14 h-14 rounded-full bg-sage-100 text-sage-700 flex items-center justify-center mx-auto mb-4 text-2xl font-bold">
             ✓
           </div>
           <h3 class="font-editorial text-2xl sm:text-3xl text-forest-950 mb-2 font-normal">

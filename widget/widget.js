@@ -162,7 +162,7 @@
       width: 420px;
       height: calc(100vh - 40px);
       max-height: calc(100vh - 40px);
-      background: linear-gradient(135deg, #FAFBFD 0%, #EEF4FF 25%, #F5F3FF 50%, #FFF7ED 75%, #F0FDF4 100%);
+      background: linear-gradient(135deg, #FFFFFF 0%, #FFF9FB 25%, #FDE8EE 50%, #FFF0F5 75%, #FFFFFF 100%);
       background-size: 300% 300%;
       animation: mindbridgeBgFlow 18s ease-in-out infinite alternate, mindbridgeFadeSlide 0.26s cubic-bezier(0.16, 1, 0.3, 1);
       border-radius: 28px;
@@ -538,38 +538,38 @@
     }
 
     .mindbridge-chip-btn {
-      background: rgba(255, 255, 255, 0.95);
-      border: 1px solid rgba(22, 56, 46, 0.16);
+      background: rgba(255, 255, 255, 0.96);
+      border: 1px solid rgba(248, 200, 214, 0.65);
       border-radius: 14px;
       padding: 9px 13px;
       font-size: 13px;
       font-weight: 500;
-      color: #132E24;
+      color: #220B16;
       text-align: left;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: space-between;
       transition: all 0.18s ease;
-      box-shadow: 0 2px 6px rgba(15, 37, 31, 0.04);
+      box-shadow: 0 2px 6px rgba(45, 18, 30, 0.03);
       outline: none;
       touch-action: manipulation;
     }
 
     .mindbridge-chip-btn:hover {
-      background: #FFFFFF;
-      border-color: #16382E;
+      background: #FFF5F8;
+      border-color: #E06D8C;
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(15, 37, 31, 0.08);
+      box-shadow: 0 4px 12px rgba(201, 75, 110, 0.09);
     }
 
     .mindbridge-chip-btn:active {
       transform: scale(0.98);
-      background: #F4F7F5;
+      background: #FDE8EE;
     }
 
     .mindbridge-chip-arrow {
-      color: #2A6352;
+      color: #C94B6E;
       font-size: 12px;
       margin-left: 8px;
       flex-shrink: 0;
@@ -864,7 +864,7 @@
         overscroll-behavior: contain !important;
         flex-direction: column !important;
         overflow: hidden !important;
-        background: #FAFBFD !important;
+        background: #FFF9FB !important;
       }
       #mindbridge-launcher-btn {
         width: 62px !important;
