@@ -199,6 +199,7 @@
     #mindbridge-chat-header {
       position: relative;
       z-index: 10;
+      flex-shrink: 0;
       background: rgba(255, 255, 255, 0.84);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
@@ -306,7 +307,8 @@
 
     /* Dynamic Content Container */
     #mindbridge-content-area {
-      flex: 1;
+      flex: 1 1 auto;
+      min-height: 0;
       position: relative;
       overflow: hidden;
       display: flex;
@@ -317,7 +319,8 @@
        WELCOME VIEW: CENTRAL AURA ORB & 3 ACTION CARDS (Like Reference Image)
        ========================================================================= */
     #mindbridge-welcome-view {
-      flex: 1;
+      flex: 1 1 auto;
+      min-height: 0;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -531,7 +534,8 @@
        ========================================================================= */
     #mindbridge-message-list {
       display: none;
-      flex: 1;
+      flex: 1 1 auto;
+      min-height: 0;
       padding: 20px 18px 20px 18px;
       overflow-y: auto;
       flex-direction: column;
@@ -669,6 +673,7 @@
        FOOTER & INPUT BAR (Gemini-style Pill with Aura Pip)
        ========================================================================= */
     #mindbridge-chat-footer {
+      flex-shrink: 0;
       padding: 12px 18px 16px 18px;
       background: rgba(255, 255, 255, 0.9);
       backdrop-filter: blur(14px);
@@ -755,7 +760,7 @@
       transform: none;
     }
 
-    /* Mobile Responsive View */
+    /* Mobile Responsive View (WhatsApp-style fixed header & dynamic chat stretch) */
     @media (max-width: 640px) {
       #mindbridge-widget-container {
         position: fixed !important;
@@ -785,13 +790,52 @@
         border: none !important;
         box-shadow: none !important;
         z-index: 999999 !important;
+        overscroll-behavior: contain !important;
+      }
+      #mindbridge-chat-header {
+        position: sticky !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        flex-shrink: 0 !important;
+        z-index: 50 !important;
+        padding: 12px 16px !important;
+        background: rgba(255, 255, 255, 0.98) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+      }
+      #mindbridge-content-area {
+        flex: 1 1 auto !important;
+        min-height: 0 !important;
+        height: auto !important;
+      }
+      #mindbridge-message-list {
+        flex: 1 1 auto !important;
+        min-height: 0 !important;
+        height: auto !important;
+      }
+      #mindbridge-welcome-view {
+        flex: 1 1 auto !important;
+        min-height: 0 !important;
+        height: auto !important;
       }
       #mindbridge-chat-footer {
-        padding: 10px 14px calc(28px + env(safe-area-inset-bottom, 16px)) 14px !important;
-        background: rgba(255, 255, 255, 0.96) !important;
+        flex-shrink: 0 !important;
+        position: relative !important;
+        z-index: 40 !important;
+        padding: 10px 14px calc(24px + env(safe-area-inset-bottom, 14px)) 14px !important;
+        background: rgba(255, 255, 255, 0.98) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+      }
+      #mindbridge-chat-footer.keyboard-active {
+        padding-bottom: 10px !important;
       }
       .mindbridge-input-wrapper {
-        padding: 5px 6px 5px 12px !important;
+        padding: 6px 6px 6px 14px !important;
+      }
+      #mindbridge-input-field {
+        font-size: 16px !important; /* Prevents mobile browser from auto-zooming and displacing header */
       }
     }
   `;
@@ -1083,6 +1127,11 @@
     chatWindow.style.display = 'flex';
     launcherBtn.style.display = 'none';
 
+    if (window.innerWidth <= 640) {
+      document.body.style.overflow = 'hidden';
+      syncMobileLayout();
+    }
+
     const history = getHistory();
     if (history.length > 0) {
       showActiveChatView();
@@ -1093,7 +1142,9 @@
       showWelcomeView();
     }
 
-    inputField.focus();
+    if (window.innerWidth > 640) {
+      inputField.focus();
+    }
   }
 
   // Close Chat Window
@@ -1102,7 +1153,64 @@
     stopTicker();
     chatWindow.style.display = 'none';
     launcherBtn.style.display = 'flex';
+
+    document.body.style.overflow = '';
+    chatWindow.style.top = '';
+    chatWindow.style.height = '';
+    chatForm.classList.remove('keyboard-active');
   }
+
+  // Sync mobile virtual keyboard & visualViewport (WhatsApp-style fixed header)
+  function syncMobileLayout() {
+    if (typeof window === 'undefined' || !isOpen || window.innerWidth > 640) {
+      if (chatWindow) {
+        chatWindow.style.top = '';
+        chatWindow.style.height = '';
+      }
+      if (chatForm) {
+        chatForm.classList.remove('keyboard-active');
+      }
+      return;
+    }
+
+    if (window.visualViewport) {
+      const vv = window.visualViewport;
+      chatWindow.style.position = 'fixed';
+      chatWindow.style.top = `${vv.offsetTop}px`;
+      chatWindow.style.height = `${vv.height}px`;
+
+      const isKeyboard = (window.innerHeight - vv.height) > 100;
+      if (isKeyboard) {
+        chatForm.classList.add('keyboard-active');
+      } else {
+        chatForm.classList.remove('keyboard-active');
+      }
+    }
+
+    if (messageList && messageList.style.display !== 'none') {
+      messageList.scrollTop = messageList.scrollHeight;
+    }
+  }
+
+  if (typeof window !== 'undefined' && window.visualViewport) {
+    window.visualViewport.addEventListener('resize', syncMobileLayout);
+    window.visualViewport.addEventListener('scroll', syncMobileLayout);
+  }
+
+  inputField.addEventListener('focus', () => {
+    if (window.innerWidth <= 640) {
+      setTimeout(syncMobileLayout, 50);
+      setTimeout(syncMobileLayout, 250);
+      setTimeout(syncMobileLayout, 500);
+    }
+  });
+
+  inputField.addEventListener('blur', () => {
+    if (window.innerWidth <= 640) {
+      setTimeout(syncMobileLayout, 50);
+      setTimeout(syncMobileLayout, 250);
+    }
+  });
 
   // Reset conversation to fresh state
   function resetChat() {
