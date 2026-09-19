@@ -1,1551 +1,1173 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MindBridge Wellness — Compassionate, Evidence-Based Mental Health Care</title>
-  <meta name="description" content="MindBridge Wellness provides personalized, evidence-based counseling for individuals, couples, families, and teens. In-person and secure telehealth sessions." />
-  
-  <!-- Classical Editorial Serif Fonts: Fraunces (Display Headings), Lora (Refined Body Text), Newsreader (Accents) -->
+  <title>MindBridge Wellness · Ellen — The AI Assistant Built for Wellness Practices</title>
+  <meta name="description" content="Ellen answers every visitor, day or night, qualifies every inquiry, and never lets a potential client slip away without adding a single thing to your team's plate." />
+
+  <!-- Google Fonts: Fraunces (Editorial Display Serif) & Plus Jakarta Sans (Clean Modern Sans) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500;1,9..144,600&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500;1,9..144,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            forest: {
+              950: '#0A1A15',
+              900: '#0F251F',
+              800: '#16382E',
+              700: '#1F4D3F',
+              600: '#2A6352',
+            },
+            linen: {
+              50: '#FAF9F6',
+              100: '#F7F5F0',
+              200: '#EFECE4',
+              300: '#E6E1D6',
+            },
+            sage: {
+              50: '#F4F7F5',
+              100: '#E7EFEA',
+              200: '#D5E2D9',
+              300: '#B8CCC0',
+              500: '#5F8571',
+              700: '#3A5748',
+            },
+            terracotta: {
+              50: '#FDF7F5',
+              100: '#F9ECE7',
+              200: '#F2D5CB',
+              500: '#D97757',
+              600: '#C86D51',
+              700: '#AC573E',
+            },
+            obsidian: {
+              900: '#171D1A',
+              800: '#222B27',
+              700: '#33403A',
+              500: '#5B6E65',
+            }
+          },
+          fontFamily: {
+            serif: ['Fraunces', 'Georgia', 'serif'],
+            sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+          },
+          boxShadow: {
+            'subtle': '0 2px 14px rgba(15, 37, 31, 0.05)',
+            'glass': '0 8px 30px rgba(15, 37, 31, 0.07)',
+            'float': '0 20px 48px -12px rgba(15, 37, 31, 0.14)',
+          }
+        }
+      }
+    }
+  </script>
 
   <style>
-    /* ==========================================================================
-       DESIGN SYSTEM & CLASSICAL EDITORIAL SERIF TYPOGRAPHY
-       ========================================================================== */
-    :root {
-      --primary: #234B3E;
-      --primary-dark: #16332A;
-      --primary-darker: #0E221B;
-      --primary-light: #416D5F;
-      --hero-sky-base: #C2DBF2;
-      --bg-warm: #FAF8F5;
-      --bg-cream: #F5F2EB;
-      --bg-card: #FFFFFF;
-      --badge-olive: #4E6032;
-      --badge-olive-bg: #EDF2E4;
-      --text-main: #13221B;
-      --text-body: #2B3A33;
-      --text-muted: #53645C;
-      --text-light: #76877F;
-      --border-subtle: #E3E7DF;
-      --border-card: #E8ECE4;
-      --shadow-sm: 0 4px 14px rgba(22, 51, 42, 0.05);
-      --shadow-md: 0 12px 30px rgba(22, 51, 42, 0.09);
-      --shadow-lg: 0 22px 45px rgba(22, 51, 42, 0.13);
-      --radius-sm: 8px;
-      --radius-md: 16px;
-      --radius-lg: 22px;
-      --radius-full: 9999px;
-      --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
-      --font-body: 'Lora', Georgia, 'Times New Roman', serif;
-      --font-accent: 'Newsreader', Georgia, serif;
-    }
-
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
+    /* Custom wellness-tech subtle aesthetics */
     body {
-      font-family: var(--font-body);
-      background-color: var(--bg-warm);
-      color: var(--text-body);
-      line-height: 1.7;
-      font-size: 16px;
+      background-color: #F7F5F0;
+      color: #222B27;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
       overflow-x: hidden;
     }
 
-    h1, h2, h3, h4, h5, h6 {
-      font-family: var(--font-display);
-      color: var(--text-main);
-      font-weight: 600;
-      line-height: 1.25;
-      letter-spacing: -0.3px;
+    h1, h2, h3, h4, .font-editorial {
+      font-family: 'Fraunces', Georgia, serif;
+      letter-spacing: -0.02em;
     }
 
-    p {
-      font-family: var(--font-body);
-      color: var(--text-muted);
-      line-height: 1.72;
+    /* Subtle Glassmorphism card */
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(22, 56, 46, 0.08);
     }
 
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    button {
-      font-family: var(--font-display);
-      cursor: pointer;
-      border: none;
-      outline: none;
-      letter-spacing: 0.2px;
-    }
-
-    img {
-      max-width: 100%;
-      height: auto;
-      display: block;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 1220px;
-      margin: 0 auto;
-      padding: 0 32px;
-    }
-
-    /* ==========================================================================
-       TOP NAVBAR
-       ========================================================================== */
-    .site-header {
-      background-color: #FFFFFF;
-      border-bottom: 1px solid var(--border-subtle);
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
-    }
-
-    .nav-container {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 78px;
-      max-width: 1220px;
-      margin: 0 auto;
-      padding: 0 32px;
-    }
-
-    .brand-logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-family: var(--font-display);
-      font-size: 24px;
-      font-weight: 600;
-      letter-spacing: -0.4px;
-      color: var(--primary-darker);
-    }
-
-    .brand-icon {
-      width: 32px;
-      height: 32px;
-      background: var(--primary);
-      color: #FFFFFF;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 15px;
-      box-shadow: 0 2px 6px rgba(35, 75, 62, 0.2);
-    }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 36px;
-      list-style: none;
-    }
-
-    .nav-links a {
-      font-family: var(--font-body);
-      font-size: 15px;
-      font-weight: 500;
-      color: var(--text-muted);
-      transition: color 0.2s ease;
-    }
-
-    .nav-links a:hover {
-      color: var(--primary-darker);
-    }
-
-    .btn-pill {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 11px 26px;
-      border-radius: var(--radius-full);
-      font-size: 14.5px;
-      font-weight: 600;
-      transition: all 0.25s ease;
-    }
-
-    .btn-dark {
-      background-color: var(--primary-darker);
-      color: #FFFFFF;
-      box-shadow: 0 4px 12px rgba(14, 34, 27, 0.18);
-    }
-
-    .btn-dark:hover {
-      background-color: var(--primary);
-      transform: translateY(-1px);
-      box-shadow: 0 8px 18px rgba(14, 34, 27, 0.25);
-    }
-
-    /* ==========================================================================
-       HERO BANNER (KID IMAGE BACKGROUND WITH REDUCED OPACITY)
-       ========================================================================== */
-    .hero-section {
-      position: relative;
-      background-color: #BED8EE;
-      min-height: 560px;
-      display: flex;
-      align-items: center;
-      padding: 90px 0 85px 0;
-      overflow: hidden;
-      border-bottom: 1px solid var(--border-subtle);
-    }
-
-    /* Kid Image applied to background with reduced opacity */
-    .hero-bg-layer {
-      position: absolute;
-      inset: 0;
-      background-image: url('hero_kid.jpg');
-      background-size: cover;
-      background-position: right 25% center;
-      background-repeat: no-repeat;
-      opacity: 0.24; /* Reduced opacity so text is clearly visible */
-      filter: saturate(1.15) contrast(1.05);
-      z-index: 1;
-    }
-
-    /* Soft sky gradient overlay to ensure text is 100% crisp and readable */
-    .hero-gradient-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        90deg, 
-        rgba(215, 233, 248, 0.95) 0%, 
-        rgba(226, 240, 252, 0.88) 45%, 
-        rgba(238, 246, 254, 0.72) 100%
-      );
-      z-index: 2;
-    }
-
-    .hero-content-wrapper {
-      position: relative;
-      z-index: 3;
-      max-width: 820px;
-    }
-
-    .hero-headline {
-      font-family: var(--font-display);
-      font-size: 66px;
-      line-height: 1.1;
-      font-weight: 600;
-      color: var(--primary-darker);
-      letter-spacing: -1px;
-      margin-bottom: 22px;
-      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
-    }
-
-    .hero-subtext {
-      font-family: var(--font-body);
-      font-size: 19px;
-      line-height: 1.68;
-      color: #263830;
-      max-width: 660px;
-      margin-bottom: 36px;
-    }
-
-    .hero-actions {
-      display: flex;
-      align-items: center;
-      gap: 18px;
-      margin-bottom: 44px;
-      flex-wrap: wrap;
-    }
-
-    .btn-hero-primary {
-      background-color: var(--primary-darker);
-      color: #FFFFFF;
-      padding: 14px 32px;
-      border-radius: var(--radius-full);
-      font-weight: 600;
-      font-size: 15.5px;
-      box-shadow: 0 6px 18px rgba(14, 34, 27, 0.22);
-      transition: all 0.25s ease;
-    }
-
-    .btn-hero-primary:hover {
-      background-color: var(--primary);
-      transform: translateY(-2px);
-      box-shadow: 0 10px 24px rgba(14, 34, 27, 0.28);
-    }
-
-    .btn-hero-secondary {
-      background-color: rgba(255, 255, 255, 0.85);
-      color: var(--primary-darker);
-      border: 1.5px solid rgba(22, 51, 42, 0.35);
-      backdrop-filter: blur(8px);
-      padding: 13px 30px;
-      border-radius: var(--radius-full);
-      font-weight: 600;
-      font-size: 15.5px;
-      transition: all 0.25s ease;
-    }
-
-    .btn-hero-secondary:hover {
-      background-color: #FFFFFF;
-      border-color: var(--primary-darker);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
-    }
-
-    /* Floating Metric Glass Pill with Serif Numbers */
-    .hero-stats-card {
-      background: rgba(255, 255, 255, 0.78);
+    .glass-panel-dark {
+      background: rgba(22, 56, 46, 0.92);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.95);
-      border-radius: 20px;
-      padding: 18px 32px;
-      display: inline-flex;
-      align-items: center;
-      gap: 36px;
-      box-shadow: 0 10px 28px rgba(22, 51, 42, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    .hero-stat-col {
+    /* Structured image placeholder helper for 1-line future replacement */
+    .image-placeholder {
+      position: relative;
+      background: linear-gradient(135deg, #E7EFEA 0%, #F1EBE4 50%, #DCE6E0 100%);
+      border: 1px dashed rgba(22, 56, 46, 0.2);
+      overflow: hidden;
       display: flex;
       flex-direction: column;
-    }
-
-    .hero-stat-col .stat-num {
-      font-family: var(--font-display);
-      font-size: 28px;
-      font-weight: 700;
-      color: var(--primary-darker);
-      line-height: 1.1;
-      letter-spacing: -0.5px;
-    }
-
-    .hero-stat-col .stat-label {
-      font-family: var(--font-body);
-      font-size: 13px;
-      color: var(--text-muted);
-      font-style: italic;
-      margin-top: 2px;
-    }
-
-    .hero-stat-divider {
-      width: 1px;
-      height: 38px;
-      background: rgba(22, 51, 42, 0.15);
-    }
-
-    /* ==========================================================================
-       HIGHLIGHTS STRIP (3 COLUMNS)
-       ========================================================================== */
-    .highlights-section {
-      background-color: #FFFFFF;
-      padding: 56px 0;
-      border-bottom: 1px solid var(--border-subtle);
-    }
-
-    .highlights-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 44px;
-    }
-
-    .highlight-card {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .highlight-icon-circle {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: var(--badge-olive-bg);
-      display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--badge-olive);
-      margin-bottom: 6px;
     }
 
-    .highlight-title {
-      font-family: var(--font-display);
-      font-size: 21px;
-      font-weight: 600;
-      color: var(--primary-darker);
-      letter-spacing: -0.3px;
+    /* Glow dots and gentle aura animations */
+    @keyframes pulseAura {
+      0%, 100% { transform: scale(1); opacity: 0.45; }
+      50% { transform: scale(1.08); opacity: 0.75; }
     }
-
-    .highlight-desc {
-      font-family: var(--font-body);
-      font-size: 15px;
-      color: var(--text-muted);
-      line-height: 1.7;
-    }
-
-    /* ==========================================================================
-       SERVICES SECTION
-       ========================================================================== */
-    .services-section {
-      padding: 100px 0;
-      background-color: var(--bg-warm);
-    }
-
-    .section-header-split {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      margin-bottom: 52px;
-      gap: 44px;
-    }
-
-    .section-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-family: var(--font-accent);
-      font-size: 15px;
-      font-style: italic;
-      color: var(--badge-olive);
-      margin-bottom: 12px;
-    }
-
-    .section-heading-serif {
-      font-family: var(--font-display);
-      font-size: 46px;
-      font-weight: 600;
-      line-height: 1.15;
-      color: var(--primary-darker);
-      letter-spacing: -0.8px;
-    }
-
-    .section-header-right {
-      max-width: 470px;
-    }
-
-    .section-header-right p {
-      font-size: 15.5px;
-      color: var(--text-muted);
-      line-height: 1.7;
-      margin-bottom: 20px;
-    }
-
-    .btn-olive {
-      background-color: var(--badge-olive);
-      color: #FFFFFF;
-      padding: 12px 28px;
-      border-radius: var(--radius-full);
-      font-size: 14.5px;
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      box-shadow: 0 4px 14px rgba(78, 96, 50, 0.22);
-      transition: all 0.25s ease;
-    }
-
-    .btn-olive:hover {
-      background-color: #3B4B24;
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(78, 96, 50, 0.3);
-    }
-
-    /* 3 Large Service Cards */
-    .services-cards-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 28px;
-    }
-
-    .service-card {
-      position: relative;
-      height: 450px;
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      cursor: pointer;
-      box-shadow: var(--shadow-sm);
-      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .service-card:hover {
-      transform: translateY(-6px);
-      box-shadow: var(--shadow-lg);
-    }
-
-    .service-card-bg {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.6s ease;
-    }
-
-    .service-card:hover .service-card-bg {
-      transform: scale(1.04);
-    }
-
-    .service-card-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, rgba(14, 34, 27, 0.05) 0%, rgba(14, 34, 27, 0.45) 50%, rgba(10, 24, 19, 0.94) 100%);
-      z-index: 1;
-    }
-
-    .service-card-btn-arrow {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.3);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(255, 255, 255, 0.5);
-      color: #FFFFFF;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      z-index: 2;
-      transition: all 0.25s ease;
-    }
-
-    .service-card:hover .service-card-btn-arrow {
-      background: #FFFFFF;
-      color: var(--primary-darker);
-      transform: scale(1.08);
-    }
-
-    .service-card-content {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      padding: 32px 26px;
-      z-index: 2;
-      color: #FFFFFF;
-    }
-
-    .service-card-title {
-      font-family: var(--font-display);
-      font-size: 24px;
-      font-weight: 600;
-      line-height: 1.25;
-      margin-bottom: 8px;
-      color: #FFFFFF;
-    }
-
-    .service-card-text {
-      font-family: var(--font-body);
-      font-size: 14px;
-      color: rgba(255, 255, 255, 0.88);
-      line-height: 1.58;
-    }
-
-    /* ==========================================================================
-       TRUSTED MENTAL SUPPORT / WHY CHOOSE US
-       ========================================================================== */
-    .trusted-section {
-      padding: 100px 0;
-      background-color: #FFFFFF;
-      border-top: 1px solid var(--border-subtle);
-      border-bottom: 1px solid var(--border-subtle);
-    }
-
-    .trusted-header-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 50px;
-    }
-
-    .trusted-grid {
-      display: grid;
-      grid-template-columns: 1.25fr 0.75fr;
-      gap: 36px;
-    }
-
-    .features-list {
-      display: flex;
-      flex-direction: column;
-      gap: 22px;
-    }
-
-    .feature-box {
-      background-color: #F8FAF6;
-      border: 1px solid var(--border-card);
-      border-radius: var(--radius-md);
-      padding: 28px 30px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      transition: all 0.25s ease;
-    }
-
-    .feature-box:hover {
-      background-color: #FFFFFF;
-      border-color: #D2DBCF;
-      box-shadow: var(--shadow-sm);
-      transform: translateX(4px);
-    }
-
-    .feature-icon-badge {
-      width: 40px;
-      height: 40px;
-      background: var(--badge-olive-bg);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--badge-olive);
-      margin-bottom: 4px;
-    }
-
-    .feature-title {
-      font-family: var(--font-display);
-      font-size: 20px;
-      font-weight: 600;
-      color: var(--primary-darker);
-      letter-spacing: -0.3px;
-    }
-
-    .feature-desc {
-      font-family: var(--font-body);
-      font-size: 15px;
-      color: var(--text-muted);
-      line-height: 1.7;
-    }
-
-    /* Tall Community Card */
-    .tall-community-card {
-      position: relative;
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      min-height: 490px;
-      box-shadow: var(--shadow-md);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 40px 34px;
-      color: #FFFFFF;
-    }
-
-    .tall-community-card-bg {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      z-index: 0;
-      transition: transform 0.6s ease;
-    }
-
-    .tall-community-card:hover .tall-community-card-bg {
-      transform: scale(1.03);
-    }
-
-    .tall-community-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, rgba(14, 34, 27, 0.78) 0%, rgba(14, 34, 27, 0.25) 45%, rgba(10, 24, 19, 0.90) 100%);
-      z-index: 1;
-    }
-
-    .tall-community-content {
-      position: relative;
-      z-index: 2;
-    }
-
-    .tall-community-title {
-      font-family: var(--font-display);
-      font-size: 32px;
-      font-weight: 600;
-      line-height: 1.25;
-      margin-bottom: 12px;
-      color: #FFFFFF;
-    }
-
-    .tall-community-footer {
-      position: relative;
-      z-index: 2;
-    }
-
-    .btn-read-more {
-      background-color: #FFFFFF;
-      color: var(--primary-darker);
-      padding: 12px 28px;
-      border-radius: var(--radius-full);
-      font-size: 14.5px;
-      font-weight: 600;
-      display: inline-block;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
-      transition: all 0.25s ease;
-    }
-
-    .btn-read-more:hover {
-      background-color: var(--bg-warm);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25);
-    }
-
-    /* ==========================================================================
-       MEET THE EXPERTS (THERAPISTS TEAM)
-       ========================================================================== */
-    .team-section {
-      padding: 100px 0 115px 0;
-      background-color: var(--bg-warm);
-    }
-
-    .team-header {
-      text-align: center;
-      margin-bottom: 58px;
-    }
-
-    .team-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 24px;
-    }
-
-    .therapist-card {
-      position: relative;
-      height: 430px;
-      border-radius: var(--radius-md);
-      overflow: hidden;
-      box-shadow: var(--shadow-sm);
-      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: 20px;
-      background-color: #E8ECE6;
-    }
-
-    .therapist-card:hover {
-      transform: translateY(-8px);
-      box-shadow: var(--shadow-lg);
-    }
-
-    .therapist-photo {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: top center;
-      transition: transform 0.6s ease;
-    }
-
-    .therapist-card:hover .therapist-photo {
-      transform: scale(1.05);
-    }
-
-    .therapist-badge-box {
-      position: relative;
-      z-index: 2;
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-radius: 14px;
-      padding: 16px 14px;
-      text-align: center;
-      border: 1px solid rgba(255, 255, 255, 0.9);
-      box-shadow: 0 6px 18px rgba(22, 51, 42, 0.08);
-      transition: all 0.25s ease;
-    }
-
-    .therapist-card:hover .therapist-badge-box {
-      background: #FFFFFF;
-      box-shadow: 0 12px 28px rgba(22, 51, 42, 0.16);
-    }
-
-    .therapist-name {
-      font-family: var(--font-display);
-      font-size: 16.5px;
-      font-weight: 600;
-      color: var(--primary-darker);
-      line-height: 1.25;
-      margin-bottom: 3px;
-    }
-
-    .therapist-role {
-      font-family: var(--font-body);
-      font-size: 12px;
-      color: var(--text-muted);
-      font-style: italic;
-    }
-
-    .therapist-specialties {
-      font-family: var(--font-body);
-      font-size: 11.5px;
-      color: #384C42;
-      margin-top: 6px;
-      line-height: 1.45;
-      border-top: 1px solid #EAECE7;
-      padding-top: 6px;
-    }
-
-    /* ==========================================================================
-       QDRANT FAQ & PRACTICE POLICIES
-       ========================================================================== */
-    .faq-section {
-      padding: 95px 0;
-      background-color: #FFFFFF;
-      border-top: 1px solid var(--border-subtle);
-    }
-
-    .faq-container {
-      max-width: 860px;
-      margin: 0 auto;
-    }
-
-    .faq-header {
-      text-align: center;
-      margin-bottom: 48px;
-    }
-
-    .faq-item {
-      border-bottom: 1px solid #E6EAE4;
-      padding: 24px 0;
-    }
-
-    .faq-question {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-family: var(--font-display);
-      font-size: 19px;
-      font-weight: 600;
-      color: var(--primary-darker);
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .faq-toggle-icon {
-      font-family: var(--font-display);
-      font-size: 22px;
-      color: var(--primary);
-      transition: transform 0.25s ease;
-    }
-
-    .faq-answer {
-      font-family: var(--font-body);
-      font-size: 15.5px;
-      color: var(--text-muted);
-      line-height: 1.72;
-      margin-top: 14px;
-      display: none;
-    }
-
-    .faq-item.active .faq-answer {
-      display: block;
-    }
-
-    .faq-item.active .faq-toggle-icon {
-      transform: rotate(45deg);
-    }
-
-    /* ==========================================================================
-       CRISIS BANNER & FOOTER
-       ========================================================================== */
-    .crisis-bar {
-      background-color: #FAF4EE;
-      border-top: 1px solid #F0DFD1;
-      border-bottom: 1px solid #F0DFD1;
-      padding: 16px 20px;
-      text-align: center;
-      font-family: var(--font-body);
-      font-size: 14px;
-      color: #7E3E1A;
-    }
-
-    .crisis-bar strong {
-      color: #632C10;
-    }
-
-    .site-footer {
-      background-color: var(--primary-darker);
-      color: #C2CEC8;
-      padding: 70px 0 45px 0;
-    }
-
-    .footer-grid {
-      display: grid;
-      grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
-      gap: 44px;
-      margin-bottom: 50px;
-    }
-
-    .footer-brand h4 {
-      font-family: var(--font-display);
-      font-size: 23px;
-      color: #FFFFFF;
-      font-weight: 600;
-      margin-bottom: 14px;
-    }
-
-    .footer-brand p {
-      font-size: 14.5px;
-      line-height: 1.68;
-      color: #9AAEA4;
-      max-width: 320px;
-    }
-
-    .footer-col h5 {
-      font-family: var(--font-display);
-      font-size: 16px;
-      font-weight: 600;
-      color: #FFFFFF;
-      margin-bottom: 18px;
-    }
-
-    .footer-col ul {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 11px;
-    }
-
-    .footer-col a {
-      font-size: 14.5px;
-      color: #9AAEA4;
-      transition: color 0.2s ease;
-    }
-
-    .footer-col a:hover {
-      color: #FFFFFF;
-    }
-
-    .footer-bottom {
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      padding-top: 30px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 14px;
-      color: #7B9187;
-    }
-
-    /* ==========================================================================
-       RESPONSIVENESS
-       ========================================================================== */
-    @media (max-width: 1024px) {
-      .hero-headline {
-        font-size: 50px;
-      }
-      .services-cards-grid {
-        grid-template-columns: 1fr;
-      }
-      .service-card {
-        height: 380px;
-      }
-      .trusted-grid {
-        grid-template-columns: 1fr;
-      }
-      .tall-community-card {
-        min-height: 400px;
-      }
-      .team-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      .footer-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .nav-links {
-        display: none;
-      }
-      .hero-headline {
-        font-size: 38px;
-      }
-      .highlights-grid {
-        grid-template-columns: 1fr;
-        gap: 32px;
-      }
-      .team-grid {
-        grid-template-columns: 1fr;
-      }
-      .section-header-split {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .footer-grid {
-        grid-template-columns: 1fr;
-      }
-      .footer-bottom {
-        flex-direction: column;
-        gap: 12px;
-        text-align: center;
-      }
-      .hero-stats-card {
-        flex-direction: column;
-        gap: 16px;
-      }
-      .hero-stat-divider {
-        display: none;
-      }
+    .animate-aura {
+      animation: pulseAura 8s ease-in-out infinite;
     }
   </style>
 </head>
-<body>
+<body class="bg-linen-100 text-obsidian-800 antialiased selection:bg-sage-200 selection:text-forest-900">
 
-  <!-- ==========================================================================
-       HEADER & NAVIGATION
-       ========================================================================== -->
-  <header class="site-header">
-    <div class="nav-container">
-      <a href="#" class="brand-logo">
-        <span class="brand-icon">🌿</span>
-        <span>MindBridge Wellness</span>
+  <!-- =========================================================================
+       NAVIGATION BAR
+       ========================================================================= -->
+  <header class="fixed top-0 left-0 right-0 z-40 transition-all duration-300 backdrop-blur-md bg-linen-100/90 border-b border-forest-900/5">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 h-20 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="#" class="flex items-center gap-3 group">
+        <div class="w-9 h-9 rounded-full bg-forest-800 text-linen-100 flex items-center justify-center font-editorial text-lg shadow-sm border border-forest-700/40 group-hover:scale-105 transition-transform">
+          E
+        </div>
+        <div class="flex flex-col">
+          <span class="font-editorial text-lg sm:text-xl font-medium tracking-tight text-forest-900 leading-none">
+            MindBridge Wellness <span class="text-terracotta-600">·</span> Ellen
+          </span>
+          <span class="text-[11px] font-medium tracking-wider uppercase text-obsidian-500 mt-1">
+            Practice AI Intake Assistant
+          </span>
+        </div>
       </a>
 
-      <nav>
-        <ul class="nav-links">
-          <li><a href="#">Home</a></li>
-          <li><a href="#about">About Us</a></li>
-          <li><a href="#services">Services</a></li>
-          <li><a href="#therapists">Therapists</a></li>
-          <li><a href="#faqs">Resources</a></li>
-        </ul>
+      <!-- Desktop Navigation Links -->
+      <nav class="hidden md:flex items-center gap-8 text-[14px] font-medium text-obsidian-700">
+        <a href="#the-assistant" class="hover:text-forest-800 transition-colors">The Assistant</a>
+        <a href="#capabilities" class="hover:text-forest-800 transition-colors">Capabilities</a>
+        <a href="#differentiation" class="hover:text-forest-800 transition-colors">Why Ellen</a>
+        <a href="#customization" class="hover:text-forest-800 transition-colors">Customization</a>
+        <a href="#why-it-matters" class="hover:text-forest-800 transition-colors">Why It Matters</a>
       </nav>
 
-      <button class="btn-pill btn-dark launch-widget-btn" id="nav-get-help-btn">
-        Get Help
-      </button>
+      <!-- Right Action CTA -->
+      <div class="flex items-center gap-4">
+        <a 
+          href="#demo-modal"
+          class="open-demo-modal inline-flex items-center justify-center px-5 py-2.5 rounded-full text-[13.5px] font-semibold text-linen-100 bg-forest-800 hover:bg-forest-900 transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0"
+        >
+          Talk to Us
+        </a>
+      </div>
     </div>
   </header>
 
-  <!-- ==========================================================================
-       HERO BANNER (KID IMAGE BACKGROUND WITH REDUCED OPACITY & CRISP CONTRAST)
-       ========================================================================== -->
-  <section class="hero-section">
-    <!-- Kid image applied directly to background with reduced opacity -->
-    <div class="hero-bg-layer"></div>
-    
-    <!-- Serene sky gradient overlay for high contrast & clarity -->
-    <div class="hero-gradient-overlay"></div>
+  <main>
+    <!-- =========================================================================
+         HERO SECTION: The AI Assistant Built for Wellness Practices
+         ========================================================================= -->
+    <section id="the-assistant" class="relative pt-32 pb-20 sm:pt-40 sm:pb-28 overflow-hidden">
+      <!-- Ambient gentle background gradient glow -->
+      <div class="absolute top-12 left-1/2 -translate-x-1/2 w-[700px] h-[450px] bg-gradient-to-tr from-sage-200/50 via-terracotta-100/30 to-sage-100/60 rounded-full blur-3xl pointer-events-none -z-10 animate-aura"></div>
 
-    <div class="container">
-      <div class="hero-content-wrapper">
-        
-        <h1 class="hero-headline">
-          Your Mental Health Matters
-        </h1>
-
-        <p class="hero-subtext">
-          Compassionate, evidence-based psychotherapy tailored to your personal journey. Find healing, clarity, and renewed resilience in a safe, confidential space.
-        </p>
-
-        <div class="hero-actions">
-          <button class="btn-hero-primary launch-widget-btn" id="hero-get-started-btn">
-            Get Started
-          </button>
-          <button class="btn-hero-secondary launch-widget-btn" id="hero-talk-therapist-btn">
-            Talk to a Therapist
-          </button>
-        </div>
-
-        <!-- Frosted Glass Metrics Card with Serif Numerals -->
-        <div class="hero-stats-card">
-          <div class="hero-stat-col">
-            <span class="stat-num">10k+</span>
-            <span class="stat-label">Clients Supported</span>
-          </div>
-          <div class="hero-stat-divider"></div>
-          <div class="hero-stat-col">
-            <span class="stat-num">4</span>
-            <span class="stat-label">Licensed Specialists</span>
-          </div>
-          <div class="hero-stat-divider"></div>
-          <div class="hero-stat-col">
-            <span class="stat-num">24/7</span>
-            <span class="stat-label">AI & Care Guidance</span>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ==========================================================================
-       SUB-HERO HIGHLIGHTS (3 COLUMNS)
-       ========================================================================== -->
-  <section class="highlights-section" id="about">
-    <div class="container">
-      <div class="highlights-grid">
-        
-        <div class="highlight-card">
-          <div class="highlight-icon-circle">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
-          </div>
-          <h3 class="highlight-title">Personalized Care</h3>
-          <p class="highlight-desc">
-            Care tailored to your unique needs, goals, and pace—because no two journeys are the same. We blend CBT, ACT, and trauma-informed support.
-          </p>
-        </div>
-
-        <div class="highlight-card">
-          <div class="highlight-icon-circle">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20L21 3"></path><path d="M21 16v5h-5"></path><path d="M15 15l6 6"></path><path d="M4 4l5 5"></path></svg>
-          </div>
-          <h3 class="highlight-title">Practical Tools</h3>
-          <p class="highlight-desc">
-            Simple, effective evidence-based modalities (CBT, EFT, EMDR) to help you navigate stress, emotional balance, relationships, and major life changes.
-          </p>
-        </div>
-
-        <div class="highlight-card">
-          <div class="highlight-icon-circle">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg>
-          </div>
-          <h3 class="highlight-title">Safe & Private</h3>
-          <p class="highlight-desc">
-            All sessions are fully confidential and protected under HIPAA, offered in-person at our practice or through encrypted telehealth video.
-          </p>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ==========================================================================
-       SERVICES SECTION
-       ========================================================================== -->
-  <section class="services-section" id="services">
-    <div class="container">
-      
-      <div class="section-header-split">
-        <div>
-          <div class="section-tag">✦ Clinical Services</div>
-          <h2 class="section-heading-serif">Our Mental Health<br />Services</h2>
-        </div>
-        <div class="section-header-right">
-          <p>
-            We provide personalized mental health support that fits your life. With practical tools and a safe, confidential environment, we help you feel better, think clearer.
-          </p>
-          <button class="btn-olive launch-widget-btn" id="services-view-all-btn">
-            View All Services
-          </button>
-        </div>
-      </div>
-
-      <!-- 3 Service Cards -->
-      <div class="services-cards-grid">
-        
-        <!-- Service 1: Individual Therapy -->
-        <div class="service-card launch-widget-btn" data-prompt="I'd like to learn more about Individual Therapy">
-          <img 
-            src="service_individual.jpg" 
-            alt="Individual Therapy" 
-            class="service-card-bg"
-            onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1544027993-37dbfe43562a?auto=format&fit=crop&w=800&q=80';"
-          />
-          <div class="service-card-overlay"></div>
-          <div class="service-card-btn-arrow">↗</div>
-          <div class="service-card-content">
-            <h3 class="service-card-title">Online Therapy & Counseling</h3>
-            <p class="service-card-text">
-              One-on-one sessions for anxiety, depression, trauma, and life transitions with licensed clinical psychologists and social workers.
-            </p>
-          </div>
-        </div>
-
-        <!-- Service 2: Stress & Anxiety Support -->
-        <div class="service-card launch-widget-btn" data-prompt="Tell me about your Stress & Anxiety Support and Couples Therapy">
-          <img 
-            src="service_couples.jpg" 
-            alt="Couples and Relationship Therapy" 
-            class="service-card-bg"
-            onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=800&q=80';"
-          />
-          <div class="service-card-overlay"></div>
-          <div class="service-card-btn-arrow">↗</div>
-          <div class="service-card-content">
-            <h3 class="service-card-title">Stress & Anxiety Support</h3>
-            <p class="service-card-text">
-              Evidence-based techniques and Emotionally Focused Therapy (EFT) to manage daily stress, communication breakdowns, and burnout.
-            </p>
-          </div>
-        </div>
-
-        <!-- Service 3: Self-Growth & Adolescent Programs -->
-        <div class="service-card launch-widget-btn" data-prompt="Tell me about your Teen & Adolescent Counseling and Mindfulness programs">
-          <img 
-            src="service_mindfulness.jpg" 
-            alt="Adolescent and Self-Growth Counseling" 
-            class="service-card-bg"
-            onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=800&q=80';"
-          />
-          <div class="service-card-overlay"></div>
-          <div class="service-card-btn-arrow">↗</div>
-          <div class="service-card-content">
-            <h3 class="service-card-title">Self-Growth Programs</h3>
-            <p class="service-card-text">
-              Specialized adolescent counseling (13+) and ACT mindfulness programs for emotional balance, identity, and personal strength.
-            </p>
-          </div>
-        </div>
-
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ==========================================================================
-       TRUSTED MENTAL SUPPORT / WHY CHOOSE US
-       ========================================================================== -->
-  <section class="trusted-section">
-    <div class="container">
-      
-      <div class="trusted-header-row">
-        <div>
-          <div class="section-tag">✦ Why Choose MindBridge</div>
-          <h2 class="section-heading-serif">Trusted Mental Support</h2>
-        </div>
-        <button class="btn-olive launch-widget-btn" id="why-choose-explore-btn">
-          Explore More
-        </button>
-      </div>
-
-      <div class="trusted-grid">
-        
-        <!-- Left 3 Feature Boxes -->
-        <div class="features-list">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 items-center">
           
-          <div class="feature-box">
-            <div class="feature-icon-badge">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg>
+          <!-- Left Content Column -->
+          <div class="lg:col-span-7 flex flex-col items-start text-left">
+            <!-- Badge -->
+            <div class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-sage-100/90 border border-sage-200/80 text-[12px] font-medium text-forest-800 mb-6">
+              <span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
+              Administrative Intake AI for Modern Practices
             </div>
-            <h3 class="feature-title">Licensed & verified therapists</h3>
-            <p class="feature-desc">
-              Our clinical staff includes licensed clinical psychologists (PsyD), marriage & family therapists (LMFT), clinical social workers (LCSW), and professional counselors (LPC).
+
+            <!-- Headline -->
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-normal leading-[1.12] text-forest-950 mb-6">
+              The AI Assistant Built for <span class="italic font-medium text-forest-800">Wellness Practices</span>
+            </h1>
+
+            <!-- Subheadline verbatim -->
+            <p class="text-lg sm:text-xl text-obsidian-700 leading-relaxed font-normal max-w-2xl mb-9">
+              Ellen answers every visitor, day or night, qualifies every inquiry, and never lets a potential client slip away, without adding a single thing to your team's plate.
             </p>
+
+            <!-- CTA Buttons -->
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto mb-10">
+              <a 
+                href="#demo-modal"
+                class="open-demo-modal inline-flex items-center justify-center px-7 py-3.5 rounded-full text-[15px] font-semibold text-linen-100 bg-forest-800 hover:bg-forest-900 transition-all shadow-sm hover:shadow-float hover:-translate-y-0.5 text-center"
+              >
+                Get a Free Demo Built for Your Practice
+              </a>
+              <button 
+                type="button" 
+                id="hero-see-live-demo-btn"
+                class="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full text-[15px] font-semibold text-forest-800 bg-white/80 hover:bg-white border border-forest-800/15 hover:border-forest-800/30 transition-all shadow-subtle hover:-translate-y-0.5 text-center"
+              >
+                <svg class="w-4 h-4 text-terracotta-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                See a Live Demo
+              </button>
+            </div>
+
+            <!-- Directional highlights -->
+            <div class="flex flex-wrap items-center gap-6 sm:gap-8 pt-4 border-t border-forest-900/10 text-xs font-medium text-obsidian-500">
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                Strict Clinical Guardrails
+              </div>
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                Trained on Your Real Practice
+              </div>
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                Zero Staff Burden
+              </div>
+            </div>
           </div>
 
-          <div class="feature-box">
-            <div class="feature-icon-badge">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          <!-- Right Column: Interactive Chat Preview Card -->
+          <div class="lg:col-span-5">
+            <div class="glass-panel rounded-3xl p-6 sm:p-7 shadow-float border border-white/80 relative">
+              
+              <!-- Chat Card Top Header -->
+              <div class="flex items-center justify-between pb-5 border-b border-forest-900/10 mb-5">
+                <div class="flex items-center gap-3">
+                  <div class="relative w-10 h-10 rounded-full overflow-hidden border border-forest-800/20 bg-sage-200">
+                    <img src="ellen_avatar.jpg" alt="Ellen Avatar" class="w-full h-full object-cover" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 40 40\'><rect fill=\'%2316382E\' width=\'40\' height=\'40\'/><text fill=\'%23F7F5F0\' x=\'50%\' y=\'55%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-size=\'16\'>E</text></svg>'" />
+                    <span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white"></span>
+                  </div>
+                  <div>
+                    <h3 class="text-sm font-semibold text-forest-950 leading-tight">Ellen</h3>
+                    <p class="text-[11px] text-obsidian-500">Live Intake Preview · MindBridge Assistant</p>
+                  </div>
+                </div>
+                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-medium bg-emerald-50 text-emerald-800 border border-emerald-200/60">
+                  Online 24/7
+                </span>
+              </div>
+
+              <!-- Conversation Exchange Preview -->
+              <div class="space-y-4 text-[13.5px] leading-relaxed mb-6">
+                <!-- User message -->
+                <div class="flex justify-end">
+                  <div class="max-w-[85%] rounded-2xl rounded-tr-sm bg-forest-800 text-linen-100 px-4 py-3 shadow-sm">
+                    Hi, I've been feeling overwhelmed with work anxiety lately. Do you have any evening openings?
+                  </div>
+                </div>
+
+                <!-- Ellen's response -->
+                <div class="flex justify-start">
+                  <div class="max-w-[88%] rounded-2xl rounded-tl-sm bg-white border border-forest-900/10 text-obsidian-800 px-4 py-3 shadow-subtle">
+                    <p class="mb-2">I hear that work stress can feel really heavy, and reaching out is a meaningful first step.</p>
+                    <p class="mb-2">Yes, our counselors offer evening sessions on select weekdays to fit busy schedules. We also specialize in anxiety and stress coping tools.</p>
+                    <p class="text-forest-800 font-medium">May I ask your name so I can check availability that fits best?</p>
+                  </div>
+                </div>
+
+                <!-- User message 2 -->
+                <div class="flex justify-end">
+                  <div class="max-w-[85%] rounded-2xl rounded-tr-sm bg-forest-800 text-linen-100 px-4 py-3 shadow-sm">
+                    I'm Marcus. Thursdays after 5pm would be ideal.
+                  </div>
+                </div>
+
+                <!-- Ellen's response 2 -->
+                <div class="flex justify-start">
+                  <div class="max-w-[88%] rounded-2xl rounded-tl-sm bg-white border border-forest-900/10 text-obsidian-800 px-4 py-3 shadow-subtle">
+                    Got it, Marcus! I've noted Thursday evenings as your preference. What's the best email or phone number for our team to follow up and confirm with you?
+                  </div>
+                </div>
+              </div>
+
+              <!-- Interactive prompt trigger -->
+              <div class="pt-4 border-t border-forest-900/10">
+                <button 
+                  type="button" 
+                  id="hero-launch-chat-preview-btn"
+                  class="w-full py-3 px-4 rounded-xl bg-sage-50 hover:bg-sage-100/80 border border-sage-200/80 text-forest-800 text-xs font-semibold flex items-center justify-between transition-colors group"
+                >
+                  <span class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-terracotta-500"></span>
+                    Test Ellen live on this website right now
+                  </span>
+                  <span class="text-forest-700 group-hover:translate-x-1 transition-transform">Launch Chat →</span>
+                </button>
+              </div>
+
             </div>
-            <h3 class="feature-title">Confidential & secure sessions</h3>
-            <p class="feature-desc">
-              All sessions are private, encrypted, and fully compliant under HIPAA guidelines for complete peace of mind, whether meeting in person or online.
-            </p>
+
+            <!-- Tasteful visual placeholder note for owner asset custom swap -->
+            <div class="mt-4 text-center">
+              <span class="text-[11px] text-obsidian-500 italic">
+                * Real conversation engine powered by MindBridge intake architecture
+              </span>
+            </div>
           </div>
 
-          <div class="feature-box">
-            <div class="feature-icon-badge">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- =========================================================================
+         NEW SECTION: The Real Cost of a Missed Inquiry (Revenue Framing)
+         ========================================================================= -->
+    <section class="py-20 sm:py-28 bg-white border-y border-forest-900/5 relative">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8">
+        
+        <!-- Section Header -->
+        <div class="max-w-3xl mx-auto text-center mb-16 sm:mb-20">
+          <span class="text-xs font-semibold tracking-widest uppercase text-terracotta-600 mb-3 block">
+            Practice Reality & Retention
+          </span>
+          <h2 class="text-3xl sm:text-4xl lg:text-5xl font-normal text-forest-950 mb-5 leading-tight">
+            The Real Cost of a <span class="italic font-medium text-forest-800">Missed Inquiry</span>
+          </h2>
+          <p class="text-base sm:text-lg text-obsidian-700 leading-relaxed font-normal">
+            Every visitor who leaves without an answer is a client who found somewhere else, or nowhere at all.
+          </p>
+        </div>
+
+        <!-- Before vs After Comparison Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10 mb-16 max-w-5xl mx-auto">
+          
+          <!-- Column 1: Without Ellen -->
+          <div class="rounded-3xl p-8 sm:p-9 bg-linen-50 border border-red-900/10 relative shadow-subtle flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-6 pb-4 border-b border-red-900/10">
+                <span class="font-editorial text-xl font-medium text-red-900">Without Ellen</span>
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-50 text-red-700 border border-red-200">
+                  Missed Opportunities
+                </span>
+              </div>
+              <ul class="space-y-5 text-sm text-obsidian-700 leading-relaxed">
+                <li class="flex items-start gap-3">
+                  <div class="w-5 h-5 rounded-full bg-red-100 text-red-700 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">✕</div>
+                  <span><strong>After-hours silence:</strong> Most inquiries to a practice's website happen outside business hours, when no one's there to answer.</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <div class="w-5 h-5 rounded-full bg-red-100 text-red-700 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">✕</div>
+                  <span><strong>Fragile first reach-outs:</strong> Someone reaching out for mental health support rarely reaches out twice. A slow response often loses them entirely.</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <div class="w-5 h-5 rounded-full bg-red-100 text-red-700 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">✕</div>
+                  <span><strong>Repetitive staff burden:</strong> Staff time spent manually answering repetitive questions (insurance, hours, "do you see couples") is time not spent with clients.</span>
+                </li>
+              </ul>
             </div>
-            <h3 class="feature-title">Personalized mental wellness plans</h3>
-            <p class="feature-desc">
-              Personalized mental wellness plans are thoughtfully created to match your goals, emotional needs, and daily life, helping you build resilience, healthy habits, and long-term emotional balance with expert support.
-            </p>
+            <div class="mt-8 pt-5 border-t border-red-900/10 text-xs font-medium text-red-800 italic">
+              Result: Prospective clients bounce to directories or remain unhelped.
+            </div>
+          </div>
+
+          <!-- Column 2: With Ellen -->
+          <div class="rounded-3xl p-8 sm:p-9 bg-sage-50/70 border border-forest-800/15 relative shadow-subtle flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-6 pb-4 border-b border-forest-800/15">
+                <span class="font-editorial text-xl font-medium text-forest-900">With Ellen</span>
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-forest-800 text-linen-100">
+                  Every Visitor Counted
+                </span>
+              </div>
+              <ul class="space-y-5 text-sm text-obsidian-700 leading-relaxed">
+                <li class="flex items-start gap-3">
+                  <div class="w-5 h-5 rounded-full bg-forest-800 text-linen-100 flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold">✓</div>
+                  <span><strong>Instant 24/7 engagement:</strong> Every visitor gets a warm, grounded response the moment they arrive, midnight or weekend.</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <div class="w-5 h-5 rounded-full bg-forest-800 text-linen-100 flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold">✓</div>
+                  <span><strong>Warm, seamless intake:</strong> Gathers clinical focus, preferences, and contact info naturally before they close the tab.</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <div class="w-5 h-5 rounded-full bg-forest-800 text-linen-100 flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold">✓</div>
+                  <span><strong>Zero team interruption:</strong> Repetitive logistical inquiries are answered accurately from your policies; qualified leads queue neatly for confirmation.</span>
+                </li>
+              </ul>
+            </div>
+            <div class="mt-8 pt-5 border-t border-forest-800/15 text-xs font-medium text-forest-800 italic">
+              Result: Reliable lead capture, faster response, and protected clinical hours.
+            </div>
           </div>
 
         </div>
 
-        <!-- Right Tall Community Card -->
-        <div class="tall-community-card">
-          <img 
-            src="community_card.jpg" 
-            alt="Community support and mindfulness" 
-            class="tall-community-card-bg"
-            onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=800&q=80';"
-          />
-          <div class="tall-community-overlay"></div>
+        <!-- 3 Directional Stat-Free Takeaways -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          <div class="p-6 rounded-2xl bg-linen-100/80 border border-forest-900/5 text-center">
+            <h3 class="font-editorial text-xl font-medium text-forest-950 mb-2">Fewer Missed Inquiries</h3>
+            <p class="text-xs text-obsidian-500 leading-relaxed">Immediate validation and connection for visitors who would otherwise navigate away.</p>
+          </div>
+          <div class="p-6 rounded-2xl bg-linen-100/80 border border-forest-900/5 text-center">
+            <h3 class="font-editorial text-xl font-medium text-forest-950 mb-2">Instant After-Hours Response</h3>
+            <p class="text-xs text-obsidian-500 leading-relaxed">Captures late-night and weekend searches when therapeutic intent is at its highest.</p>
+          </div>
+          <div class="p-6 rounded-2xl bg-linen-100/80 border border-forest-900/5 text-center">
+            <h3 class="font-editorial text-xl font-medium text-forest-950 mb-2">Staff Time Protected</h3>
+            <p class="text-xs text-obsidian-500 leading-relaxed">Frees administrators and counselors from answering the same logistical questions repeatedly.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- =========================================================================
+         WHAT ELLEN DOES (Capability Matrix)
+         ========================================================================= -->
+    <section id="capabilities" class="py-24 sm:py-32 relative">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8">
+        
+        <div class="max-w-3xl mx-auto text-center mb-16 sm:mb-20">
+          <span class="text-xs font-semibold tracking-widest uppercase text-terracotta-600 mb-3 block">
+            Core Capabilities
+          </span>
+          <h2 class="text-3xl sm:text-4xl lg:text-5xl font-normal text-forest-950 mb-5 leading-tight">
+            What Ellen Does for <span class="italic font-medium text-forest-800">Your Practice</span>
+          </h2>
+          <p class="text-base sm:text-lg text-obsidian-700 leading-relaxed font-normal">
+            Seven purpose-built capabilities designed specifically for outpatient counseling and wellness environments.
+          </p>
+        </div>
+
+        <!-- 7 Capability Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
           
-          <div class="tall-community-content">
-            <h3 class="tall-community-title">
-              Community support and resources
-            </h3>
+          <!-- Card 1: Never Guesses -->
+          <div class="glass-panel p-8 rounded-3xl hover:shadow-float hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group">
+            <div>
+              <div class="w-12 h-12 rounded-2xl bg-sage-100 text-forest-800 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              </div>
+              <h3 class="font-editorial text-xl font-medium text-forest-950 mb-3">Never Guesses</h3>
+              <p class="text-sm text-obsidian-700 leading-relaxed">
+                Every answer comes straight from your services, policies, and pricing. No hallucinated promises to correct later.
+              </p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-forest-900/5 text-[11px] font-semibold tracking-wide uppercase text-forest-700">
+              Grounded Retrieval Architecture
+            </div>
           </div>
 
-          <div class="tall-community-footer">
-            <button class="btn-read-more launch-widget-btn" data-prompt="What community resources and group therapy sessions are available?">
-              Read More
+          <!-- Card 2: Feels Human, Not a Form -->
+          <div class="glass-panel p-8 rounded-3xl hover:shadow-float hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group">
+            <div>
+              <div class="w-12 h-12 rounded-2xl bg-terracotta-100 text-terracotta-700 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+              </div>
+              <h3 class="font-editorial text-xl font-medium text-forest-950 mb-3">Feels Human, Not a Form</h3>
+              <p class="text-sm text-obsidian-700 leading-relaxed">
+                Warm, one-question-at-a-time conversation that keeps visitors engaged instead of bouncing off a rigid intake form.
+              </p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-forest-900/5 text-[11px] font-semibold tracking-wide uppercase text-terracotta-600">
+              Conversational Empathy
+            </div>
+          </div>
+
+          <!-- Card 3: Matches the Right Therapist -->
+          <div class="glass-panel p-8 rounded-3xl hover:shadow-float hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group">
+            <div>
+              <div class="w-12 h-12 rounded-2xl bg-sage-100 text-forest-800 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+              </div>
+              <h3 class="font-editorial text-xl font-medium text-forest-950 mb-3">Matches the Right Therapist</h3>
+              <p class="text-sm text-obsidian-700 leading-relaxed">
+                Routes visitors to the specialist who actually fits, your team confirms the final call.
+              </p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-forest-900/5 text-[11px] font-semibold tracking-wide uppercase text-forest-700">
+              Clinical Specialization Routing
+            </div>
+          </div>
+
+          <!-- Card 4: Captures Every Lead -->
+          <div class="glass-panel p-8 rounded-3xl hover:shadow-float hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group">
+            <div>
+              <div class="w-12 h-12 rounded-2xl bg-terracotta-100 text-terracotta-700 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+              </div>
+              <h3 class="font-editorial text-xl font-medium text-forest-950 mb-3">Captures Every Lead</h3>
+              <p class="text-sm text-obsidian-700 leading-relaxed">
+                Every conversation, every inquiry, logged automatically. Nothing sits unread in an inbox again.
+              </p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-forest-900/5 text-[11px] font-semibold tracking-wide uppercase text-terracotta-600">
+              Immediate CRM / Sheets Sync
+            </div>
+          </div>
+
+          <!-- Card 5: Fills Your Calendar -->
+          <div class="glass-panel p-8 rounded-3xl hover:shadow-float hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group">
+            <div>
+              <div class="w-12 h-12 rounded-2xl bg-sage-100 text-forest-800 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              </div>
+              <h3 class="font-editorial text-xl font-medium text-forest-950 mb-3">Fills Your Calendar</h3>
+              <p class="text-sm text-obsidian-700 leading-relaxed">
+                Takes preferred times and queues them for confirmation, so "call during business hours" stops costing you clients.
+              </p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-forest-900/5 text-[11px] font-semibold tracking-wide uppercase text-forest-700">
+              Pending Confirmation Queue
+            </div>
+          </div>
+
+          <!-- Card 6: Built-In Safety -->
+          <div class="glass-panel p-8 rounded-3xl hover:shadow-float hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group">
+            <div>
+              <div class="w-12 h-12 rounded-2xl bg-terracotta-100 text-terracotta-700 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+              </div>
+              <h3 class="font-editorial text-xl font-medium text-forest-950 mb-3">Built-In Safety</h3>
+              <p class="text-sm text-obsidian-700 leading-relaxed">
+                Never diagnoses, never gives clinical advice, and hands off to real crisis resources the instant it's needed.
+              </p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-forest-900/5 text-[11px] font-semibold tracking-wide uppercase text-terracotta-600">
+              Instant 988 / 911 Guardrails
+            </div>
+          </div>
+
+          <!-- Card 7: Knows When to Step Aside (Full span) -->
+          <div class="glass-panel p-8 rounded-3xl hover:shadow-float hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group md:col-span-2 lg:col-span-3">
+            <div class="max-w-2xl">
+              <div class="w-12 h-12 rounded-2xl bg-forest-800 text-linen-100 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+              </div>
+              <h3 class="font-editorial text-xl font-medium text-forest-950 mb-3">Knows When to Step Aside</h3>
+              <p class="text-sm text-obsidian-700 leading-relaxed">
+                Seamless handoff to your team, whenever a visitor asks or a situation calls for it.
+              </p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-forest-900/5 text-[11px] font-semibold tracking-wide uppercase text-forest-800">
+              Graceful Human Escalation Protocol
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- =========================================================================
+         NEW SECTION: Not Just Another Chatbot (Differentiation)
+         ========================================================================= -->
+    <section id="differentiation" class="py-24 sm:py-32 bg-forest-950 text-linen-100 relative overflow-hidden">
+      <!-- Decorative ambient glows -->
+      <div class="absolute top-0 right-0 w-96 h-96 bg-sage-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute bottom-0 left-0 w-96 h-96 bg-terracotta-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="max-w-7xl mx-auto px-5 sm:px-8 relative z-10">
+        
+        <div class="max-w-3xl mx-auto text-center mb-16 sm:mb-20">
+          <span class="text-xs font-semibold tracking-widest uppercase text-terracotta-500 mb-3 block">
+            Purpose-Built Distinction
+          </span>
+          <h2 class="text-3xl sm:text-4xl lg:text-5xl font-normal text-linen-50 mb-5 leading-tight">
+            Not Just Another <span class="italic font-medium text-sage-200">Chatbot</span>
+          </h2>
+          <p class="text-base sm:text-lg text-sage-200/80 leading-relaxed font-normal">
+            Why Ellen isn't a generic customer-service widget with a wellness skin on it.
+          </p>
+        </div>
+
+        <!-- 4 Comparison Blocks -->
+        <div class="space-y-6 max-w-5xl mx-auto">
+          
+          <!-- Row 1: Content Grounding -->
+          <div class="grid grid-cols-1 md:grid-cols-2 rounded-3xl overflow-hidden border border-white/10 glass-panel-dark">
+            <div class="p-8 border-b md:border-b-0 md:border-r border-white/10 bg-white/[0.02]">
+              <span class="text-xs font-medium text-rose-300 uppercase tracking-wider block mb-2">Generic AI Chatbots</span>
+              <p class="text-sm text-linen-200/70 leading-relaxed">
+                Trained to sound helpful about anything, improvising answers and hallucinating practice policies.
+              </p>
+            </div>
+            <div class="p-8 bg-forest-900/70 flex items-start gap-4">
+              <div class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold">✓</div>
+              <div>
+                <span class="text-xs font-semibold text-emerald-400 uppercase tracking-wider block mb-2">Ellen</span>
+                <p class="text-sm text-linen-100 leading-relaxed">
+                  Only ever speaks from your actual practice content, and stays strictly in scope (she'll redirect, not improvise, if asked something unrelated).
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Row 2: Guardrails & Safe Boundaries -->
+          <div class="grid grid-cols-1 md:grid-cols-2 rounded-3xl overflow-hidden border border-white/10 glass-panel-dark">
+            <div class="p-8 border-b md:border-b-0 md:border-r border-white/10 bg-white/[0.02]">
+              <span class="text-xs font-medium text-rose-300 uppercase tracking-wider block mb-2">Generic AI Chatbots</span>
+              <p class="text-sm text-linen-200/70 leading-relaxed">
+                Don't know what they shouldn't say, offering risky medical speculation or pretending to counsel visitors.
+              </p>
+            </div>
+            <div class="p-8 bg-forest-900/70 flex items-start gap-4">
+              <div class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold">✓</div>
+              <div>
+                <span class="text-xs font-semibold text-emerald-400 uppercase tracking-wider block mb-2">Ellen</span>
+                <p class="text-sm text-linen-100 leading-relaxed">
+                  Built with mental-health-specific guardrails from the ground up: no diagnosing, no clinical advice, no pretending to be a therapist.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Row 3: Crisis Management -->
+          <div class="grid grid-cols-1 md:grid-cols-2 rounded-3xl overflow-hidden border border-white/10 glass-panel-dark">
+            <div class="p-8 border-b md:border-b-0 md:border-r border-white/10 bg-white/[0.02]">
+              <span class="text-xs font-medium text-rose-300 uppercase tracking-wider block mb-2">Generic AI Chatbots</span>
+              <p class="text-sm text-linen-200/70 leading-relaxed">
+                Panic or improvise in a crisis, generating unpredictable conversational text when someone is in distress.
+              </p>
+            </div>
+            <div class="p-8 bg-forest-900/70 flex items-start gap-4">
+              <div class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold">✓</div>
+              <div>
+                <span class="text-xs font-semibold text-emerald-400 uppercase tracking-wider block mb-2">Ellen</span>
+                <p class="text-sm text-linen-100 leading-relaxed">
+                  Crisis response is fixed, tested, and never left to chance. The moment risk language appears, she gives real resources (988, crisis text line, 911) and stops, every time, the same way.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Row 4: Custom Practice Roster -->
+          <div class="grid grid-cols-1 md:grid-cols-2 rounded-3xl overflow-hidden border border-white/10 glass-panel-dark">
+            <div class="p-8 border-b md:border-b-0 md:border-r border-white/10 bg-white/[0.02]">
+              <span class="text-xs font-medium text-rose-300 uppercase tracking-wider block mb-2">Generic AI Chatbots</span>
+              <p class="text-sm text-linen-200/70 leading-relaxed">
+                A generic template with a rigid questionnaire script that irritates visitors looking for genuine help.
+              </p>
+            </div>
+            <div class="p-8 bg-forest-900/70 flex items-start gap-4">
+              <div class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold">✓</div>
+              <div>
+                <span class="text-xs font-semibold text-emerald-400 uppercase tracking-wider block mb-2">Ellen</span>
+                <p class="text-sm text-linen-100 leading-relaxed">
+                  Built around your specific therapists, specialties, and policies, not a one-size-fits-all script.
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- =========================================================================
+         ARCHITECTURE & CUSTOMIZATION
+         ========================================================================= -->
+    <section id="customization" class="py-24 sm:py-32 bg-linen-50 border-b border-forest-900/5">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8">
+        
+        <div class="max-w-3xl mx-auto text-center mb-16 sm:mb-20">
+          <span class="text-xs font-semibold tracking-widest uppercase text-terracotta-600 mb-3 block">
+            Implementation & Integration
+          </span>
+          <h2 class="text-3xl sm:text-4xl lg:text-5xl font-normal text-forest-950 mb-5 leading-tight">
+            Architecture & <span class="italic font-medium text-forest-800">Customization</span>
+          </h2>
+          <!-- Section intro verbatim -->
+          <p class="text-base sm:text-lg text-obsidian-700 leading-relaxed font-normal">
+            Ellen isn't a generic chatbot wearing your logo. She's built around your practice, your therapists, your policies, live in days.
+          </p>
+        </div>
+
+        <!-- 3 Feature Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-14">
+          
+          <!-- Card 1 -->
+          <div class="glass-panel p-8 rounded-3xl flex flex-col justify-between">
+            <div>
+              <div class="w-12 h-12 rounded-2xl bg-sage-100 text-forest-800 flex items-center justify-center mb-6">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+              </div>
+              <h3 class="font-editorial text-2xl font-medium text-forest-950 mb-3">Free Demo</h3>
+              <p class="text-sm text-obsidian-700 leading-relaxed">
+                See Ellen live on your own site's content before committing to anything.
+              </p>
+            </div>
+            <div class="mt-8 pt-4 border-t border-forest-900/10 text-xs text-obsidian-500">
+              Zero upfront commitment
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="glass-panel p-8 rounded-3xl flex flex-col justify-between">
+            <div>
+              <div class="w-12 h-12 rounded-2xl bg-terracotta-100 text-terracotta-700 flex items-center justify-center mb-6">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+              </div>
+              <h3 class="font-editorial text-2xl font-medium text-forest-950 mb-3">Fully Customized</h3>
+              <p class="text-sm text-obsidian-700 leading-relaxed">
+                Trained on your actual services, specialties, and roster, not a generic script.
+              </p>
+            </div>
+            <div class="mt-8 pt-4 border-t border-forest-900/10 text-xs text-obsidian-500">
+              Practice-specific knowledge graph
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="glass-panel p-8 rounded-3xl flex flex-col justify-between">
+            <div>
+              <div class="w-12 h-12 rounded-2xl bg-sage-100 text-forest-800 flex items-center justify-center mb-6">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              </div>
+              <h3 class="font-editorial text-2xl font-medium text-forest-950 mb-3">CRM & Calendar Ready</h3>
+              <p class="text-sm text-obsidian-700 leading-relaxed">
+                Connects to the tools you already use, no rebuilding your workflow.
+              </p>
+            </div>
+            <div class="mt-8 pt-4 border-t border-forest-900/10 text-xs text-obsidian-500">
+              Direct integration capability
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Section CTA verbatim -->
+        <div class="text-center">
+          <a 
+            href="#demo-modal"
+            class="open-demo-modal inline-flex items-center gap-2 px-8 py-4 rounded-full text-base font-semibold text-linen-100 bg-forest-800 hover:bg-forest-900 transition-all shadow-subtle hover:shadow-float hover:-translate-y-0.5"
+          >
+            Get Your Custom Build →
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- =========================================================================
+         WHY IT MATTERS (Editorial Narrative Block)
+         ========================================================================= -->
+    <section id="why-it-matters" class="py-24 sm:py-36 relative overflow-hidden">
+      <!-- Background calming radial -->
+      <div class="absolute inset-0 bg-gradient-to-b from-linen-100 via-sage-50/50 to-linen-100 pointer-events-none"></div>
+
+      <div class="max-w-4xl mx-auto px-5 sm:px-8 relative z-10 text-center">
+        
+        <span class="text-xs font-semibold tracking-widest uppercase text-terracotta-600 mb-6 block">
+          The Human Purpose
+        </span>
+
+        <!-- Editorial narrative block verbatim -->
+        <blockquote class="font-editorial text-2xl sm:text-3xl lg:text-4xl font-normal text-forest-950 leading-[1.38] mb-10 tracking-tight">
+          &ldquo;A wellness practice's website usually gets one shot at a visitor who's already nervous about reaching out. They land at 11pm with three questions, no one answers, and they close the tab. You never even know it happened. Ellen exists so that moment doesn't disappear. Every visitor gets answered. Every inquiry gets captured.&rdquo;
+        </blockquote>
+
+        <div class="flex justify-center">
+          <a 
+            href="#demo-modal"
+            class="open-demo-modal inline-flex items-center justify-center px-8 py-4 rounded-full text-base font-semibold text-linen-100 bg-forest-800 hover:bg-forest-900 transition-all shadow-float hover:-translate-y-0.5"
+          >
+            Stop Losing Leads, Start Free
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- =========================================================================
+         INTERACTIVE LIVE SIMULATION PLAYGROUND: Talk to Ellen Yourself
+         ========================================================================= -->
+    <section id="playground" class="py-24 sm:py-32 bg-white border-t border-forest-900/5 relative">
+      <div class="max-w-5xl mx-auto px-5 sm:px-8">
+        
+        <div class="text-center max-w-3xl mx-auto mb-14">
+          <span class="text-xs font-semibold tracking-widest uppercase text-emerald-700 mb-3 block">
+            Live Interactive Playground
+          </span>
+          <!-- Section label verbatim -->
+          <h2 class="text-3xl sm:text-4xl lg:text-5xl font-normal text-forest-950 mb-4 leading-tight">
+            Talk to Ellen Yourself
+          </h2>
+          <!-- Subtext verbatim -->
+          <p class="text-base sm:text-lg text-obsidian-700 leading-relaxed font-normal">
+            No signup. Ask her anything a real visitor would.
+          </p>
+        </div>
+
+        <!-- Working Live Playground Console -->
+        <div class="glass-panel rounded-3xl p-6 sm:p-10 shadow-glass border border-forest-900/10">
+          
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 mb-8 border-b border-forest-900/10">
+            <div class="flex items-center gap-3.5">
+              <div class="w-11 h-11 rounded-full bg-forest-800 text-linen-100 flex items-center justify-center font-editorial text-lg shadow-sm">
+                E
+              </div>
+              <div>
+                <h3 class="text-base font-semibold text-forest-950">Ellen Live Simulation Console</h3>
+                <p class="text-xs text-obsidian-500">Connected to deployed live practice assistant backend</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 self-start md:self-auto">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span class="text-xs font-medium text-emerald-800">Live & Unscripted</span>
+            </div>
+          </div>
+
+          <!-- Starter Chips to Try -->
+          <div class="mb-8">
+            <label class="text-xs font-semibold text-obsidian-500 uppercase tracking-wider block mb-3">
+              Click a sample inquiry to send directly:
+            </label>
+            <div class="flex flex-wrap gap-2.5" id="playground-chips">
+              <button 
+                type="button" 
+                class="playground-chip px-4 py-2.5 rounded-full bg-sage-50 hover:bg-sage-100 border border-sage-200 text-xs sm:text-sm font-medium text-forest-900 transition-all hover:scale-[1.02] active:scale-95 text-left"
+                data-prompt="I need help finding a therapist for anxiety"
+              >
+                Try: &ldquo;I need help finding a therapist for anxiety&rdquo;
+              </button>
+              <button 
+                type="button" 
+                class="playground-chip px-4 py-2.5 rounded-full bg-sage-50 hover:bg-sage-100 border border-sage-200 text-xs sm:text-sm font-medium text-forest-900 transition-all hover:scale-[1.02] active:scale-95 text-left"
+                data-prompt="What are your office hours and weekend availability?"
+              >
+                Try: &ldquo;What are your office hours?&rdquo;
+              </button>
+              <button 
+                type="button" 
+                class="playground-chip px-4 py-2.5 rounded-full bg-sage-50 hover:bg-sage-100 border border-sage-200 text-xs sm:text-sm font-medium text-forest-900 transition-all hover:scale-[1.02] active:scale-95 text-left"
+                data-prompt="Do you accept insurance or offer sliding scale?"
+              >
+                Try: &ldquo;Do you accept insurance?&rdquo;
+              </button>
+              <button 
+                type="button" 
+                class="playground-chip px-4 py-2.5 rounded-full bg-sage-50 hover:bg-sage-100 border border-sage-200 text-xs sm:text-sm font-medium text-forest-900 transition-all hover:scale-[1.02] active:scale-95 text-left"
+                data-prompt="I'd like to book an initial consultation"
+              >
+                Try: &ldquo;I'd like to book a consultation&rdquo;
+              </button>
+            </div>
+          </div>
+
+          <!-- Playground Interactive Input Form -->
+          <form id="playground-form" class="flex flex-col sm:flex-row items-stretch gap-3">
+            <div class="relative flex-1">
+              <input 
+                type="text" 
+                id="playground-input"
+                placeholder="Try: 'I need help finding a therapist for anxiety'" 
+                class="w-full h-14 pl-5 pr-4 rounded-2xl bg-linen-50 border border-forest-900/15 focus:border-forest-800 focus:bg-white text-sm text-obsidian-900 placeholder:text-obsidian-500/70 focus:outline-none focus:ring-4 focus:ring-forest-800/10 transition-all"
+              />
+            </div>
+            <button 
+              type="submit" 
+              class="h-14 px-7 rounded-2xl font-semibold text-sm text-linen-100 bg-forest-800 hover:bg-forest-900 transition-all shadow-subtle hover:shadow-float flex items-center justify-center gap-2 shrink-0"
+            >
+              <span>Ask Ellen</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
             </button>
-          </div>
-        </div>
+          </form>
 
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ==========================================================================
-       MEET THE EXPERTS (4 THERAPISTS FROM QDRANT KNOWLEDGE BASE)
-       ========================================================================== -->
-  <section class="team-section" id="therapists">
-    <div class="container">
-      
-      <div class="team-header">
-        <div class="section-tag">✦ Clinical Faculty</div>
-        <h2 class="section-heading-serif">Meet the Experts Who<br />Truly Care</h2>
-      </div>
-
-      <div class="team-grid">
-        
-        <!-- Therapist 1: Dr. Elena Marsh, PsyD -->
-        <div class="therapist-card launch-widget-btn" data-prompt="Tell me about Dr. Elena Marsh's background and specialties">
-          <img 
-            src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80" 
-            alt="Dr. Elena Marsh, PsyD" 
-            class="therapist-photo"
-          />
-          <div class="therapist-badge-box">
-            <h4 class="therapist-name">Dr. Elena Marsh, PsyD</h4>
-            <span class="therapist-role">Licensed Clinical Psychologist</span>
-            <p class="therapist-specialties">
-              Anxiety Disorders • Depression • Trauma & EMDR • Life Transitions
-            </p>
-          </div>
-        </div>
-
-        <!-- Therapist 2: Marcus Reyes, LMFT -->
-        <div class="therapist-card launch-widget-btn" data-prompt="Tell me about Marcus Reyes's approach to couples therapy">
-          <img 
-            src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80" 
-            alt="Marcus Reyes, LMFT" 
-            class="therapist-photo"
-          />
-          <div class="therapist-badge-box">
-            <h4 class="therapist-name">Marcus Reyes, LMFT</h4>
-            <span class="therapist-role">Licensed Marriage & Family Therapist</span>
-            <p class="therapist-specialties">
-              Couples Therapy • Emotionally Focused Therapy (EFT) • Family Communication
-            </p>
-          </div>
-        </div>
-
-        <!-- Therapist 3: Priya Nair, LCSW -->
-        <div class="therapist-card launch-widget-btn" data-prompt="Tell me about Priya Nair's experience with grief and burnout">
-          <img 
-            src="https://images.unsplash.com/photo-1573497019236-17f8177b81e8?auto=format&fit=crop&w=600&q=80" 
-            alt="Priya Nair, LCSW" 
-            class="therapist-photo"
-          />
-          <div class="therapist-badge-box">
-            <h4 class="therapist-name">Priya Nair, LCSW</h4>
-            <span class="therapist-role">Licensed Clinical Social Worker</span>
-            <p class="therapist-specialties">
-              Depression • Grief & Loss • Burnout • ACT & Mindfulness
-            </p>
-          </div>
-        </div>
-
-        <!-- Therapist 4: Jordan Whitfield, LPC -->
-        <div class="therapist-card launch-widget-btn" data-prompt="Tell me about Jordan Whitfield's work with teens and adolescents">
-          <img 
-            src="https://images.unsplash.com/photo-1580894732470-3882759e663a?auto=format&fit=crop&w=600&q=80" 
-            alt="Jordan Whitfield, LPC" 
-            class="therapist-photo"
-          />
-          <div class="therapist-badge-box">
-            <h4 class="therapist-name">Jordan Whitfield, LPC</h4>
-            <span class="therapist-role">Licensed Professional Counselor</span>
-            <p class="therapist-specialties">
-              Adolescent Counseling (13+) • Identity • Academic Stress • Family Dynamics
-            </p>
-          </div>
-        </div>
-
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ==========================================================================
-       QDRANT KNOWLEDGE BASE FAQS
-       ========================================================================== -->
-  <section class="faq-section" id="faqs">
-    <div class="container">
-      <div class="faq-container">
-        
-        <div class="faq-header">
-          <div class="section-tag">✦ Questions & Clinical Policies</div>
-          <h2 class="section-heading-serif">Frequently Asked Questions</h2>
-        </div>
-
-        <div class="faq-list">
-          
-          <div class="faq-item">
-            <div class="faq-question">
-              <span>Do I need a referral to start therapy?</span>
-              <span class="faq-toggle-icon">+</span>
-            </div>
-            <div class="faq-answer">
-              No, you can reach out directly — no physician referral is required to begin therapy at MindBridge Wellness.
-            </div>
-          </div>
-
-          <div class="faq-item">
-            <div class="faq-question">
-              <span>How do I know which therapist is right for me?</span>
-              <span class="faq-toggle-icon">+</span>
-            </div>
-            <div class="faq-answer">
-              Our AI assistant can suggest a tailored match based on your goals and preferences, and our clinical intake team confirms the final assignment based on specialty fit and availability. You are also welcome to request a specific clinician by name.
-            </div>
-          </div>
-
-          <div class="faq-item">
-            <div class="faq-question">
-              <span>Do you accept insurance and offer sliding scale rates?</span>
-              <span class="faq-toggle-icon">+</span>
-            </div>
-            <div class="faq-answer">
-              Yes, we accept several major insurance plans. Our administrative team verifies your specific mental health benefits before your first session. For self-pay clients, we offer sliding scale options based on qualifying circumstances.
-            </div>
-          </div>
-
-          <div class="faq-item">
-            <div class="faq-question">
-              <span>Is online therapy (telehealth) as effective as in-person?</span>
-              <span class="faq-toggle-icon">+</span>
-            </div>
-            <div class="faq-answer">
-              Research consistently demonstrates telehealth is just as effective as in-person therapy for many concerns including anxiety, depression, and stress management. Video sessions are conducted through a secure, HIPAA-compliant platform.
-            </div>
-          </div>
-
-          <div class="faq-item">
-            <div class="faq-question">
-              <span>What happens during the first session?</span>
-              <span class="faq-toggle-icon">+</span>
-            </div>
-            <div class="faq-answer">
-              Your therapist will spend the first session understanding your history, current challenges, and personal goals. It is also an open opportunity for you to ask questions and assess clinical fit.
-            </div>
-          </div>
-
-          <div class="faq-item">
-            <div class="faq-question">
-              <span>Can this AI assistant diagnose me or provide clinical advice?</span>
-              <span class="faq-toggle-icon">+</span>
-            </div>
-            <div class="faq-answer">
-              No. Ellen, our AI assistant, is designed strictly to answer practice questions, explain services, and assist with scheduling. Clinical diagnosis and treatment are exclusively provided by our licensed therapists.
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ==========================================================================
-       CRISIS DISCLAIMER BANNER
-       ========================================================================== -->
-  <div class="crisis-bar">
-    <strong>Crisis & Emergency Support:</strong> MindBridge Wellness is an outpatient practice and does not provide emergency intervention. If you are experiencing a mental health crisis, please call or text <strong>988 (Suicide & Crisis Lifeline)</strong> 24/7, or dial <strong>911</strong> immediately.
-  </div>
-
-  <!-- ==========================================================================
-       FOOTER
-       ========================================================================== -->
-  <footer class="site-footer">
-    <div class="container">
-      
-      <div class="footer-grid">
-        
-        <div class="footer-brand">
-          <h4>🌿 MindBridge Wellness</h4>
-          <p>
-            Compassionate, evidence-based mental health counseling for individuals, couples, families, and young adults.
+          <p class="mt-4 text-xs text-obsidian-500 text-center sm:text-left">
+            * Submitting opens the live Ellen chat window right on your screen, fully connected to our LangGraph backend.
           </p>
-        </div>
 
-        <div class="footer-col">
-          <h5>Services</h5>
-          <ul>
-            <li><a href="#services">Individual Therapy</a></li>
-            <li><a href="#services">Couples & Family</a></li>
-            <li><a href="#services">Teen Counseling (13+)</a></li>
-            <li><a href="#services">Trauma & EMDR</a></li>
-          </ul>
-        </div>
-
-        <div class="footer-col">
-          <h5>Practice</h5>
-          <ul>
-            <li><a href="#about">About Our Mission</a></li>
-            <li><a href="#therapists">Clinical Faculty</a></li>
-            <li><a href="#faqs">HIPAA & Privacy</a></li>
-            <li><a href="#faqs">Cancellation Policy</a></li>
-          </ul>
-        </div>
-
-        <div class="footer-col">
-          <h5>Contact & Hours</h5>
-          <ul>
-            <li>Mon – Sat: Daytime & Evenings</li>
-            <li>Direct: (555) 349-2810</li>
-            <li>care@mindbridgewellness.demo</li>
-            <li>In-Person & Secure Telehealth</li>
-          </ul>
         </div>
 
       </div>
+    </section>
 
-      <div class="footer-bottom">
-        <p>&copy; 2026 MindBridge Wellness Practice. All rights reserved.</p>
-        <p>Outpatient Mental Health Practice • Protected under HIPAA</p>
+  </main>
+
+
+  <!-- =========================================================================
+       FOOTER
+       ========================================================================= -->
+  <footer class="bg-forest-950 text-linen-200/80 pt-20 pb-16 border-t border-white/10">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      
+      <!-- Closing line verbatim -->
+      <div class="max-w-3xl mb-14">
+        <h3 class="font-editorial text-3xl sm:text-4xl text-linen-50 font-normal tracking-tight mb-4">
+          Every visitor deserves an answer. Give them one.
+        </h3>
+        <p class="text-sm text-sage-200/70 leading-relaxed">
+          MindBridge Wellness AI Intake Assistant · Helping modern outpatient practices connect with patients when it matters most.
+        </p>
+      </div>
+
+      <!-- CTA Row verbatim -->
+      <div class="flex flex-wrap items-center gap-4 sm:gap-6 pb-14 border-b border-white/10">
+        <a 
+          href="#demo-modal"
+          class="open-demo-modal px-6 py-3 rounded-full bg-linen-100 text-forest-900 hover:bg-white font-semibold text-sm transition-all shadow-sm"
+        >
+          Get a Free Demo
+        </a>
+        <a 
+          href="mailto:contact@mindbridgewellness.demo?subject=Book%20a%20Call%20-%20MindBridge%20Ellen" 
+          class="px-6 py-3 rounded-full bg-white/10 hover:bg-white/15 text-linen-100 border border-white/20 font-semibold text-sm transition-all"
+        >
+          Book a Call
+        </a>
+        <a 
+          href="#demo-modal"
+          class="open-demo-modal px-6 py-3 rounded-full bg-transparent hover:bg-white/10 text-sage-200 font-semibold text-sm transition-all"
+        >
+          See Pricing
+        </a>
+      </div>
+
+      <!-- Bottom Compliance Disclaimer verbatim & Copyright -->
+      <div class="pt-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 text-xs text-sage-200/60 leading-relaxed">
+        <div class="max-w-2xl">
+          <p class="font-medium text-linen-200/90 mb-1">
+            Ellen is an administrative AI assistant, not a licensed medical provider. She does not diagnose, treat, or provide clinical advice.
+          </p>
+          <p>&copy; 2026 MindBridge Wellness. All rights reserved. Protected under standard HIPAA administrative safeguards.</p>
+        </div>
+        <div class="flex items-center gap-5 shrink-0">
+          <a href="#" class="hover:text-linen-100 transition-colors">Privacy Policy</a>
+          <a href="#" class="hover:text-linen-100 transition-colors">Terms of Service</a>
+          <a href="#the-assistant" class="hover:text-linen-100 transition-colors">Back to Top ↑</a>
+        </div>
       </div>
 
     </div>
   </footer>
 
-  <!-- ==========================================================================
-       MINDBRIDGE WIDGET INTEGRATION
-       ========================================================================== -->
+
+  <!-- =========================================================================
+       PRACTICE OWNER DEMO REQUEST MODAL
+       ========================================================================= -->
+  <div id="demo-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 hidden bg-forest-950/60 backdrop-blur-md transition-opacity" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="glass-panel w-full max-w-lg rounded-3xl p-7 sm:p-9 shadow-2xl border border-white/90 relative overflow-hidden bg-white">
+      
+      <!-- Close button -->
+      <button 
+        type="button" 
+        id="close-modal-btn"
+        class="absolute top-6 right-6 w-9 h-9 rounded-full bg-linen-100 hover:bg-linen-200 text-obsidian-700 flex items-center justify-center transition-colors"
+        aria-label="Close modal"
+      >
+        ✕
+      </button>
+
+      <div class="mb-6">
+        <span class="text-xs font-semibold uppercase tracking-wider text-terracotta-600 block mb-1">
+          Custom Practice Build
+        </span>
+        <h3 id="modal-title" class="font-editorial text-2xl sm:text-3xl font-normal text-forest-950">
+          Get a Free Demo Built for Your Practice
+        </h3>
+        <p class="text-xs sm:text-sm text-obsidian-600 mt-2 leading-relaxed">
+          Tell us about your clinic and we'll configure Ellen with your actual services, specialties, and hours before our call.
+        </p>
+      </div>
+
+      <!-- Demo Request Form -->
+      <form id="practice-demo-form" class="space-y-4 text-left">
+        <div>
+          <label class="block text-xs font-semibold text-obsidian-700 mb-1" for="modal-practice-name">Practice Name</label>
+          <input 
+            type="text" 
+            id="modal-practice-name" 
+            required 
+            placeholder="e.g. Cedar Valley Counseling Group" 
+            class="w-full h-11 px-4 rounded-xl bg-linen-50 border border-forest-900/15 focus:border-forest-800 text-sm text-obsidian-900 focus:outline-none focus:ring-2 focus:ring-forest-800/10"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-obsidian-700 mb-1" for="modal-website-url">Practice Website URL</label>
+          <input 
+            type="url" 
+            id="modal-website-url" 
+            placeholder="https://yourpractice.com" 
+            class="w-full h-11 px-4 rounded-xl bg-linen-50 border border-forest-900/15 focus:border-forest-800 text-sm text-obsidian-900 focus:outline-none focus:ring-2 focus:ring-forest-800/10"
+          />
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-obsidian-700 mb-1" for="modal-contact-name">Your Name</label>
+            <input 
+              type="text" 
+              id="modal-contact-name" 
+              required 
+              placeholder="Dr. Jordan Hayes" 
+              class="w-full h-11 px-4 rounded-xl bg-linen-50 border border-forest-900/15 focus:border-forest-800 text-sm text-obsidian-900 focus:outline-none focus:ring-2 focus:ring-forest-800/10"
+            />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-obsidian-700 mb-1" for="modal-contact-email">Email Address</label>
+            <input 
+              type="email" 
+              id="modal-contact-email" 
+              required 
+              placeholder="jordan@cedarvalley.com" 
+              class="w-full h-11 px-4 rounded-xl bg-linen-50 border border-forest-900/15 focus:border-forest-800 text-sm text-obsidian-900 focus:outline-none focus:ring-2 focus:ring-forest-800/10"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-obsidian-700 mb-1" for="modal-ehr">Primary EMR / EHR (Optional)</label>
+          <select 
+            id="modal-ehr" 
+            class="w-full h-11 px-4 rounded-xl bg-linen-50 border border-forest-900/15 focus:border-forest-800 text-sm text-obsidian-900 focus:outline-none focus:ring-2 focus:ring-forest-800/10"
+          >
+            <option value="">Select your platform...</option>
+            <option value="SimplePractice">SimplePractice</option>
+            <option value="TherapyNotes">TherapyNotes</option>
+            <option value="Jane App">Jane App</option>
+            <option value="Kareo/Tebra">Kareo / Tebra</option>
+            <option value="Google Sheets / Manual">Google Sheets / Custom / Manual</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <button 
+          type="submit" 
+          id="modal-submit-btn"
+          class="w-full h-12 rounded-xl font-semibold text-sm text-linen-100 bg-forest-800 hover:bg-forest-900 transition-all shadow-subtle hover:shadow-float mt-2"
+        >
+          Request Custom Build Preview
+        </button>
+      </form>
+
+      <div id="modal-success" class="hidden text-center py-8">
+        <div class="w-12 h-12 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center mx-auto mb-4 text-xl">✓</div>
+        <h4 class="font-editorial text-2xl text-forest-950 mb-2">Thank you!</h4>
+        <p class="text-xs sm:text-sm text-obsidian-600 leading-relaxed">
+          We've received your practice information. Our team will review your website and prepare your tailored Ellen intake preview within 24 hours.
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- =========================================================================
+       REAL DEPLOYED WIDGET INTEGRATION
+       ========================================================================= -->
   <script src="widget.js"></script>
 
+  <!-- Interactive page script connecting triggers to real widget.js -->
   <script>
-    // FAQ Accordion Toggle Interaction
-    document.querySelectorAll('.faq-item').forEach(item => {
-      const question = item.querySelector('.faq-question');
-      question.addEventListener('click', () => {
-        const isActive = item.classList.contains('active');
-        document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
-        if (!isActive) {
-          item.classList.add('active');
-        }
-      });
-    });
+    document.addEventListener('DOMContentLoaded', () => {
+      
+      // 1. Hero "See a Live Demo" button: Scrolls smoothly to playground or launches widget
+      const seeLiveBtn = document.getElementById('hero-see-live-demo-btn');
+      if (seeLiveBtn) {
+        seeLiveBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const target = document.getElementById('playground');
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth' });
+          } else if (window.MindBridge && typeof window.MindBridge.open === 'function') {
+            window.MindBridge.open();
+          }
+        });
+      }
 
-    // Wire up all CTA buttons to launch the MindBridge widget smoothly
-    document.querySelectorAll('.launch-widget-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        
-        // Open the widget
-        if (window.MindBridge && typeof window.MindBridge.open === 'function') {
-          window.MindBridge.open();
-        } else {
-          const launcher = document.getElementById('mindbridge-launcher-btn');
-          if (launcher) launcher.click();
-        }
+      // 2. Hero chat preview card launch trigger
+      const heroLaunchBtn = document.getElementById('hero-launch-chat-preview-btn');
+      if (heroLaunchBtn) {
+        heroLaunchBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          if (window.MindBridge && typeof window.MindBridge.open === 'function') {
+            window.MindBridge.open();
+            setTimeout(() => {
+              window.MindBridge.send("Hi, I've been feeling overwhelmed with work anxiety lately. Do you have any evening openings?");
+            }, 300);
+          }
+        });
+      }
 
-        // If button has specific prompt data, send it
-        const prompt = btn.getAttribute('data-prompt');
-        if (prompt && window.MindBridge && typeof window.MindBridge.send === 'function') {
-          setTimeout(() => {
-            window.MindBridge.send(prompt);
-          }, 300);
-        }
+      // 3. Interactive Playground: Clickable prompt chips
+      document.querySelectorAll('.playground-chip').forEach(chip => {
+        chip.addEventListener('click', (e) => {
+          e.preventDefault();
+          const prompt = chip.getAttribute('data-prompt');
+          if (prompt && window.MindBridge && typeof window.MindBridge.open === 'function') {
+            window.MindBridge.open();
+            setTimeout(() => {
+              window.MindBridge.send(prompt);
+            }, 300);
+          }
+        });
       });
+
+      // 4. Interactive Playground: Custom input form
+      const playgroundForm = document.getElementById('playground-form');
+      const playgroundInput = document.getElementById('playground-input');
+      if (playgroundForm && playgroundInput) {
+        playgroundForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const text = (playgroundInput.value || '').trim();
+          const query = text || "I need help finding a therapist for anxiety";
+          if (window.MindBridge && typeof window.MindBridge.open === 'function') {
+            window.MindBridge.open();
+            setTimeout(() => {
+              window.MindBridge.send(query);
+            }, 300);
+            playgroundInput.value = '';
+          }
+        });
+      }
+
+      // 5. Modal open/close handlers
+      const modal = document.getElementById('demo-modal');
+      const closeBtn = document.getElementById('close-modal-btn');
+      const demoForm = document.getElementById('practice-demo-form');
+      const modalSuccess = document.getElementById('modal-success');
+
+      document.querySelectorAll('.open-demo-modal').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          if (modal) {
+            modal.classList.remove('hidden');
+          }
+        });
+      });
+
+      if (closeBtn && modal) {
+        closeBtn.addEventListener('click', () => {
+          modal.classList.add('hidden');
+        });
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) {
+            modal.classList.add('hidden');
+          }
+        });
+      }
+
+      // 6. Demo Request form submission handler
+      if (demoForm) {
+        demoForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const practice = document.getElementById('modal-practice-name').value;
+          const url = document.getElementById('modal-website-url').value;
+          const name = document.getElementById('modal-contact-name').value;
+          const email = document.getElementById('modal-contact-email').value;
+          const ehr = document.getElementById('modal-ehr').value;
+
+          console.log('[Demo Request Submitted]:', { practice, url, name, email, ehr });
+
+          // Show pleasant success message
+          demoForm.classList.add('hidden');
+          if (modalSuccess) modalSuccess.classList.remove('hidden');
+        });
+      }
+
     });
   </script>
 
