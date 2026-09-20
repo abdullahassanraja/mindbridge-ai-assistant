@@ -220,7 +220,7 @@ async def chat(request: ChatRequest):
         # Return graceful safe fallback message
         fallback_msg = (
             "Something went wrong while processing your request. Please try again, or feel free to "
-            "contact our office directly at care@mindbridgewellness.demo or (555) 349-2810."
+            "contact our office directly at abdullahassanmohammed@outlook.com or on WhatsApp (+923391582360)."
         )
         return ChatResponse(response=fallback_msg, session_id=session_id)
 

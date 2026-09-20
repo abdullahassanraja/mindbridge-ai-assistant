@@ -1217,7 +1217,7 @@ def human_handoff_node(state: AgentState) -> AgentState:
     handoff_message = (
         "I would be glad to connect you with a member of our team! Our practice coordinator is available "
         "Monday through Saturday to help with scheduling, billing questions, or clinical matching.<br><br>"
-        "You can reach our office directly at <b>(555) 349-2810</b> or by email at <b>care@mindbridgewellness.demo</b>.<br><br>"
+        "You can reach us directly via WhatsApp at <b>+923391582360</b> or by email at <b>abdullahassanmohammed@outlook.com</b>.<br><br>"
         "If you have already shared your contact information, a team member will follow up with you promptly!"
     )
 

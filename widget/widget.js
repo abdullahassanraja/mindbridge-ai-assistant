@@ -1607,7 +1607,7 @@
       console.error('[MindBridge Widget Error]:', err);
       appendMessage(
         'error',
-        'Unable to connect to our care assistant right now. Please try again, or reach out directly at care@mindbridgewellness.demo or (555) 349-2810.'
+        'Unable to connect to our care assistant right now. Please try again, or reach out directly at abdullahassanmohammed@outlook.com or on WhatsApp (+923391582360).'
       );
     } finally {
       isSending = false;
