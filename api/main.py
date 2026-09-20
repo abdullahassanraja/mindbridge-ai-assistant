@@ -216,16 +216,29 @@ class PracticeInquiryRequest(BaseModel):
 
 @app.post("/api/practice-inquiry")
 async def create_practice_inquiry(inquiry: PracticeInquiryRequest):
-    """Log a wellness practice owner demo inquiry to Google Sheets 'Practice Inquiries' tab."""
+    """Log a wellness practice owner demo inquiry to Google Sheets 'Practice Inquiries' tab and trigger Outlook email notification."""
     from sheets import append_practice_inquiry
-    res = append_practice_inquiry({
+    from email_service import send_practice_inquiry_email
+
+    inquiry_dict = {
         "practice_name": inquiry.practice_name,
         "name": inquiry.name,
         "email": inquiry.email,
         "website": inquiry.website,
         "notes": inquiry.notes,
-    })
-    return {"status": "ok", "recorded": res}
+    }
+
+    # Record to Google Sheets & local JSON backup
+    res = append_practice_inquiry(inquiry_dict)
+
+    # Deliver notification to Outlook inbox
+    try:
+        email_res = send_practice_inquiry_email(inquiry_dict)
+    except Exception as exc:
+        logger.error(f"Error dispatching Outlook email for practice inquiry: {exc}", exc_info=True)
+        email_res = {"status": "error", "error": str(exc)}
+
+    return {"status": "ok", "recorded": res, "email": email_res}
 
 
 # Mount static landing page and widget assets if present

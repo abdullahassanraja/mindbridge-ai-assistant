@@ -53,6 +53,12 @@ Thumbs.db
 
 # Test screenshots & regression artifacts
 widget/*.png
+widget/test_*.jpg
+widget/pink_*.jpg
+widget/edge_*.jpg
+widget/mobile_*.jpg
+widget/debug_*.jpg
+widget/avatar_*.jpg
 !widget/ellen_logo.png
 !widget/ellen_icon.png
 !widget/favicon.png
