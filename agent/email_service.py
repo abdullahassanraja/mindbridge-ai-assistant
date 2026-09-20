@@ -31,6 +31,11 @@ load_dotenv()
 
 def get_email_config() -> Dict[str, Any]:
     """Retrieve and validate email credentials from environment variables."""
+    # Reload environment dynamically to pick up any recent .env changes
+    load_dotenv(AGENT_DIR / ".env", override=True)
+    load_dotenv(AGENT_DIR.parent / ".env", override=True)
+    load_dotenv(override=True)
+
     # 1. Resend HTTP API configuration (Render-friendly HTTPS)
     resend_api_key = os.environ.get("RESEND_API_KEY", "").strip()
 
@@ -337,3 +342,165 @@ def send_practice_inquiry_email(inquiry: Dict[str, Any]) -> Dict[str, Any]:
         err_msg = f"Failed to send notification email: {type(exc).__name__}: {exc}"
         logger.error(f"[Email Error] {err_msg}", exc_info=True)
         return {"status": "error", "error": err_msg}
+
+
+def format_patient_lead_html(lead: Dict[str, Any]) -> str:
+    """Format an incoming patient intake lead as a clean, branded HTML email."""
+    name = html.escape(str(lead.get("name", "Anonymous Visitor")))
+    contact = html.escape(str(lead.get("contact", "Not provided")))
+    need = html.escape(str(lead.get("stated_need", "Intake consultation")))
+    therapist = html.escape(str(lead.get("suggested_therapist", "None assigned yet")))
+    session_id = html.escape(str(lead.get("session_id", "N/A")))
+    source = html.escape(str(lead.get("source", "chat")))
+    timestamp_utc = datetime.now(timezone.utc).strftime("%B %d, %Y at %I:%M %p UTC")
+
+    # Reply link
+    reply_href = f"mailto:{contact}" if "@" in contact else f"tel:{contact}"
+
+    return f"""<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>New Patient Intake Lead</title>
+</head>
+<body style="margin: 0; padding: 24px; background-color: #FFF9FB; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #220B16;">
+  <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="600" border="0" cellspacing="0" cellpadding="0" style="background-color: #FFFFFF; border-radius: 18px; border: 1px solid #F8C8D6; box-shadow: 0 4px 20px rgba(201, 75, 110, 0.07); overflow: hidden;">
+          <tr>
+            <td style="background: linear-gradient(135deg, #220B16 0%, #381325 100%); padding: 28px 32px; text-align: left;">
+              <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: #F4A6BD; display: block; margin-bottom: 6px;">MindBridge &bull; Ellen Assistant</span>
+              <h1 style="margin: 0; font-size: 22px; font-weight: 600; color: #FFFFFF; line-height: 1.3;">New Client Intake Lead</h1>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 32px;">
+              <p style="margin: 0 0 20px 0; font-size: 14px; color: #521D38; line-height: 1.6;">
+                A new client just completed consultation intake with Ellen in the chat assistant. Here are their details:
+              </p>
+              <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; margin-bottom: 24px;">
+                <tr>
+                  <td width="35%" style="padding: 10px 14px; background-color: #FFF5F8; border-bottom: 1px solid #FDE8EE; font-size: 13px; font-weight: 600; color: #94294A;">Client Name</td>
+                  <td style="padding: 10px 14px; background-color: #FFFFFF; border-bottom: 1px solid #FDE8EE; font-size: 14px; font-weight: 700; color: #220B16;">{name}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px 14px; background-color: #FFF5F8; border-bottom: 1px solid #FDE8EE; font-size: 13px; font-weight: 600; color: #94294A;">Contact Info</td>
+                  <td style="padding: 10px 14px; background-color: #FFFFFF; border-bottom: 1px solid #FDE8EE; font-size: 14px; color: #220B16;">
+                    <a href="{reply_href}" style="color: #BA3C60; font-weight: 600; text-decoration: none;">{contact}</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px 14px; background-color: #FFF5F8; border-bottom: 1px solid #FDE8EE; font-size: 13px; font-weight: 600; color: #94294A;">Stated Concern / Need</td>
+                  <td style="padding: 10px 14px; background-color: #FFFFFF; border-bottom: 1px solid #FDE8EE; font-size: 13.5px; color: #220B16;">{need}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px 14px; background-color: #FFF5F8; border-bottom: 1px solid #FDE8EE; font-size: 13px; font-weight: 600; color: #94294A;">Matched Clinician</td>
+                  <td style="padding: 10px 14px; background-color: #FFFFFF; border-bottom: 1px solid #FDE8EE; font-size: 13.5px; color: #220B16;">{therapist}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px 14px; background-color: #FFF5F8; border-bottom: 1px solid #FDE8EE; font-size: 13px; font-weight: 600; color: #94294A;">Source / Channel</td>
+                  <td style="padding: 10px 14px; background-color: #FFFFFF; border-bottom: 1px solid #FDE8EE; font-size: 13px; color: #6C5862;">{source} (session: {session_id[:12]}...)</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px 14px; background-color: #FFF5F8; font-size: 13px; font-weight: 600; color: #94294A;">Submitted At</td>
+                  <td style="padding: 10px 14px; background-color: #FFFFFF; font-size: 12.5px; color: #6C5862;">{timestamp_utc}</td>
+                </tr>
+              </table>
+              <div style="text-align: center; margin: 32px 0 16px 0;">
+                <a href="{reply_href}" 
+                   style="display: inline-block; background-color: #220B16; color: #FFFFFF; text-decoration: none; padding: 13px 30px; border-radius: 50px; font-size: 13.5px; font-weight: 600; box-shadow: 0 4px 12px rgba(34, 11, 22, 0.2);">
+                  Reach Out to {name} &rarr;
+                </a>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td style="background-color: #FFF5F8; padding: 16px 32px; border-top: 1px solid #F8C8D6; text-align: center; font-size: 11.5px; color: #96818C;">
+              Logged automatically to Google Sheets ('Leads' tab) by Ellen Assistant.
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+"""
+
+
+def format_patient_lead_plain_text(lead: Dict[str, Any]) -> str:
+    """Format plain-text fallback for patient intake leads."""
+    name = lead.get("name", "Anonymous Visitor")
+    contact = lead.get("contact", "Not provided")
+    need = lead.get("stated_need", "Intake consultation")
+    therapist = lead.get("suggested_therapist", "None assigned yet")
+    session_id = lead.get("session_id", "N/A")
+    timestamp_utc = datetime.now(timezone.utc).strftime("%B %d, %Y at %I:%M %p UTC")
+
+    return f"""NEW CLIENT INTAKE LEAD
+====================================
+Client Name:        {name}
+Contact Info:       {contact}
+Stated Need:        {need}
+Matched Clinician:  {therapist}
+Session ID:         {session_id}
+Submitted At:       {timestamp_utc}
+====================================
+Reach out directly: {contact}
+"""
+
+
+def send_patient_lead_email(lead: Dict[str, Any]) -> Dict[str, Any]:
+    """Deliver a client intake lead notification email via Resend or SMTP."""
+    config = get_email_config()
+
+    if not config["is_configured"]:
+        logger.warning("[Email Service] No credentials configured. Skipping client lead email.")
+        return {"status": "skipped", "message": "Email delivery credentials not configured."}
+
+    name = lead.get("name", "New Client")
+    contact = str(lead.get("contact", "")).strip()
+    lead_email = contact if "@" in contact else None
+    recipient_email = config["notification_email"] or config["gmail_user"]
+    subject = f"🔔 New Client Intake Lead: {name}"
+    html_body = format_patient_lead_html(lead)
+    text_body = format_patient_lead_plain_text(lead)
+
+    # 1. Resend HTTP API (port 443)
+    if config["resend_api_key"]:
+        return _send_via_resend(
+            api_key=config["resend_api_key"],
+            recipient=recipient_email,
+            subject=subject,
+            html_body=html_body,
+            text_body=text_body,
+            reply_to=lead_email,
+        )
+
+    # 2. Direct SMTP
+    sender_email = config["gmail_user"]
+    msg = MIMEMultipart("alternative")
+    msg["Subject"] = subject
+    msg["From"] = f"Ellen Assistant <{sender_email}>"
+    msg["To"] = recipient_email
+    if lead_email:
+        msg["Reply-To"] = lead_email
+
+    msg.attach(MIMEText(text_body, "plain", "utf-8"))
+    msg.attach(MIMEText(html_body, "html", "utf-8"))
+
+    try:
+        context = ssl.create_default_context()
+        with smtplib.SMTP(config["smtp_server"], config["smtp_port"], timeout=5) as server:
+            server.ehlo()
+            server.starttls(context=context)
+            server.ehlo()
+            server.login(sender_email, config["gmail_app_password"])
+            server.sendmail(sender_email, [recipient_email], msg.as_string())
+
+        logger.info(f"[OK] [Gmail SMTP] Patient lead email delivered to {recipient_email}")
+        return {"status": "success", "service": "gmail_smtp", "recipient": recipient_email}
+    except Exception as exc:
+        logger.error(f"[Email Error] Failed to send patient lead email: {exc}")
+        return {"status": "error", "error": str(exc)}

@@ -1504,10 +1504,12 @@
 
           try {
             // Determine backend URL
+            const isLocalHost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+            const localPort = window.location.port || '8000';
             const backendUrl = (window.MINDBRIDGE_BACKEND_URL) || (
-              window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:'
-                ? 'http://127.0.0.1:8001' 
-                : 'https://mindbridge-ai-assistant.onrender.com'
+              isLocalHost
+                ? `http://127.0.0.1:${localPort}`
+                : (window.location.protocol === 'file:' ? 'http://127.0.0.1:8000' : 'https://mindbridge-ai-assistant.onrender.com')
             );
 
             await fetch(`${backendUrl}/api/practice-inquiry`, {

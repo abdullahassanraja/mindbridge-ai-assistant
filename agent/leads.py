@@ -87,6 +87,17 @@ def send_lead_email(
     except Exception as err:
         print(f"[Warning] Google Sheets append_lead error: {err}")
 
+    # 4. Dispatch Email Notification to Clinic / Therapist Inbox
+    try:
+        from email_service import send_patient_lead_email
+        email_result = send_patient_lead_email(lead_record)
+        if email_result.get("status") == "success":
+            _safe_print(f"[Email Notification] Successfully dispatched to {email_result.get('recipient')}")
+        else:
+            _safe_print(f"[Email Notification] Status: {email_result.get('status')} ({email_result.get('message') or email_result.get('error')})")
+    except Exception as err:
+        print(f"[Warning] Failed to dispatch patient lead email: {err}")
+
     return True
 
 

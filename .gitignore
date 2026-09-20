@@ -53,6 +53,7 @@ Thumbs.db
 
 # Test screenshots & regression artifacts
 widget/*.png
+widget/test_*.py
 widget/test_*.jpg
 widget/pink_*.jpg
 widget/edge_*.jpg
