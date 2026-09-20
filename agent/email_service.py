@@ -1,7 +1,7 @@
 # email_service.py
-# Outlook SMTP email delivery service for MindBridge / Ellen practice inquiries.
-# Connects to Microsoft Outlook SMTP (smtp-mail.outlook.com / smtp.office365.com)
-# to deliver incoming lead capture form notifications directly to your Outlook inbox.
+# Gmail SMTP email delivery service for MindBridge / Ellen practice inquiries.
+# Connects to Google Gmail SMTP (smtp.gmail.com:587) with STARTTLS
+# to deliver incoming lead capture form notifications directly to your Gmail inbox.
 
 import html
 import logging
@@ -26,11 +26,20 @@ load_dotenv()
 
 
 def get_smtp_config() -> Dict[str, Any]:
-    """Retrieve and validate SMTP credentials from environment variables."""
-    outlook_email = os.environ.get("OUTLOOK_EMAIL", "").strip()
-    outlook_password = os.environ.get("OUTLOOK_PASSWORD", "").strip()
-    notification_email = os.environ.get("NOTIFICATION_EMAIL", "").strip() or outlook_email
-    smtp_server = os.environ.get("SMTP_SERVER", "").strip() or "smtp-mail.outlook.com"
+    """Retrieve and validate Gmail SMTP credentials from environment variables."""
+    # Support GMAIL_USER / GMAIL_APP_PASSWORD, falling back to SMTP_USER / SMTP_PASSWORD
+    gmail_user = (
+        os.environ.get("GMAIL_USER", "").strip()
+        or os.environ.get("SMTP_USER", "").strip()
+        or os.environ.get("OUTLOOK_EMAIL", "").strip()
+    )
+    gmail_app_password = (
+        os.environ.get("GMAIL_APP_PASSWORD", "").strip()
+        or os.environ.get("SMTP_PASSWORD", "").strip()
+        or os.environ.get("OUTLOOK_PASSWORD", "").strip()
+    )
+    notification_email = os.environ.get("NOTIFICATION_EMAIL", "").strip() or gmail_user
+    smtp_server = os.environ.get("SMTP_SERVER", "").strip() or "smtp.gmail.com"
     smtp_port_raw = os.environ.get("SMTP_PORT", "").strip() or "587"
 
     try:
@@ -39,12 +48,12 @@ def get_smtp_config() -> Dict[str, Any]:
         smtp_port = 587
 
     return {
-        "outlook_email": outlook_email,
-        "outlook_password": outlook_password,
+        "gmail_user": gmail_user,
+        "gmail_app_password": gmail_app_password,
         "notification_email": notification_email,
         "smtp_server": smtp_server,
         "smtp_port": smtp_port,
-        "is_configured": bool(outlook_email and outlook_password),
+        "is_configured": bool(gmail_user and gmail_app_password),
     }
 
 
@@ -171,7 +180,7 @@ Reply directly by emailing: {email_addr}
 
 
 def send_practice_inquiry_email(inquiry: Dict[str, Any]) -> Dict[str, Any]:
-    """Deliver a practice inquiry notification email via Outlook SMTP.
+    """Deliver a practice inquiry notification email via Gmail SMTP.
 
     Returns a dict with:
       - {"status": "success", "recipient": email} if delivered
@@ -182,15 +191,15 @@ def send_practice_inquiry_email(inquiry: Dict[str, Any]) -> Dict[str, Any]:
 
     if not config["is_configured"]:
         logger.warning(
-            "[Outlook Email] OUTLOOK_EMAIL or OUTLOOK_PASSWORD is not set in environment. "
+            "[Gmail SMTP] GMAIL_USER or GMAIL_APP_PASSWORD is not set in environment. "
             "Skipping email delivery. Inquiry is safely saved to Google Sheets and local JSON."
         )
         return {
             "status": "skipped",
-            "message": "OUTLOOK_EMAIL or OUTLOOK_PASSWORD not configured. Please add them to your .env file.",
+            "message": "GMAIL_USER or GMAIL_APP_PASSWORD not configured. Please add them to your environment.",
         }
 
-    sender_email = config["outlook_email"]
+    sender_email = config["gmail_user"]
     recipient_email = config["notification_email"]
     practice_name = inquiry.get("practice_name", "Unknown Practice")
     contact_name = inquiry.get("name", "Visitor")
@@ -209,20 +218,20 @@ def send_practice_inquiry_email(inquiry: Dict[str, Any]) -> Dict[str, Any]:
     msg.attach(part_plain)
     msg.attach(part_html)
 
-    # Dispatch via Outlook SMTP with STARTTLS
+    # Dispatch via Gmail SMTP with STARTTLS
     try:
         logger.info(
-            f"[Outlook Email] Connecting to {config['smtp_server']}:{config['smtp_port']} as {sender_email}..."
+            f"[Gmail SMTP] Connecting to {config['smtp_server']}:{config['smtp_port']} as {sender_email}..."
         )
         context = ssl.create_default_context()
         with smtplib.SMTP(config["smtp_server"], config["smtp_port"], timeout=15) as server:
             server.ehlo()
             server.starttls(context=context)
             server.ehlo()
-            server.login(sender_email, config["outlook_password"])
+            server.login(sender_email, config["gmail_app_password"])
             server.sendmail(sender_email, [recipient_email], msg.as_string())
 
-        logger.info(f"[OK] [Outlook Email] Notification delivered successfully to {recipient_email}")
+        logger.info(f"[OK] [Gmail SMTP] Notification delivered successfully to {recipient_email}")
         return {
             "status": "success",
             "recipient": recipient_email,
@@ -231,13 +240,13 @@ def send_practice_inquiry_email(inquiry: Dict[str, Any]) -> Dict[str, Any]:
 
     except smtplib.SMTPAuthenticationError as auth_err:
         err_msg = (
-            f"Outlook SMTP authentication failed: {auth_err}. "
-            "If using an Outlook.com or Office 365 account with 2FA, ensure you are using an App Password."
+            f"Gmail SMTP authentication failed: {auth_err}. "
+            "Google requires a 16-character App Password. Generate one at https://myaccount.google.com/apppasswords"
         )
-        logger.error(f"[Outlook Email] {err_msg}")
+        logger.error(f"[Gmail SMTP] {err_msg}")
         return {"status": "error", "error": err_msg}
 
     except Exception as exc:
-        err_msg = f"Failed to send Outlook notification email: {type(exc).__name__}: {exc}"
-        logger.error(f"[Outlook Email] {err_msg}", exc_info=True)
+        err_msg = f"Failed to send Gmail notification email: {type(exc).__name__}: {exc}"
+        logger.error(f"[Gmail SMTP] {err_msg}", exc_info=True)
         return {"status": "error", "error": err_msg}

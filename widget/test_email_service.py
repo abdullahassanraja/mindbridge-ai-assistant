@@ -1,5 +1,5 @@
 # test_email_service.py
-# Verification script for Outlook SMTP email service and /api/practice-inquiry endpoint.
+# Verification script for Gmail SMTP email service and /api/practice-inquiry endpoint.
 
 import os
 import sys
@@ -28,7 +28,14 @@ test_inquiry = {
 
 def test_missing_credentials_graceful_skip():
     """Verify that if credentials are not configured, it skips gracefully without throwing an error."""
-    with patch.dict(os.environ, {"OUTLOOK_EMAIL": "", "OUTLOOK_PASSWORD": ""}, clear=False):
+    with patch.dict(os.environ, {
+        "GMAIL_USER": "",
+        "GMAIL_APP_PASSWORD": "",
+        "SMTP_USER": "",
+        "SMTP_PASSWORD": "",
+        "OUTLOOK_EMAIL": "",
+        "OUTLOOK_PASSWORD": ""
+    }, clear=False):
         result = send_practice_inquiry_email(test_inquiry)
         assert result.get("status") == "skipped", f"Expected skipped, got: {result}"
         print("[OK] Missing credentials test passed: Gracefully skipped as expected.")
@@ -46,15 +53,15 @@ def test_html_and_text_formatting():
     assert "Serenity Counseling & Wellness" in text_content
     assert "sarah.mitchell@serenitycounseling.test" in text_content
     print("[OK] Email template formatting test passed: Branded HTML and Plain Text formatted correctly.")
- 
- 
+
+
 def test_mock_smtp_delivery():
-    """Verify that SMTP login and sendmail are properly called with STARTTLS when configured."""
+    """Verify that Gmail SMTP login and sendmail are properly called with STARTTLS when configured."""
     with patch.dict(os.environ, {
-        "OUTLOOK_EMAIL": "demo_sender@outlook.com",
-        "OUTLOOK_PASSWORD": "app_password_mock",
-        "NOTIFICATION_EMAIL": "demo_inbox@outlook.com",
-        "SMTP_SERVER": "smtp-mail.outlook.com",
+        "GMAIL_USER": "test_sender@gmail.com",
+        "GMAIL_APP_PASSWORD": "abcd efgh ijkl mnop",
+        "NOTIFICATION_EMAIL": "test_inbox@gmail.com",
+        "SMTP_SERVER": "smtp.gmail.com",
         "SMTP_PORT": "587"
     }, clear=False):
         with patch("smtplib.SMTP") as mock_smtp_cls:
@@ -63,28 +70,28 @@ def test_mock_smtp_delivery():
 
             result = send_practice_inquiry_email(test_inquiry)
             assert result.get("status") == "success", f"Expected success, got: {result}"
-            assert result.get("recipient") == "demo_inbox@outlook.com"
+            assert result.get("recipient") == "test_inbox@gmail.com"
             mock_server.starttls.assert_called_once()
-            mock_server.login.assert_called_once_with("demo_sender@outlook.com", "app_password_mock")
+            mock_server.login.assert_called_once_with("test_sender@gmail.com", "abcd efgh ijkl mnop")
             mock_server.sendmail.assert_called_once()
-            print("[OK] Mock SMTP dispatch test passed: STARTTLS, login, and sendmail verified.")
+            print("[OK] Mock Gmail SMTP dispatch test passed: STARTTLS, login, and sendmail verified.")
 
 
 def test_api_practice_inquiry_endpoint():
-    """Verify the FastAPI endpoint /api/practice-inquiry calls both sheets and email service."""
+    """Verify the FastAPI endpoint /api/practice-inquiry calls both sheets and Gmail email service."""
     client = TestClient(app)
     payload = {
         "practice_name": "Lotus Psychology Associates",
         "name": "Dr. Marcus Vance",
         "email": "marcus.vance@lotuspsych.test",
         "website": "https://lotuspsych.test",
-        "notes": "Testing integration endpoint."
+        "notes": "Testing Gmail SMTP integration endpoint."
     }
 
     with patch.dict(os.environ, {
-        "OUTLOOK_EMAIL": "demo_sender@outlook.com",
-        "OUTLOOK_PASSWORD": "app_password_mock",
-        "NOTIFICATION_EMAIL": "inbox@outlook.com"
+        "GMAIL_USER": "test_sender@gmail.com",
+        "GMAIL_APP_PASSWORD": "test_app_password",
+        "NOTIFICATION_EMAIL": "inbox@gmail.com"
     }, clear=False):
         with patch("smtplib.SMTP") as mock_smtp_cls:
             mock_server = MagicMock()
@@ -96,13 +103,13 @@ def test_api_practice_inquiry_endpoint():
             assert data["status"] == "ok"
             assert "recorded" in data
             assert data["email"]["status"] == "success"
-            print("[OK] API /api/practice-inquiry endpoint test passed: Returned 200 with sheet & email status.")
+            print("[OK] API /api/practice-inquiry endpoint test passed: Returned 200 with sheet & Gmail status.")
 
 
 if __name__ == "__main__":
-    print("\n--- RUNNING OUTLOOK EMAIL INTEGRATION TESTS ---")
+    print("\n--- RUNNING GMAIL SMTP INTEGRATION TESTS ---")
     test_missing_credentials_graceful_skip()
     test_html_and_text_formatting()
     test_mock_smtp_delivery()
     test_api_practice_inquiry_endpoint()
-    print("--- ALL EMAIL INTEGRATION TESTS PASSED SUCCESSFULLY! ---\n")
+    print("--- ALL GMAIL SMTP INTEGRATION TESTS PASSED SUCCESSFULLY! ---\n")
