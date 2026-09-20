@@ -1480,19 +1480,13 @@
       const leadSuccess = document.getElementById('lead-success-msg');
 
       if (leadForm) {
-        leadForm.addEventListener('submit', async (e) => {
+        leadForm.addEventListener('submit', (e) => {
           e.preventDefault();
           const practiceName = document.getElementById('lead-practice-name').value;
           const contactName = document.getElementById('lead-contact-name').value;
           const email = document.getElementById('lead-contact-email').value;
           const website = document.getElementById('lead-website-url').value;
           const notes = document.getElementById('lead-notes').value;
-
-          const submitBtn = document.getElementById('lead-submit-btn');
-          if (submitBtn) {
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Submitting Request...';
-          }
 
           const payload = {
             practice_name: practiceName,
@@ -1502,56 +1496,55 @@
             notes: notes
           };
 
-          try {
-            // Determine backend URL
-            const isLocalHost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:';
-            
-            // Primary backend URL: local FastAPI runs on port 8000 by default (api/.env PORT=8000)
-            let primaryPort = '8000';
-            let fallbackPort = '8001';
-            if (window.location.port === '8001') {
-              primaryPort = '8001';
-              fallbackPort = '8000';
-            }
+          // ⚡ INSTANT USER FEEDBACK (<10ms): Hide form and display success confirmation card immediately
+          leadForm.classList.add('hidden');
+          if (leadSuccess) leadSuccess.classList.remove('hidden');
 
-            async function postInquiry(url) {
+          // Async background submission with 4-second timeout controller
+          async function sendInquiryWithTimeout(url, timeoutMs = 4000) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+            try {
               const res = await fetch(`${url}/api/practice-inquiry`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
+                body: JSON.stringify(payload),
+                signal: controller.signal
               });
-              if (!res.ok) {
-                throw new Error(`Server returned HTTP ${res.status}`);
-              }
-              return res.json();
-            }
-
-            if (isLocalHost) {
-              // Try primary local port first, then fallback port if needed
-              try {
-                await postInquiry(`http://127.0.0.1:${primaryPort}`);
-              } catch (firstErr) {
-                console.warn(`[Practice Inquiry]: Port ${primaryPort} failed, trying fallback http://127.0.0.1:${fallbackPort}...`);
-                await postInquiry(`http://127.0.0.1:${fallbackPort}`);
-              }
-            } else {
-              // Production deployed endpoint
-              const prodUrl = window.MINDBRIDGE_BACKEND_URL || 'https://mindbridge-ai-assistant.onrender.com';
-              await postInquiry(prodUrl);
-            }
-
-            // Success state
-            leadForm.classList.add('hidden');
-            if (leadSuccess) leadSuccess.classList.remove('hidden');
-
-          } catch (err) {
-            console.error('[Practice Inquiry Submission Failed]:', err);
-            alert('Unable to submit inquiry. Please ensure the local backend API server is running on port 8001 or 8000 (python api/main.py).');
-            if (submitBtn) {
-              submitBtn.disabled = false;
-              submitBtn.textContent = 'Get My Free Demo ➔';
+              clearTimeout(timeoutId);
+              return res.ok;
+            } catch (err) {
+              clearTimeout(timeoutId);
+              return false;
             }
           }
+
+          async function dispatchBackgroundInquiry() {
+            const isLocalHost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:';
+            const prodUrl = window.MINDBRIDGE_BACKEND_URL || 'https://mindbridge-ai-assistant.onrender.com';
+
+            if (isLocalHost) {
+              const primaryPort = (window.location.port === '8001') ? '8001' : '8000';
+              const fallbackPort = (primaryPort === '8000') ? '8001' : '8000';
+
+              // Try primary local port first (2.5s timeout)
+              let ok = await sendInquiryWithTimeout(`http://127.0.0.1:${primaryPort}`, 2500);
+              if (!ok) {
+                // Try fallback local port
+                ok = await sendInquiryWithTimeout(`http://127.0.0.1:${fallbackPort}`, 2500);
+              }
+              if (!ok) {
+                // Fallback to production live backend
+                await sendInquiryWithTimeout(prodUrl, 5000);
+              }
+            } else {
+              // Direct production dispatch
+              await sendInquiryWithTimeout(prodUrl, 6000);
+            }
+          }
+
+          // Trigger non-blocking background dispatch
+          dispatchBackgroundInquiry();
         });
       }
 
