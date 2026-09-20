@@ -33,11 +33,13 @@ def get_smtp_config() -> Dict[str, Any]:
         or os.environ.get("SMTP_USER", "").strip()
         or os.environ.get("OUTLOOK_EMAIL", "").strip()
     )
-    gmail_app_password = (
+    raw_password = (
         os.environ.get("GMAIL_APP_PASSWORD", "").strip()
         or os.environ.get("SMTP_PASSWORD", "").strip()
         or os.environ.get("OUTLOOK_PASSWORD", "").strip()
     )
+    # Strip any spaces automatically (e.g. Google's "abcd efgh ijkl mnop" -> "abcdefghijklmnop")
+    gmail_app_password = raw_password.replace(" ", "")
     notification_email = os.environ.get("NOTIFICATION_EMAIL", "").strip() or gmail_user
     smtp_server = os.environ.get("SMTP_SERVER", "").strip() or "smtp.gmail.com"
     smtp_port_raw = os.environ.get("SMTP_PORT", "").strip() or "587"

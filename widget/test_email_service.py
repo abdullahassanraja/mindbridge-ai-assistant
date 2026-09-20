@@ -72,7 +72,7 @@ def test_mock_smtp_delivery():
             assert result.get("status") == "success", f"Expected success, got: {result}"
             assert result.get("recipient") == "test_inbox@gmail.com"
             mock_server.starttls.assert_called_once()
-            mock_server.login.assert_called_once_with("test_sender@gmail.com", "abcd efgh ijkl mnop")
+            mock_server.login.assert_called_once_with("test_sender@gmail.com", "abcdefghijklmnop")
             mock_server.sendmail.assert_called_once()
             print("[OK] Mock Gmail SMTP dispatch test passed: STARTTLS, login, and sendmail verified.")
 
