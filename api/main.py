@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Optional
 
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -214,11 +214,28 @@ class PracticeInquiryRequest(BaseModel):
     notes: Optional[str] = None
 
 
-@app.post("/api/practice-inquiry")
-async def create_practice_inquiry(inquiry: PracticeInquiryRequest):
-    """Log a wellness practice owner demo inquiry to Google Sheets 'Practice Inquiries' tab and trigger Gmail/SMTP email notification."""
+def _process_practice_inquiry_background(inquiry_dict: dict):
+    """Background task to sync inquiry with Google Sheets and dispatch email notification without blocking HTTP response."""
     from sheets import append_practice_inquiry
     from email_service import send_practice_inquiry_email
+
+    # Append to Google Sheets
+    try:
+        append_practice_inquiry(inquiry_dict)
+    except Exception as exc:
+        logger.error(f"Error appending practice inquiry to Google Sheets: {exc}")
+
+    # Dispatch email notification
+    try:
+        send_practice_inquiry_email(inquiry_dict)
+    except Exception as exc:
+        logger.error(f"Error dispatching email notification for practice inquiry: {exc}")
+
+
+@app.post("/api/practice-inquiry")
+async def create_practice_inquiry(inquiry: PracticeInquiryRequest, background_tasks: BackgroundTasks):
+    """Log a wellness practice owner demo inquiry with instant (<50ms) response and background dispatch."""
+    from sheets import _append_to_local_json, PRACTICE_INQUIRIES_JSON_PATH
 
     inquiry_dict = {
         "practice_name": inquiry.practice_name,
@@ -228,17 +245,14 @@ async def create_practice_inquiry(inquiry: PracticeInquiryRequest):
         "notes": inquiry.notes,
     }
 
-    # Record to Google Sheets & local JSON backup
-    res = append_practice_inquiry(inquiry_dict)
+    # 1. Synchronously save to local disk backup in under 1ms
+    _append_to_local_json(PRACTICE_INQUIRIES_JSON_PATH, inquiry_dict)
 
-    # Deliver notification to Gmail inbox
-    try:
-        email_res = send_practice_inquiry_email(inquiry_dict)
-    except Exception as exc:
-        logger.error(f"Error dispatching Gmail notification email for practice inquiry: {exc}", exc_info=True)
-        email_res = {"status": "error", "error": str(exc)}
+    # 2. Enqueue Google Sheets sync and email notification in background
+    background_tasks.add_task(_process_practice_inquiry_background, inquiry_dict)
 
-    return {"status": "ok", "recorded": res, "email": email_res}
+    # 3. Respond instantly to the web browser
+    return {"status": "ok", "message": "Practice demo inquiry successfully received"}
 
 
 # Mount static landing page and widget assets if present

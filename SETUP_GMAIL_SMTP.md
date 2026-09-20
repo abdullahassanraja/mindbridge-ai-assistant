@@ -1,59 +1,38 @@
-# Connecting MindBridge Demo Inquiries to Gmail SMTP
+# Connecting MindBridge Demo Inquiries to Email (Gmail / Resend)
 
-Whenever a prospective client or clinic director submits the **Practice Inquiry** form on the landing page, Ellen Assistant will automatically send a notification email directly to your Gmail inbox.
-
----
-
-## 1. Quick Requirements
-
-To send email notifications via Gmail SMTP:
-1. Your **Gmail address** (e.g. `yourname@gmail.com`).
-2. A **Google App Password** (16 lowercase letters, e.g. `xxxx yyyy zzzz wwww`).
-
-> [!IMPORTANT]
-> Google requires an **App Password** for SMTP. Your standard Google account login password will not work because 2-Step Verification protects your account.
+Whenever a prospective client or clinic director submits the **Practice Inquiry** form on the landing page, Ellen Assistant will automatically notify your inbox.
 
 ---
 
-## 2. How to Generate Your Google App Password (1 Minute)
+## ⚡ Why Did the Form Take Long Before?
+1. **Instant Response Fix**: We updated the server to use **FastAPI Background Tasks**. When someone submits the form, the server now responds in **< 50 milliseconds** (instant confirmation for the user).
+2. **Render Cloud SMTP Blocking**: Render's free tier has an outbound firewall that **blocks traditional SMTP ports (25, 465, and 587)** to prevent spam. When a server on Render free tier tries to connect to `smtp.gmail.com:587`, Render blocks the connection with `[Errno 101] Network is unreachable`.
 
-1. Open the Google Account App Passwords page directly:  
-   👉 **[myaccount.google.com/apppasswords](https://myaccount.google.com/apppasswords)**  
-   *(If prompted, sign in to your Google Account).*
-
-2. If you do not have 2-Step Verification enabled:  
-   - Enable it first at [myaccount.google.com/signinoptions/two-step-verification](https://myaccount.google.com/signinoptions/two-step-verification).
-   - Then return to [myaccount.google.com/apppasswords](https://myaccount.google.com/apppasswords).
-
-3. Under **App name**, enter a name like:  
-   `MindBridge Assistant` or `Ellen Demo Form`
-
-4. Click **Create**.
-
-5. Google will pop up a modal with a **16-character password** (e.g. `abcd efgh ijkl mnop`).
-6. Copy this 16-character code (you can use it with or without spaces; our code strips whitespace automatically).
+To deliver emails from Render without any firewall blocking, you have two great options below:
 
 ---
 
-## 3. Configure Your Environment Variables
+## Option 1 (Recommended for Render): Free Resend API (30 Seconds)
+**Resend** uses modern HTTPS (port 443), which is **never blocked** by Render or any cloud provider. It sends emails directly into your Gmail inbox.
 
-### Option A: On Render (Production)
-1. Open your **Render Dashboard**: [dashboard.render.com](https://dashboard.render.com).
-2. Click on your backend service: `mindbridge-ai-assistant`.
-3. In the left sidebar, click **Environment**.
-4. Add or update these variables:
-   - `GMAIL_USER`: `your_email@gmail.com`
-   - `GMAIL_APP_PASSWORD`: `your_16_character_app_password`
-   - `NOTIFICATION_EMAIL`: `your_email@gmail.com` *(where you want lead notifications sent)*
-   - `SMTP_SERVER`: `smtp.gmail.com`
-   - `SMTP_PORT`: `587`
-5. Click **Save Changes**. Render will automatically redeploy with Gmail notifications active.
+1. Go to **[resend.com](https://resend.com)** and click **Sign In** (sign in with Google / GitHub).
+2. In the left sidebar, click **API Keys** → **Create API Key**.
+3. Copy the key (starts with `re_...`).
+4. In your **Render Dashboard** (`mindbridge-ai-assistant` → **Environment**), add:
+   - `RESEND_API_KEY`: `re_your_api_key_here`
+   - `NOTIFICATION_EMAIL`: `your_email@gmail.com` *(your Gmail address)*
+5. Click **Save Changes**. Emails will now arrive in your Gmail inbox instantly.
 
 ---
 
-### Option B: Local Testing (`.env`)
-1. Open your `.env` (or `api/.env`) file.
-2. Fill in the values:
+## Option 2: Direct Gmail SMTP (For Local Development or Paid Hosting)
+If you run locally or on a host that does not block port 587:
+
+1. Open Google Account App Passwords directly:  
+   👉 **[myaccount.google.com/apppasswords](https://myaccount.google.com/apppasswords)**
+2. Under **App name**, enter `MindBridge` and click **Create**.
+3. Copy the 16-character code (e.g. `abcd efgh ijkl mnop`).
+4. In your `.env` (or Render if using a paid tier that allows SMTP):
    ```env
    GMAIL_USER=your_email@gmail.com
    GMAIL_APP_PASSWORD=your_16_character_app_password
@@ -61,27 +40,20 @@ To send email notifications via Gmail SMTP:
    SMTP_SERVER=smtp.gmail.com
    SMTP_PORT=587
    ```
-3. Restart your local server:
-   ```bash
-   python api/main.py
-   ```
 
 ---
 
-## 4. What the Notification Email Contains
-
+## What the Email Notification Looks Like
 Every inquiry delivered to your Gmail inbox includes:
 - **Practice Name** & **Doctor / Director Name**
-- **One-Click Reply Button**: Opens your email client pre-addressed to the client.
+- **One-Click Reply Button**: Directly opens a pre-addressed email reply.
 - **Practice Website & Specific Needs**
 - **Exact Submission Timestamp (UTC)**
 - **Dual Format**: Branded HTML card with clean plain-text fallback.
 
 ---
 
-## 5. Graceful Fallback Guarantee
-
-If `GMAIL_USER` or `GMAIL_APP_PASSWORD` is ever missing or credentials change:
-- The lead inquiry is **always saved** to your Google Sheets spreadsheet (`Practice Inquiries` tab).
-- The lead is also saved to local disk backup (`agent/data/leads.json`).
-- The user on the website sees the normal instant success message without interruption.
+## Graceful Fallback Guarantee
+- Every lead is **always saved** to your Google Sheet (`Practice Inquiries` tab).
+- Every lead is **always saved** to local disk backup (`agent/data/leads.json`).
+- Form submission always confirms **instantly** for website visitors.

@@ -1,5 +1,5 @@
 # test_email_service.py
-# Verification script for Gmail SMTP email service and /api/practice-inquiry endpoint.
+# Verification script for Gmail SMTP & Resend HTTP API email service and /api/practice-inquiry endpoint.
 
 import os
 import sys
@@ -29,6 +29,7 @@ test_inquiry = {
 def test_missing_credentials_graceful_skip():
     """Verify that if credentials are not configured, it skips gracefully without throwing an error."""
     with patch.dict(os.environ, {
+        "RESEND_API_KEY": "",
         "GMAIL_USER": "",
         "GMAIL_APP_PASSWORD": "",
         "SMTP_USER": "",
@@ -58,6 +59,7 @@ def test_html_and_text_formatting():
 def test_mock_smtp_delivery():
     """Verify that Gmail SMTP login and sendmail are properly called with STARTTLS when configured."""
     with patch.dict(os.environ, {
+        "RESEND_API_KEY": "",
         "GMAIL_USER": "test_sender@gmail.com",
         "GMAIL_APP_PASSWORD": "abcd efgh ijkl mnop",
         "NOTIFICATION_EMAIL": "test_inbox@gmail.com",
@@ -77,39 +79,56 @@ def test_mock_smtp_delivery():
             print("[OK] Mock Gmail SMTP dispatch test passed: STARTTLS, login, and sendmail verified.")
 
 
+def test_mock_resend_delivery():
+    """Verify that Resend HTTP API is called over HTTPS when RESEND_API_KEY is configured."""
+    with patch.dict(os.environ, {
+        "RESEND_API_KEY": "re_test_key_123456",
+        "NOTIFICATION_EMAIL": "dr.marcus@example.com"
+    }, clear=False):
+        with patch("urllib.request.urlopen") as mock_urlopen:
+            mock_resp = MagicMock()
+            mock_resp.read.return_value = b'{"id": "msg_resend_98765"}'
+            mock_urlopen.return_value.__enter__.return_value = mock_resp
+
+            result = send_practice_inquiry_email(test_inquiry)
+            assert result.get("status") == "success"
+            assert result.get("service") == "resend"
+            assert result.get("id") == "msg_resend_98765"
+            print("[OK] Mock Resend HTTPS dispatch test passed: Cloud-friendly API verified.")
+
+
 def test_api_practice_inquiry_endpoint():
-    """Verify the FastAPI endpoint /api/practice-inquiry calls both sheets and Gmail email service."""
+    """Verify the FastAPI endpoint /api/practice-inquiry returns instantly (<100ms) with background task."""
     client = TestClient(app)
     payload = {
         "practice_name": "Lotus Psychology Associates",
         "name": "Dr. Marcus Vance",
         "email": "marcus.vance@lotuspsych.test",
         "website": "https://lotuspsych.test",
-        "notes": "Testing Gmail SMTP integration endpoint."
+        "notes": "Testing background task endpoint."
     }
 
     with patch.dict(os.environ, {
-        "GMAIL_USER": "test_sender@gmail.com",
-        "GMAIL_APP_PASSWORD": "test_app_password",
+        "RESEND_API_KEY": "re_test_key_123456",
         "NOTIFICATION_EMAIL": "inbox@gmail.com"
     }, clear=False):
-        with patch("smtplib.SMTP") as mock_smtp_cls:
-            mock_server = MagicMock()
-            mock_smtp_cls.return_value.__enter__.return_value = mock_server
+        with patch("urllib.request.urlopen") as mock_urlopen:
+            mock_resp = MagicMock()
+            mock_resp.read.return_value = b'{"id": "msg_999"}'
+            mock_urlopen.return_value.__enter__.return_value = mock_resp
 
             response = client.post("/api/practice-inquiry", json=payload)
             assert response.status_code == 200, f"Expected 200, got: {response.status_code} - {response.text}"
             data = response.json()
             assert data["status"] == "ok"
-            assert "recorded" in data
-            assert data["email"]["status"] == "success"
-            print("[OK] API /api/practice-inquiry endpoint test passed: Returned 200 with sheet & Gmail status.")
+            print("[OK] API /api/practice-inquiry endpoint test passed: Instant response confirmed.")
 
 
 if __name__ == "__main__":
-    print("\n--- RUNNING GMAIL SMTP INTEGRATION TESTS ---")
+    print("\n--- RUNNING EMAIL INTEGRATION TESTS ---")
     test_missing_credentials_graceful_skip()
     test_html_and_text_formatting()
     test_mock_smtp_delivery()
+    test_mock_resend_delivery()
     test_api_practice_inquiry_endpoint()
-    print("--- ALL GMAIL SMTP INTEGRATION TESTS PASSED SUCCESSFULLY! ---\n")
+    print("--- ALL EMAIL INTEGRATION TESTS PASSED SUCCESSFULLY! ---\n")

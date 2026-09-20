@@ -1,13 +1,17 @@
 # email_service.py
-# Gmail SMTP email delivery service for MindBridge / Ellen practice inquiries.
-# Connects to Google Gmail SMTP (smtp.gmail.com:587) with STARTTLS
-# to deliver incoming lead capture form notifications directly to your Gmail inbox.
+# Email delivery service for MindBridge / Ellen practice inquiries.
+# Supports:
+# 1. Resend HTTP API (Recommended on Render / Cloud: uses HTTPS port 443, never blocked by firewalls)
+# 2. Gmail / Direct SMTP (smtp.gmail.com:587 with STARTTLS)
 
 import html
+import json
 import logging
 import os
 import smtplib
 import ssl
+import urllib.error
+import urllib.request
 from datetime import datetime, timezone
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -25,9 +29,12 @@ load_dotenv(AGENT_DIR.parent / ".env")
 load_dotenv()
 
 
-def get_smtp_config() -> Dict[str, Any]:
-    """Retrieve and validate Gmail SMTP credentials from environment variables."""
-    # Support GMAIL_USER / GMAIL_APP_PASSWORD, falling back to SMTP_USER / SMTP_PASSWORD
+def get_email_config() -> Dict[str, Any]:
+    """Retrieve and validate email credentials from environment variables."""
+    # 1. Resend HTTP API configuration (Render-friendly HTTPS)
+    resend_api_key = os.environ.get("RESEND_API_KEY", "").strip()
+
+    # 2. Gmail / General SMTP configuration
     gmail_user = (
         os.environ.get("GMAIL_USER", "").strip()
         or os.environ.get("SMTP_USER", "").strip()
@@ -50,12 +57,13 @@ def get_smtp_config() -> Dict[str, Any]:
         smtp_port = 587
 
     return {
+        "resend_api_key": resend_api_key,
         "gmail_user": gmail_user,
         "gmail_app_password": gmail_app_password,
         "notification_email": notification_email,
         "smtp_server": smtp_server,
         "smtp_port": smtp_port,
-        "is_configured": bool(gmail_user and gmail_app_password),
+        "is_configured": bool(resend_api_key or (gmail_user and gmail_app_password)),
     }
 
 
@@ -181,52 +189,115 @@ Reply directly by emailing: {email_addr}
 """
 
 
-def send_practice_inquiry_email(inquiry: Dict[str, Any]) -> Dict[str, Any]:
-    """Deliver a practice inquiry notification email via Gmail SMTP.
+def _send_via_resend(
+    api_key: str,
+    recipient: str,
+    subject: str,
+    html_body: str,
+    text_body: str,
+    reply_to: Optional[str] = None,
+) -> Dict[str, Any]:
+    """Send notification using Resend HTTP API over HTTPS (port 443, cloud-friendly)."""
+    url = "https://api.resend.com/emails"
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+        "User-Agent": "MindBridge-Agent/1.0",
+    }
+    payload: Dict[str, Any] = {
+        "from": "Ellen Assistant <onboarding@resend.dev>",
+        "to": [recipient],
+        "subject": subject,
+        "html": html_body,
+        "text": text_body,
+    }
+    if reply_to:
+        payload["reply_to"] = reply_to
 
-    Returns a dict with:
-      - {"status": "success", "recipient": email} if delivered
-      - {"status": "skipped", "message": reason} if credentials not set
-      - {"status": "error", "error": error_message} if delivery failed
+    req = urllib.request.Request(
+        url, data=json.dumps(payload).encode("utf-8"), headers=headers, method="POST"
+    )
+
+    try:
+        logger.info(f"[Resend API] Sending email notification to {recipient} via HTTPS...")
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            resp_data = json.loads(resp.read().decode("utf-8"))
+            msg_id = resp_data.get("id")
+            logger.info(f"[OK] [Resend API] Delivered successfully to {recipient} (ID: {msg_id})")
+            return {
+                "status": "success",
+                "service": "resend",
+                "recipient": recipient,
+                "id": msg_id,
+                "sent_at": datetime.now(timezone.utc).isoformat(),
+            }
+    except urllib.error.HTTPError as http_err:
+        err_content = http_err.read().decode("utf-8", errors="replace")
+        logger.error(f"[Resend API HTTP Error] {http_err.code}: {err_content}")
+        return {"status": "error", "error": f"Resend API error {http_err.code}: {err_content}"}
+    except Exception as exc:
+        logger.error(f"[Resend API Error] {type(exc).__name__}: {exc}")
+        return {"status": "error", "error": str(exc)}
+
+
+def send_practice_inquiry_email(inquiry: Dict[str, Any]) -> Dict[str, Any]:
+    """Deliver a practice inquiry notification email.
+
+    Prioritizes Resend HTTP API (if RESEND_API_KEY is configured), then Gmail SMTP.
+    Returns:
+      - {"status": "success", "recipient": email, ...}
+      - {"status": "skipped", "message": reason}
+      - {"status": "error", "error": error_message}
     """
-    config = get_smtp_config()
+    config = get_email_config()
 
     if not config["is_configured"]:
         logger.warning(
-            "[Gmail SMTP] GMAIL_USER or GMAIL_APP_PASSWORD is not set in environment. "
+            "[Email Service] Neither RESEND_API_KEY nor GMAIL_USER/GMAIL_APP_PASSWORD is set. "
             "Skipping email delivery. Inquiry is safely saved to Google Sheets and local JSON."
         )
         return {
             "status": "skipped",
-            "message": "GMAIL_USER or GMAIL_APP_PASSWORD not configured. Please add them to your environment.",
+            "message": "Email delivery credentials not configured.",
         }
 
-    sender_email = config["gmail_user"]
-    recipient_email = config["notification_email"]
     practice_name = inquiry.get("practice_name", "Unknown Practice")
     contact_name = inquiry.get("name", "Visitor")
+    lead_email = str(inquiry.get("email", "")).strip() or None
+    recipient_email = config["notification_email"] or config["gmail_user"]
+    subject = f"🔔 New Practice Inquiry: {practice_name} ({contact_name})"
+    html_body = format_inquiry_html(inquiry)
+    text_body = format_inquiry_plain_text(inquiry)
 
-    # Construct MIME message
+    # 1. If RESEND_API_KEY is configured, send via HTTPS (never blocked by Render)
+    if config["resend_api_key"]:
+        return _send_via_resend(
+            api_key=config["resend_api_key"],
+            recipient=recipient_email,
+            subject=subject,
+            html_body=html_body,
+            text_body=text_body,
+            reply_to=lead_email,
+        )
+
+    # 2. Fallback to Gmail SMTP (smtp.gmail.com:587)
+    sender_email = config["gmail_user"]
     msg = MIMEMultipart("alternative")
-    msg["Subject"] = f"🔔 New Practice Inquiry: {practice_name} ({contact_name})"
+    msg["Subject"] = subject
     msg["From"] = f"Ellen Assistant <{sender_email}>"
     msg["To"] = recipient_email
-    if inquiry.get("email"):
-        msg["Reply-To"] = str(inquiry["email"])
+    if lead_email:
+        msg["Reply-To"] = lead_email
 
-    # Attach plain text and HTML alternatives
-    part_plain = MIMEText(format_inquiry_plain_text(inquiry), "plain", "utf-8")
-    part_html = MIMEText(format_inquiry_html(inquiry), "html", "utf-8")
-    msg.attach(part_plain)
-    msg.attach(part_html)
+    msg.attach(MIMEText(text_body, "plain", "utf-8"))
+    msg.attach(MIMEText(html_body, "html", "utf-8"))
 
-    # Dispatch via Gmail SMTP with STARTTLS
     try:
         logger.info(
             f"[Gmail SMTP] Connecting to {config['smtp_server']}:{config['smtp_port']} as {sender_email}..."
         )
         context = ssl.create_default_context()
-        with smtplib.SMTP(config["smtp_server"], config["smtp_port"], timeout=15) as server:
+        with smtplib.SMTP(config["smtp_server"], config["smtp_port"], timeout=5) as server:
             server.ehlo()
             server.starttls(context=context)
             server.ehlo()
@@ -236,6 +307,7 @@ def send_practice_inquiry_email(inquiry: Dict[str, Any]) -> Dict[str, Any]:
         logger.info(f"[OK] [Gmail SMTP] Notification delivered successfully to {recipient_email}")
         return {
             "status": "success",
+            "service": "gmail_smtp",
             "recipient": recipient_email,
             "sent_at": datetime.now(timezone.utc).isoformat(),
         }
@@ -243,12 +315,25 @@ def send_practice_inquiry_email(inquiry: Dict[str, Any]) -> Dict[str, Any]:
     except smtplib.SMTPAuthenticationError as auth_err:
         err_msg = (
             f"Gmail SMTP authentication failed: {auth_err}. "
-            "Google requires a 16-character App Password. Generate one at https://myaccount.google.com/apppasswords"
+            "Google requires a 16-character App Password from https://myaccount.google.com/apppasswords"
         )
         logger.error(f"[Gmail SMTP] {err_msg}")
         return {"status": "error", "error": err_msg}
 
+    except OSError as os_err:
+        err_str = str(os_err)
+        if "101" in err_str or "unreachable" in err_str.lower():
+            err_msg = (
+                "Render Free Tier blocks outbound SMTP ports 25, 465, and 587 ([Errno 101] Network is unreachable). "
+                "To deliver emails from Render without port blocking, add a free RESEND_API_KEY (from https://resend.com) "
+                "to your Render Environment variables, or upgrade Render to a paid instance."
+            )
+        else:
+            err_msg = f"Network socket error during SMTP delivery: {os_err}"
+        logger.error(f"[Gmail SMTP Blocked] {err_msg}")
+        return {"status": "error", "error": err_msg}
+
     except Exception as exc:
-        err_msg = f"Failed to send Gmail notification email: {type(exc).__name__}: {exc}"
-        logger.error(f"[Gmail SMTP] {err_msg}", exc_info=True)
+        err_msg = f"Failed to send notification email: {type(exc).__name__}: {exc}"
+        logger.error(f"[Email Error] {err_msg}", exc_info=True)
         return {"status": "error", "error": err_msg}
