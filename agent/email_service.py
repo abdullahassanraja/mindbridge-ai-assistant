@@ -8,6 +8,7 @@ import html
 import json
 import logging
 import os
+import re
 import smtplib
 import ssl
 import urllib.error
@@ -239,6 +240,38 @@ def _send_via_resend(
     except urllib.error.HTTPError as http_err:
         err_content = http_err.read().decode("utf-8", errors="replace")
         logger.error(f"[Resend API HTTP Error] {http_err.code}: {err_content}")
+        # Detect if Resend rejected due to free tier testing sandbox restriction:
+        # e.g., "You can only send testing emails to your own email address (xyz@gmail.com)"
+        sandbox_match = re.search(r"to your own email address \(([^)]+)\)", err_content)
+        if sandbox_match:
+            account_owner_email = sandbox_match.group(1).strip()
+            if account_owner_email and account_owner_email.lower() != recipient.lower():
+                logger.warning(
+                    f"[Resend Sandbox Auto-Fallback] Free tier only allows testing to account owner ({account_owner_email}). "
+                    f"Automatically redirecting delivery to verified account: {account_owner_email}..."
+                )
+                try:
+                    payload["to"] = [account_owner_email]
+                    retry_req = urllib.request.Request(
+                        url, data=json.dumps(payload).encode("utf-8"), headers=headers, method="POST"
+                    )
+                    with urllib.request.urlopen(retry_req, timeout=10) as retry_resp:
+                        retry_data = json.loads(retry_resp.read().decode("utf-8"))
+                        msg_id = retry_data.get("id")
+                        logger.info(
+                            f"[OK] [Resend Sandbox Auto-Fallback] Delivered successfully to account owner {account_owner_email} (ID: {msg_id})"
+                        )
+                        return {
+                            "status": "success",
+                            "service": "resend",
+                            "recipient": account_owner_email,
+                            "original_recipient": recipient,
+                            "id": msg_id,
+                            "sent_at": datetime.now(timezone.utc).isoformat(),
+                            "note": f"Delivered to Resend verified account address ({account_owner_email}) due to free tier sandbox restriction.",
+                        }
+                except Exception as retry_err:
+                    logger.error(f"[Resend Auto-Fallback Failed]: {retry_err}")
         return {"status": "error", "error": f"Resend API error {http_err.code}: {err_content}"}
     except Exception as exc:
         logger.error(f"[Resend API Error] {type(exc).__name__}: {exc}")
@@ -274,9 +307,9 @@ def send_practice_inquiry_email(inquiry: Dict[str, Any]) -> Dict[str, Any]:
     html_body = format_inquiry_html(inquiry)
     text_body = format_inquiry_plain_text(inquiry)
 
-    # 1. If RESEND_API_KEY is configured, send via HTTPS (never blocked by Render)
+    # 1. If RESEND_API_KEY is configured, try sending via HTTPS
     if config["resend_api_key"]:
-        return _send_via_resend(
+        resend_result = _send_via_resend(
             api_key=config["resend_api_key"],
             recipient=recipient_email,
             subject=subject,
@@ -284,6 +317,14 @@ def send_practice_inquiry_email(inquiry: Dict[str, Any]) -> Dict[str, Any]:
             text_body=text_body,
             reply_to=lead_email,
         )
+        if resend_result.get("status") == "success":
+            return resend_result
+        logger.warning(
+            f"[Resend Warning] Resend delivery failed: {resend_result.get('error')}. "
+            "Checking if Gmail SMTP fallback is available..."
+        )
+        if not (config["gmail_user"] and config["gmail_app_password"]):
+            return resend_result
 
     # 2. Fallback to Gmail SMTP (smtp.gmail.com:587)
     sender_email = config["gmail_user"]
@@ -469,7 +510,7 @@ def send_patient_lead_email(lead: Dict[str, Any]) -> Dict[str, Any]:
 
     # 1. Resend HTTP API (port 443)
     if config["resend_api_key"]:
-        return _send_via_resend(
+        resend_result = _send_via_resend(
             api_key=config["resend_api_key"],
             recipient=recipient_email,
             subject=subject,
@@ -477,6 +518,14 @@ def send_patient_lead_email(lead: Dict[str, Any]) -> Dict[str, Any]:
             text_body=text_body,
             reply_to=lead_email,
         )
+        if resend_result.get("status") == "success":
+            return resend_result
+        logger.warning(
+            f"[Resend Warning] Resend delivery failed for client lead: {resend_result.get('error')}. "
+            "Checking if Gmail SMTP fallback is available..."
+        )
+        if not (config["gmail_user"] and config["gmail_app_password"]):
+            return resend_result
 
     # 2. Direct SMTP
     sender_email = config["gmail_user"]
@@ -504,3 +553,181 @@ def send_patient_lead_email(lead: Dict[str, Any]) -> Dict[str, Any]:
     except Exception as exc:
         logger.error(f"[Email Error] Failed to send patient lead email: {exc}")
         return {"status": "error", "error": str(exc)}
+
+
+def format_scheduling_request_html(request_data: Dict[str, Any]) -> str:
+    """Format an incoming appointment scheduling request as a clean, branded HTML email."""
+    name = html.escape(str(request_data.get("name", "Anonymous Visitor")))
+    contact = html.escape(str(request_data.get("contact", "Not provided")))
+    pref_date = html.escape(str(request_data.get("preferred_date", "Not specified")))
+    pref_time = html.escape(str(request_data.get("preferred_time", "Not specified")))
+    therapist = html.escape(str(request_data.get("matched_therapist", "None assigned yet")))
+    session_id = html.escape(str(request_data.get("session_id", "N/A")))
+    status = html.escape(str(request_data.get("status", "Pending confirmation")))
+    timestamp_utc = datetime.now(timezone.utc).strftime("%B %d, %Y at %I:%M %p UTC")
+
+    reply_href = f"mailto:{contact}" if "@" in contact else f"tel:{contact}"
+
+    return f"""<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>New Consultation Scheduling Request</title>
+</head>
+<body style="margin: 0; padding: 24px; background-color: #FFF9FB; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #220B16;">
+  <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="600" border="0" cellspacing="0" cellpadding="0" style="background-color: #FFFFFF; border-radius: 18px; border: 1px solid #F8C8D6; box-shadow: 0 4px 20px rgba(201, 75, 110, 0.07); overflow: hidden;">
+          <tr>
+            <td style="background: linear-gradient(135deg, #220B16 0%, #381325 100%); padding: 28px 32px; text-align: left;">
+              <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: #F4A6BD; display: block; margin-bottom: 6px;">MindBridge &bull; Ellen Assistant</span>
+              <h1 style="margin: 0; font-size: 22px; font-weight: 600; color: #FFFFFF; line-height: 1.3;">📅 New Consultation Scheduling Request</h1>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 32px;">
+              <p style="margin: 0 0 20px 0; font-size: 14px; color: #521D38; line-height: 1.6;">
+                A client just submitted a consultation appointment request in chat. Here are their preferred timing & contact details:
+              </p>
+              <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; margin-bottom: 24px;">
+                <tr>
+                  <td width="35%" style="padding: 10px 14px; background-color: #FFF5F8; border-bottom: 1px solid #FDE8EE; font-size: 13px; font-weight: 600; color: #94294A;">Client Name</td>
+                  <td style="padding: 10px 14px; background-color: #FFFFFF; border-bottom: 1px solid #FDE8EE; font-size: 14px; font-weight: 700; color: #220B16;">{name}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px 14px; background-color: #FFF5F8; border-bottom: 1px solid #FDE8EE; font-size: 13px; font-weight: 600; color: #94294A;">Contact Info</td>
+                  <td style="padding: 10px 14px; background-color: #FFFFFF; border-bottom: 1px solid #FDE8EE; font-size: 14px; color: #220B16;">
+                    <a href="{reply_href}" style="color: #BA3C60; font-weight: 600; text-decoration: none;">{contact}</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px 14px; background-color: #FFF5F8; border-bottom: 1px solid #FDE8EE; font-size: 13px; font-weight: 600; color: #94294A;">Preferred Timing</td>
+                  <td style="padding: 10px 14px; background-color: #FFFFFF; border-bottom: 1px solid #FDE8EE; font-size: 14px; font-weight: 700; color: #BA3C60;">{pref_date}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px 14px; background-color: #FFF5F8; border-bottom: 1px solid #FDE8EE; font-size: 13px; font-weight: 600; color: #94294A;">Matched Clinician</td>
+                  <td style="padding: 10px 14px; background-color: #FFFFFF; border-bottom: 1px solid #FDE8EE; font-size: 13.5px; color: #220B16;">{therapist}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px 14px; background-color: #FFF5F8; border-bottom: 1px solid #FDE8EE; font-size: 13px; font-weight: 600; color: #94294A;">Booking Status</td>
+                  <td style="padding: 10px 14px; background-color: #FFFFFF; border-bottom: 1px solid #FDE8EE; font-size: 13px; font-weight: 600; color: #C94B6E;">{status}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px 14px; background-color: #FFF5F8; border-bottom: 1px solid #FDE8EE; font-size: 13px; font-weight: 600; color: #94294A;">Session ID</td>
+                  <td style="padding: 10px 14px; background-color: #FFFFFF; border-bottom: 1px solid #FDE8EE; font-size: 12.5px; color: #6C5862;">{session_id[:12]}...</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px 14px; background-color: #FFF5F8; font-size: 13px; font-weight: 600; color: #94294A;">Requested At</td>
+                  <td style="padding: 10px 14px; background-color: #FFFFFF; font-size: 12.5px; color: #6C5862;">{timestamp_utc}</td>
+                </tr>
+              </table>
+              <div style="text-align: center; margin: 32px 0 16px 0;">
+                <a href="{reply_href}" 
+                   style="display: inline-block; background-color: #220B16; color: #FFFFFF; text-decoration: none; padding: 13px 30px; border-radius: 50px; font-size: 13.5px; font-weight: 600; box-shadow: 0 4px 12px rgba(34, 11, 22, 0.2);">
+                  Confirm Availability with {name} &rarr;
+                </a>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td style="background-color: #FFF5F8; padding: 16px 32px; border-top: 1px solid #F8C8D6; text-align: center; font-size: 11.5px; color: #96818C;">
+              Logged automatically to Google Sheets ('Scheduling Requests' tab) by Ellen Assistant.
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+"""
+
+
+def format_scheduling_request_plain_text(request_data: Dict[str, Any]) -> str:
+    """Format plain-text fallback for consultation scheduling requests."""
+    name = request_data.get("name", "Anonymous Visitor")
+    contact = request_data.get("contact", "Not provided")
+    pref_date = request_data.get("preferred_date", "Not specified")
+    therapist = request_data.get("matched_therapist", "None assigned yet")
+    session_id = request_data.get("session_id", "N/A")
+    status = request_data.get("status", "Pending confirmation")
+    timestamp_utc = datetime.now(timezone.utc).strftime("%B %d, %Y at %I:%M %p UTC")
+
+    return f"""NEW CONSULTATION SCHEDULING REQUEST
+====================================
+Client Name:        {name}
+Contact Info:       {contact}
+Preferred Timing:   {pref_date}
+Matched Clinician:  {therapist}
+Status:             {status}
+Session ID:         {session_id}
+Requested At:       {timestamp_utc}
+====================================
+Confirm availability: {contact}
+"""
+
+
+def send_scheduling_request_email(request_data: Dict[str, Any]) -> Dict[str, Any]:
+    """Deliver a consultation scheduling request notification email via Resend or SMTP."""
+    config = get_email_config()
+
+    if not config["is_configured"]:
+        logger.warning("[Email Service] No credentials configured. Skipping scheduling request email.")
+        return {"status": "skipped", "message": "Email delivery credentials not configured."}
+
+    name = request_data.get("name", "New Client")
+    contact = str(request_data.get("contact", "")).strip()
+    lead_email = contact if "@" in contact else None
+    recipient_email = config["notification_email"] or config["gmail_user"]
+    pref_date = request_data.get("preferred_date", "")
+    subject = f"📅 New Consultation Scheduling Request: {name} ({pref_date})" if pref_date else f"📅 New Consultation Scheduling Request: {name}"
+    html_body = format_scheduling_request_html(request_data)
+    text_body = format_scheduling_request_plain_text(request_data)
+
+    # 1. Resend HTTP API (port 443)
+    if config["resend_api_key"]:
+        resend_result = _send_via_resend(
+            api_key=config["resend_api_key"],
+            recipient=recipient_email,
+            subject=subject,
+            html_body=html_body,
+            text_body=text_body,
+            reply_to=lead_email,
+        )
+        if resend_result.get("status") == "success":
+            return resend_result
+        logger.warning(
+            f"[Resend Warning] Resend delivery failed for scheduling request: {resend_result.get('error')}. "
+            "Checking if Gmail SMTP fallback is available..."
+        )
+        if not (config["gmail_user"] and config["gmail_app_password"]):
+            return resend_result
+
+    # 2. Direct SMTP
+    sender_email = config["gmail_user"]
+    msg = MIMEMultipart("alternative")
+    msg["Subject"] = subject
+    msg["From"] = f"Ellen Assistant <{sender_email}>"
+    msg["To"] = recipient_email
+    if lead_email:
+        msg["Reply-To"] = lead_email
+
+    msg.attach(MIMEText(text_body, "plain", "utf-8"))
+    msg.attach(MIMEText(html_body, "html", "utf-8"))
+
+    try:
+        context = ssl.create_default_context()
+        with smtplib.SMTP(config["smtp_server"], config["smtp_port"], timeout=5) as server:
+            server.ehlo()
+            server.starttls(context=context)
+            server.ehlo()
+            server.login(sender_email, config["gmail_app_password"])
+            server.sendmail(sender_email, [recipient_email], msg.as_string())
+
+        logger.info(f"[OK] [Gmail SMTP] Scheduling request email delivered to {recipient_email}")
+        return {"status": "success", "service": "gmail_smtp", "recipient": recipient_email}
+    except Exception as exc:
+        logger.error(f"[Email Error] Failed to send scheduling request email: {exc}")
+        return {"status": "error", "error": str(exc)}
+

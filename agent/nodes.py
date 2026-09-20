@@ -1088,6 +1088,11 @@ def scheduling_node(state: AgentState) -> AgentState:
                 "status": "Pending confirmation",
             }
             append_scheduling_request(req_data)
+            try:
+                from email_service import send_scheduling_request_email
+                send_scheduling_request_email(req_data)
+            except Exception as exc:
+                _safe_print(f"[Warning] Failed to dispatch scheduling request email: {exc}")
             state["scheduling_request_logged"] = True
 
         stage_directive = (

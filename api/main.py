@@ -113,8 +113,27 @@ class ChatResponse(BaseModel):
 
 @app.get("/health")
 async def health_check():
-    """Health check endpoint for uptime monitoring and deployment probes."""
-    return {"status": "ok"}
+    """Health check endpoint for uptime monitoring, deployment probes, and status diagnostics."""
+    from email_service import get_email_config
+    email_cfg = get_email_config()
+
+    has_sheets_id = bool(os.environ.get("GOOGLE_SHEETS_ID"))
+    has_sheets_b64 = bool(os.environ.get("GOOGLE_SHEETS_CREDENTIALS_BASE64"))
+    has_sheets_json = bool(os.environ.get("GOOGLE_SHEETS_CREDENTIALS_JSON"))
+    has_sheets_file = False
+    try:
+        from sheets import _find_credentials_path
+        has_sheets_file = bool(_find_credentials_path())
+    except Exception:
+        pass
+
+    return {
+        "status": "ok",
+        "sheets_configured": bool(has_sheets_id and (has_sheets_b64 or has_sheets_json or has_sheets_file)),
+        "email_configured": bool(email_cfg.get("is_configured")),
+        "email_service": "resend" if email_cfg.get("resend_api_key") else ("gmail_smtp" if email_cfg.get("gmail_user") else "none"),
+        "notification_recipient": email_cfg.get("notification_email"),
+    }
 
 
 @app.post("/chat", response_model=ChatResponse)
@@ -267,4 +286,11 @@ if __name__ == "__main__":
 
     port = int(os.environ.get("PORT", 8000))
     logger.info(f"Starting MindBridge API on port {port}...")
-    uvicorn.run("main:app", app_dir=str(api_dir), host="0.0.0.0", port=port, reload=True)
+    uvicorn.run(
+        "main:app",
+        app_dir=str(api_dir),
+        host="0.0.0.0",
+        port=port,
+        reload=True,
+        reload_dirs=[str(api_dir), str(agent_dir)],
+    )

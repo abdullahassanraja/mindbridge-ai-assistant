@@ -13,7 +13,8 @@
     const host = typeof window !== 'undefined' ? window.location.hostname : '';
     // Local development
     if (host === '127.0.0.1' || host === 'localhost') {
-      return 'http://127.0.0.1:8001';
+      const port = (typeof window !== 'undefined' && window.location.port === '8001') ? '8001' : '8000';
+      return `http://127.0.0.1:${port}`;
     }
     // Production: Render-deployed API
     return 'https://mindbridge-ai-assistant.onrender.com';

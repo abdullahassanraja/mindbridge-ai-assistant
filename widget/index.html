@@ -1504,24 +1504,53 @@
 
           try {
             // Determine backend URL
-            const isLocalHost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-            const localPort = window.location.port || '8000';
-            const backendUrl = (window.MINDBRIDGE_BACKEND_URL) || (
-              isLocalHost
-                ? `http://127.0.0.1:${localPort}`
-                : (window.location.protocol === 'file:' ? 'http://127.0.0.1:8000' : 'https://mindbridge-ai-assistant.onrender.com')
-            );
+            const isLocalHost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:';
+            
+            // Primary backend URL: local FastAPI runs on port 8000 by default (api/.env PORT=8000)
+            let primaryPort = '8000';
+            let fallbackPort = '8001';
+            if (window.location.port === '8001') {
+              primaryPort = '8001';
+              fallbackPort = '8000';
+            }
 
-            await fetch(`${backendUrl}/api/practice-inquiry`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(payload)
-            });
-          } catch (err) {
-            console.warn('[Practice Inquiry Submission]: Logged locally, network err:', err);
-          } finally {
+            async function postInquiry(url) {
+              const res = await fetch(`${url}/api/practice-inquiry`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+              });
+              if (!res.ok) {
+                throw new Error(`Server returned HTTP ${res.status}`);
+              }
+              return res.json();
+            }
+
+            if (isLocalHost) {
+              // Try primary local port first, then fallback port if needed
+              try {
+                await postInquiry(`http://127.0.0.1:${primaryPort}`);
+              } catch (firstErr) {
+                console.warn(`[Practice Inquiry]: Port ${primaryPort} failed, trying fallback http://127.0.0.1:${fallbackPort}...`);
+                await postInquiry(`http://127.0.0.1:${fallbackPort}`);
+              }
+            } else {
+              // Production deployed endpoint
+              const prodUrl = window.MINDBRIDGE_BACKEND_URL || 'https://mindbridge-ai-assistant.onrender.com';
+              await postInquiry(prodUrl);
+            }
+
+            // Success state
             leadForm.classList.add('hidden');
             if (leadSuccess) leadSuccess.classList.remove('hidden');
+
+          } catch (err) {
+            console.error('[Practice Inquiry Submission Failed]:', err);
+            alert('Unable to submit inquiry. Please ensure the local backend API server is running on port 8001 or 8000 (python api/main.py).');
+            if (submitBtn) {
+              submitBtn.disabled = false;
+              submitBtn.textContent = 'Get My Free Demo ➔';
+            }
           }
         });
       }
